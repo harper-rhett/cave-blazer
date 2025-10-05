@@ -5,8 +5,8 @@ using System.Numerics;
 
 internal class Area : Entity
 {
-	private int x;
-	private int y;
+	private int pixelX;
+	private int pixelY;
 	private int widthInPixels;
 	private int heightInPixels;
 	private int widthInTiles;
@@ -20,8 +20,8 @@ internal class Area : Entity
 	public Area(Scene scene, Level level, Texture tilesetTexture) : base(scene)
 	{
 		// Set area coordinates
-		x = (int)level.WorldX;
-		y = (int)level.WorldY;
+		pixelX = (int)level.WorldX;
+		pixelY = (int)level.WorldY;
 		widthInPixels = (int)level.PxWid;
 		heightInPixels = (int)level.PxHei;
 		
@@ -29,15 +29,21 @@ internal class Area : Entity
 		LayerInstance layerInstance = level.LayerInstances[0];
 		widthInTiles = (int)layerInstance.CWid;
 		heightInTiles = (int)layerInstance.CHei;
-		DrawTexture(layerInstance, tilesetTexture);
+		ProcessTexture(layerInstance, tilesetTexture);
 		ProcessCollisions(layerInstance);
 	}
 
-	private void DrawTexture(LayerInstance layerInstance, Texture tilesetTexture)
+	public override void Draw()
+	{
+		renderTexture.Texture.Draw(renderRectangle, Vector2.Zero, Colors.White);
+		//DrawCollisions();
+	}
+
+	private void ProcessTexture(LayerInstance layerInstance, Texture tilesetTexture)
 	{
 		// Prepare the render texture
 		renderTexture = RenderTexture.Load(widthInPixels, heightInPixels);
-		renderRectangle = new(0, 0, widthInPixels, -heightInPixels);
+		renderRectangle = new(pixelX, pixelY, widthInPixels, -heightInPixels);
 		RenderTexture.BeginDrawing(renderTexture);
 
 		// Loop through all tiles
@@ -74,18 +80,21 @@ internal class Area : Entity
 			}
 	}
 
-	public override void Draw()
-	{
-		renderTexture.Texture.Draw(renderRectangle, Vector2.Zero, Colors.White);
-		DrawCollisions();
-	}
-
 	private void DrawCollisions()
 	{
 		for (int x = 0; x < widthInTiles; x++)
 			for (int y = 0; y < heightInTiles; y++)
 			{
-				if (walls[x, y]) Primitives.DrawSquare(x * tileSize, y * tileSize, tileSize, Colors.Red.SetAlpha(100));
+				int worldX = pixelX + x * tileSize;
+				int worldY = pixelY + y * tileSize;
+				if (walls[x, y]) Primitives.DrawSquare(worldX, worldY, tileSize, Colors.Red.SetAlpha(100));
 			}
+	}
+
+	public bool IsWall(int pixelX, int pixelY)
+	{
+		int tileX = (pixelX - this.pixelX) / tileSize;
+		int tileY = (pixelY - this.pixelY) / tileSize;
+		return walls[tileX, tileY];
 	}
 }

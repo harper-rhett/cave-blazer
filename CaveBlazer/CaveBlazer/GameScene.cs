@@ -1,7 +1,6 @@
 ﻿using HarpEngine;
 using HarpEngine.Graphics;
 using ldtk;
-using System.Numerics;
 
 internal class GameScene : Scene
 {
@@ -12,5 +11,7 @@ internal class GameScene : Scene
 		Level testLevel = world.Levels[0];
 		Texture tileset = Texture.Load("sprites/cave-tileset.png");
 		Area area = new(this, testLevel, tileset);
+
+		Player player = new(this, area, new(32, 32));
 	}
 }

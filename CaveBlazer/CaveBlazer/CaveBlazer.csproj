@@ -12,11 +12,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\harp-engine\HarpEngine\HarpEngine.csproj" />
+    <ProjectReference Include="..\..\..\harp-engine\HarpEngine\HarpEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="sprites\cave-tileset.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="sprites\explorer.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="world.ldtk">
