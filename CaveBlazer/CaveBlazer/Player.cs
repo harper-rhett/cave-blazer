@@ -16,12 +16,11 @@ internal class Player : Entity
 	private Texture texture;
 	private int width;
 	private int height;
-	private int halfWidth;
 
 	// Settings
 	private const float gravity = 45;
 	private const float jumpForce = 30;
-	private const float walkSpeed = 10;
+	private const float walkSpeed = 15;
 	private const float floatAcceleration = 10;
 
 	// Interface
@@ -35,7 +34,6 @@ internal class Player : Entity
 		texture = Texture.Load("sprites/explorer.png");
 		width = texture.Width;
 		height = texture.Height;
-		halfWidth = width / 2;
 	}
 
 	public override void Update()
@@ -43,51 +41,29 @@ internal class Player : Entity
 		CheckGrounded();
 		CheckJump();
 
-		if (isGrounded)
-		{
-			velocity.Y = 0;
+		if (isGrounded) GroundedUpdate();
+		else MidairUpdate();
 
-			if (Keyboard.IsKeyDown(KeyboardKey.Left))
-			{
-				velocity.X = -walkSpeed;
-				direction = -1;
-			}
-			else if (Keyboard.IsKeyDown(KeyboardKey.Right))
-			{
-				velocity.X = walkSpeed;
-				direction = 1;
-			}
-			else velocity.X = 0;
-		}
-		else
-		{
-			velocity.Y += gravity * Engine.FrameTime;
-
-			if (Keyboard.IsKeyDown(KeyboardKey.Left))
-			{
-				velocity.X -= floatAcceleration * Engine.FrameTime;
-				direction = -1;
-			}
-			else if (Keyboard.IsKeyDown(KeyboardKey.Right))
-			{
-				velocity.X += floatAcceleration * Engine.FrameTime;
-				direction = 1;
-			}
-		}
-
+		float nextX = position.X + velocity.X * Engine.FrameTime;
+		int checkLeftX = (int)float.Round(nextX);
+		int checkRightX = (int)float.Round(nextX + width - 1);
+		bool isLeftWall = currentArea.IsWall(checkLeftX, (int)position.Y + height - 1);
+		bool isRightWall = currentArea.IsWall(checkRightX, (int)position.Y + height - 1);
+		if (isLeftWall || isRightWall) velocity.X = 0;
 		position += velocity * Engine.FrameTime;
 	}
 
 	public override void Draw()
 	{
 		Rectangle sourceRectangle = new(0, 0, width * direction, height);
-		texture.Draw(sourceRectangle, Position, Colors.White);
+		Rectangle destinationRectangle = new(float.Round(position.X), float.Round(position.Y), width, height);
+		texture.Draw(sourceRectangle, destinationRectangle, Vector2.Zero, 0, Colors.White);
 	}
 
 	private void CheckGrounded()
 	{
-		int leftFootX = (int)position.X;
-		int rightFootX = (int)position.X + width;
+		int leftFootX = (int)position.X + 1;
+		int rightFootX = (int)position.X + width - 1;
 		int feetY = (int)position.Y + height;
 		isGrounded = currentArea.IsWall(leftFootX, feetY) || currentArea.IsWall(rightFootX, feetY);
 	}
@@ -99,6 +75,39 @@ internal class Player : Entity
 		{
 			isGrounded = false;
 			velocity.Y -= jumpForce;
+		}
+	}
+
+	private void GroundedUpdate()
+	{
+		velocity.Y = 0;
+
+		if (Keyboard.IsKeyDown(KeyboardKey.Left))
+		{
+			velocity.X = -walkSpeed;
+			direction = -1;
+		}
+		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
+		{
+			velocity.X = walkSpeed;
+			direction = 1;
+		}
+		else velocity.X = 0;
+	}
+
+	private void MidairUpdate()
+	{
+		velocity.Y += gravity * Engine.FrameTime;
+
+		if (Keyboard.IsKeyDown(KeyboardKey.Left))
+		{
+			velocity.X -= floatAcceleration * Engine.FrameTime;
+			direction = -1;
+		}
+		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
+		{
+			velocity.X += floatAcceleration * Engine.FrameTime;
+			direction = 1;
 		}
 	}
 }
