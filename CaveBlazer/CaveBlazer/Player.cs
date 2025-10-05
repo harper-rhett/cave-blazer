@@ -9,8 +9,9 @@ internal class Player : Entity
 	private Vector2 position;
 	private Vector2 velocity;
 	private bool isGrounded;
+	private int direction = 1;
 	private Area currentArea;
-	
+
 	// Texture
 	private Texture texture;
 	private int width;
@@ -21,7 +22,7 @@ internal class Player : Entity
 	private const float gravity = 45;
 	private const float jumpForce = 30;
 	private const float walkSpeed = 10;
-	private const float floatAcceleration = 5;
+	private const float floatAcceleration = 10;
 
 	// Interface
 	public Vector2 Position => position;
@@ -46,16 +47,32 @@ internal class Player : Entity
 		{
 			velocity.Y = 0;
 
-			if (Keyboard.IsKeyDown(KeyboardKey.Left)) velocity.X = -walkSpeed;
-			else if (Keyboard.IsKeyDown(KeyboardKey.Right)) velocity.X = walkSpeed;
+			if (Keyboard.IsKeyDown(KeyboardKey.Left))
+			{
+				velocity.X = -walkSpeed;
+				direction = -1;
+			}
+			else if (Keyboard.IsKeyDown(KeyboardKey.Right))
+			{
+				velocity.X = walkSpeed;
+				direction = 1;
+			}
 			else velocity.X = 0;
 		}
 		else
 		{
 			velocity.Y += gravity * Engine.FrameTime;
 
-			if (Keyboard.IsKeyDown(KeyboardKey.Left)) velocity.X -= floatAcceleration * Engine.FrameTime;
-			else if (Keyboard.IsKeyDown(KeyboardKey.Right)) velocity.X += floatAcceleration * Engine.FrameTime;
+			if (Keyboard.IsKeyDown(KeyboardKey.Left))
+			{
+				velocity.X -= floatAcceleration * Engine.FrameTime;
+				direction = -1;
+			}
+			else if (Keyboard.IsKeyDown(KeyboardKey.Right))
+			{
+				velocity.X += floatAcceleration * Engine.FrameTime;
+				direction = 1;
+			}
 		}
 
 		position += velocity * Engine.FrameTime;
@@ -63,7 +80,8 @@ internal class Player : Entity
 
 	public override void Draw()
 	{
-		texture.Draw(Position, Colors.White);
+		Rectangle sourceRectangle = new(0, 0, width * direction, height);
+		texture.Draw(sourceRectangle, Position, Colors.White);
 	}
 
 	private void CheckGrounded()
