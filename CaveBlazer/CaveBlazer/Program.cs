@@ -3,8 +3,8 @@
 EngineSettings settings = new()
 {
 	WindowName = "Cave Blazer",
-	GameWidth = 192,
-	GameHeight = 192
+	GameWidth = 112,
+	GameHeight = 112
 };
 Engine.Initialize(settings);
 CaveBlazer caveBlazer = new();
