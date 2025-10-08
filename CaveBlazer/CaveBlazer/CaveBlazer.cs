@@ -1,4 +1,5 @@
 ﻿using HarpEngine;
+using HarpEngine.Windowing;
 
 internal class CaveBlazer : Game
 {
@@ -6,7 +7,8 @@ internal class CaveBlazer : Game
 
 	public CaveBlazer()
 	{
-
+		Window.SetResizable(true);
+		Window.SetRendererClipped();
 	}
 
 	public override void Update()
