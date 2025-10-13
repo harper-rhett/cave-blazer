@@ -17,16 +17,16 @@ internal class Area : Entity
 
 	private const int tileSize = 8;
 
-	public Area(Scene scene, Level level, Texture tilesetTexture) : base(scene)
+	public Area(Scene scene, Level levelData, Texture tilesetTexture) : base(scene)
 	{
 		// Set area coordinates
-		pixelX = (int)level.WorldX;
-		pixelY = (int)level.WorldY;
-		widthInPixels = (int)level.PxWid;
-		heightInPixels = (int)level.PxHei;
+		pixelX = (int)levelData.WorldX;
+		pixelY = (int)levelData.WorldY;
+		widthInPixels = (int)levelData.PxWid;
+		heightInPixels = (int)levelData.PxHei;
 		
 		// Get tile information
-		LayerInstance layerInstance = level.LayerInstances[0];
+		LayerInstance layerInstance = levelData.LayerInstances[0];
 		widthInTiles = (int)layerInstance.CWid;
 		heightInTiles = (int)layerInstance.CHei;
 		ProcessTexture(layerInstance, tilesetTexture);
@@ -96,5 +96,12 @@ internal class Area : Entity
 		int tileX = (pixelX - this.pixelX) / tileSize;
 		int tileY = (pixelY - this.pixelY) / tileSize;
 		return walls[tileX, tileY];
+	}
+
+	public bool InBounds(int pixelX, int pixelY)
+	{
+		bool xCheck = pixelX >= 0 && pixelX < widthInPixels;
+		bool yCheck = pixelY >= 0 && pixelY < heightInPixels;
+		return xCheck && yCheck;
 	}
 }

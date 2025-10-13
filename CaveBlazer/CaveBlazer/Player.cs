@@ -1,6 +1,7 @@
 ﻿using HarpEngine;
 using HarpEngine.Graphics;
 using HarpEngine.Input;
+using System.Diagnostics;
 using System.Numerics;
 
 internal class Player : Entity
@@ -27,6 +28,9 @@ internal class Player : Entity
 	public Vector2 Position => position;
 	public Vector2 Center => position + new Vector2(width, height);
 
+	// Note to Harper:
+	// A box collider might make more since. Think about it.
+
 	public Player(Scene scene, Area area, Vector2 position) : base(scene)
 	{
 		this.position = position;
@@ -39,19 +43,33 @@ internal class Player : Entity
 
 	public override void Update()
 	{
+		// State checks
 		CheckGrounded();
 		CheckJump();
 
+		// State updates
 		if (isGrounded) GroundedUpdate();
 		else MidairUpdate();
 
-		float nextX = position.X + velocity.X * Engine.FrameTime;
-		int checkLeftX = (int)float.Round(nextX);
-		int checkRightX = (int)float.Round(nextX + width - 1);
-		bool isLeftWall = currentArea.IsWall(checkLeftX, (int)position.Y + height - 1);
-		bool isRightWall = currentArea.IsWall(checkRightX, (int)position.Y + height - 1);
-		if (isLeftWall || isRightWall) velocity.X = 0;
-		position += velocity * Engine.FrameTime;
+		// Get next presumed position
+		Vector2 nextPosition = position + velocity * Engine.FrameTime;
+		int checkLeftX = (int)float.Round(nextPosition.X);
+		int checkRightX = (int)float.Round(nextPosition.X + width - 1);
+
+		// Check if in bounds
+		bool leftInBounds = currentArea.InBounds(checkLeftX, (int)nextPosition.Y);
+		bool rightInBounds = currentArea.InBounds(checkRightX, (int)nextPosition.Y);
+		bool inBounds = leftInBounds && rightInBounds;
+
+		if (inBounds)
+		{
+			WallCollision(checkLeftX, checkRightX);
+			Movement();
+		}
+		else
+		{
+
+		}
 	}
 
 	public override void Draw()
@@ -110,5 +128,17 @@ internal class Player : Entity
 			velocity.X += floatAcceleration * Engine.FrameTime;
 			direction = 1;
 		}
+	}
+
+	private void WallCollision(int checkLeftX, int checkRightX)
+	{
+		bool isLeftWall = currentArea.IsWall(checkLeftX, (int)position.Y + height - 1);
+		bool isRightWall = currentArea.IsWall(checkRightX, (int)position.Y + height - 1);
+		if (isLeftWall || isRightWall) velocity.X = 0;
+	}
+
+	private void Movement()
+	{
+		position += velocity * Engine.FrameTime;
 	}
 }
