@@ -25,6 +25,7 @@ internal class Player : Entity
 
 	// Interface
 	public Vector2 Position => position;
+	public Vector2 Center => position + new Vector2(width, height);
 
 	public Player(Scene scene, Area area, Vector2 position) : base(scene)
 	{
