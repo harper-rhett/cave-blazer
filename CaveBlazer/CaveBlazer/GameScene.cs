@@ -4,7 +4,7 @@ using System.Numerics;
 
 internal class GameScene : Scene
 {
-	private World world;
+	public readonly World world;
 	private Camera2D camera;
 
 	public GameScene()
@@ -15,5 +15,11 @@ internal class GameScene : Scene
 		camera = new Camera2D(this);
 		Camera = camera;
 		camera.Offset = Vector2.Zero;
+	}
+
+	public void SwitchArea(int pixelX, int pixelY)
+	{
+		// set player's area
+		// move camera to new area
 	}
 }

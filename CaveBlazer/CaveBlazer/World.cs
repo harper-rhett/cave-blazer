@@ -6,6 +6,8 @@ internal class World
 {
 	private Dictionary<Coordinate, Area> areas = new();
 	public readonly Area SpawnArea;
+	private readonly int levelWidth;
+	private readonly int levelHeight;
 
 	public World(GameScene gameScene)
 	{
@@ -13,19 +15,25 @@ internal class World
 		LdtkJson worldData = LdtkJson.FromJson(ldtkJSON);
 		Texture tileset = Texture.Load("sprites/cave-tileset.png");
 
-		int levelWidth = (int)worldData.WorldGridWidth;
-		int levelHeight = (int)worldData.WorldGridHeight;
+		levelWidth = (int)worldData.WorldGridWidth;
+		levelHeight = (int)worldData.WorldGridHeight;
 		
 		foreach (Level levelData in worldData.Levels)
 		{
-			int x = (int)levelData.WorldX;
-			int y = (int)levelData.WorldY;
-			Coordinate coordinate = new(x / levelWidth, y / levelHeight);
+			int pixelX = (int)levelData.WorldX;
+			int pixelY = (int)levelData.WorldY;
+			Coordinate coordinate = new(pixelX / levelWidth, pixelY / levelHeight);
 			Area area = new(gameScene, levelData, tileset);
 			areas[coordinate] = area;
 		}
 
 		SpawnArea = areas[new Coordinate(0, 0)];
+	}
+
+	public Area GetArea(int pixelX, int pixelY)
+	{
+		Coordinate coordinate = new(pixelX / levelWidth, pixelY / levelHeight);
+		return areas[coordinate];
 	}
 
 	private struct Coordinate

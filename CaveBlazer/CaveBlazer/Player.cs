@@ -1,6 +1,7 @@
 ﻿using HarpEngine;
 using HarpEngine.Graphics;
 using HarpEngine.Input;
+using HarpEngine.Utilities;
 using System.Diagnostics;
 using System.Numerics;
 
@@ -12,6 +13,7 @@ internal class Player : Entity
 	private bool isGrounded;
 	private int direction = 1;
 	private Area currentArea;
+	private GameScene gameScene;
 
 	// Texture
 	private Texture texture;
@@ -29,12 +31,13 @@ internal class Player : Entity
 	public Vector2 Center => position + new Vector2(width, height);
 
 	// Note to Harper:
-	// A box collider might make more since. Think about it.
+	// A box collider might make more sense. Think about it.
 
-	public Player(Scene scene, Area area, Vector2 position) : base(scene)
+	public Player(GameScene gameScene, Area area, Vector2 position) : base(gameScene)
 	{
 		this.position = position;
 		currentArea = area;
+		this.gameScene = gameScene;
 
 		texture = Texture.Load("sprites/explorer.png");
 		width = texture.Width;
@@ -53,12 +56,13 @@ internal class Player : Entity
 
 		// Get next presumed position
 		Vector2 nextPosition = position + velocity * Engine.FrameTime;
-		int checkLeftX = (int)float.Round(nextPosition.X);
+		int checkLeftX = nextPosition.GetXRounded();
 		int checkRightX = (int)float.Round(nextPosition.X + width - 1);
+		int checkY = nextPosition.GetYRounded();
 
 		// Check if in bounds
-		bool leftInBounds = currentArea.InBounds(checkLeftX, (int)nextPosition.Y);
-		bool rightInBounds = currentArea.InBounds(checkRightX, (int)nextPosition.Y);
+		bool leftInBounds = currentArea.InBounds(checkLeftX, checkY);
+		bool rightInBounds = currentArea.InBounds(checkRightX, checkY);
 		bool inBounds = leftInBounds && rightInBounds;
 
 		if (inBounds)
@@ -68,22 +72,26 @@ internal class Player : Entity
 		}
 		else
 		{
-
+			gameScene.SwitchArea(nextPosition.GetXRounded(), nextPosition.GetYRounded());
 		}
 	}
 
 	public override void Draw()
 	{
 		Rectangle sourceRectangle = new(0, 0, width * direction, height);
-		Rectangle destinationRectangle = new(float.Round(position.X), float.Round(position.Y), width, height);
+		Rectangle destinationRectangle = new(position.GetXRounded(), position.GetYRounded(), width, height);
 		texture.Draw(sourceRectangle, destinationRectangle, Vector2.Zero, 0, Colors.White);
+
+		Text.Draw($"Grounded: {isGrounded}", 10, 10, 10, Colors.White);
+		Text.Draw($"Y: {position.Y}", 10, 20, 10, Colors.White);
+		Text.Draw($"Y Rounded: {position.GetYRounded()}", 10, 30, 10, Colors.White);
 	}
 
 	private void CheckGrounded()
 	{
-		int leftFootX = (int)position.X + 1;
-		int rightFootX = (int)position.X + width - 1;
-		int feetY = (int)position.Y + height;
+		int leftFootX = (int)float.Round(position.X + 1);
+		int rightFootX = (int)float.Round(position.X + width - 1);
+		int feetY = (int)float.Round(position.Y + height);
 		isGrounded = currentArea.IsWall(leftFootX, feetY) || currentArea.IsWall(rightFootX, feetY);
 	}
 
@@ -93,6 +101,7 @@ internal class Player : Entity
 		if (didJump)
 		{
 			isGrounded = false;
+			position.Y -= 0.5f;
 			velocity.Y -= jumpForce;
 		}
 	}
@@ -132,8 +141,8 @@ internal class Player : Entity
 
 	private void WallCollision(int checkLeftX, int checkRightX)
 	{
-		bool isLeftWall = currentArea.IsWall(checkLeftX, (int)position.Y + height - 1);
-		bool isRightWall = currentArea.IsWall(checkRightX, (int)position.Y + height - 1);
+		bool isLeftWall = currentArea.IsWall(checkLeftX, position.GetYRounded() + height - 1);
+		bool isRightWall = currentArea.IsWall(checkRightX, position.GetYRounded() + height - 1);
 		if (isLeftWall || isRightWall) velocity.X = 0;
 	}
 
