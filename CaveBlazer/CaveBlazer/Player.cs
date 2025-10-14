@@ -101,7 +101,6 @@ internal class Player : Entity
 		if (didJump)
 		{
 			isGrounded = false;
-			position.Y -= 0.5f;
 			velocity.Y -= jumpForce;
 		}
 	}
