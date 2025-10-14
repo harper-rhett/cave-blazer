@@ -56,9 +56,9 @@ internal class Player : Entity
 
 		// Get next presumed position
 		Vector2 nextPosition = position + velocity * Engine.FrameTime;
-		int checkLeftX = nextPosition.GetXRounded();
-		int checkRightX = (int)float.Round(nextPosition.X + width - 1);
-		int checkY = nextPosition.GetYRounded();
+		int checkLeftX = nextPosition.X.GetFloored();
+		int checkRightX = (nextPosition.X + width - 1).GetFloored();
+		int checkY = nextPosition.Y.GetFloored();
 
 		// Check if in bounds
 		bool leftInBounds = currentArea.InBounds(checkLeftX, checkY);
@@ -72,26 +72,22 @@ internal class Player : Entity
 		}
 		else
 		{
-			gameScene.SwitchArea(nextPosition.GetXRounded(), nextPosition.GetYRounded());
+			gameScene.SwitchArea(nextPosition.X.GetFloored(), nextPosition.Y.GetFloored());
 		}
 	}
 
 	public override void Draw()
 	{
 		Rectangle sourceRectangle = new(0, 0, width * direction, height);
-		Rectangle destinationRectangle = new(position.GetXRounded(), position.GetYRounded(), width, height);
+		Rectangle destinationRectangle = new(position.X.GetFloored(), position.Y.GetFloored(), width, height);
 		texture.Draw(sourceRectangle, destinationRectangle, Vector2.Zero, 0, Colors.White);
-
-		Text.Draw($"Grounded: {isGrounded}", 10, 10, 10, Colors.White);
-		Text.Draw($"Y: {position.Y}", 10, 20, 10, Colors.White);
-		Text.Draw($"Y Rounded: {position.GetYRounded()}", 10, 30, 10, Colors.White);
 	}
 
 	private void CheckGrounded()
 	{
-		int leftFootX = (int)float.Round(position.X + 1);
-		int rightFootX = (int)float.Round(position.X + width - 1);
-		int feetY = (int)float.Round(position.Y + height);
+		int leftFootX = (position.X + 1).GetFloored();
+		int rightFootX = (position.X + width - 2).GetFloored();
+		int feetY = (position.Y + height).GetFloored();
 		isGrounded = currentArea.IsWall(leftFootX, feetY) || currentArea.IsWall(rightFootX, feetY);
 	}
 
@@ -140,8 +136,8 @@ internal class Player : Entity
 
 	private void WallCollision(int checkLeftX, int checkRightX)
 	{
-		bool isLeftWall = currentArea.IsWall(checkLeftX, position.GetYRounded() + height - 1);
-		bool isRightWall = currentArea.IsWall(checkRightX, position.GetYRounded() + height - 1);
+		bool isLeftWall = currentArea.IsWall(checkLeftX, position.Y.GetFloored() + height - 1);
+		bool isRightWall = currentArea.IsWall(checkRightX, position.Y.GetFloored() + height - 1);
 		if (isLeftWall || isRightWall) velocity.X = 0;
 	}
 
