@@ -30,9 +30,6 @@ internal class Player : Entity
 	public Vector2 Position => position;
 	public Vector2 Center => position + new Vector2(width, height);
 
-	// Note to Harper:
-	// A box collider might make more sense. Think about it.
-
 	public Player(GameScene gameScene, Area area, Vector2 position) : base(gameScene)
 	{
 		this.position = position;
@@ -56,9 +53,9 @@ internal class Player : Entity
 
 		// Get next presumed position
 		Vector2 nextPosition = position + velocity * Engine.FrameTime;
-		int checkLeftX = nextPosition.X.GetFloored();
-		int checkRightX = (nextPosition.X + width - 1).GetFloored();
-		int checkY = nextPosition.Y.GetFloored();
+		int checkLeftX = nextPosition.X.Floored();
+		int checkRightX = (nextPosition.X + width - 1).Floored();
+		int checkY = nextPosition.Y.Floored();
 
 		// Check if in bounds
 		bool leftInBounds = currentArea.InBounds(checkLeftX, checkY);
@@ -72,22 +69,24 @@ internal class Player : Entity
 		}
 		else
 		{
-			gameScene.SwitchArea(nextPosition.X.GetFloored(), nextPosition.Y.GetFloored());
+			if (leftInBounds) position.X += 8;
+			else position.X -= 8;
+			gameScene.SwitchArea(leftInBounds ? checkRightX : checkLeftX, checkY);
 		}
 	}
 
 	public override void Draw()
 	{
 		Rectangle sourceRectangle = new(0, 0, width * direction, height);
-		Rectangle destinationRectangle = new(position.X.GetFloored(), position.Y.GetFloored(), width, height);
+		Rectangle destinationRectangle = new(position.X.Floored(), position.Y.Floored(), width, height);
 		texture.Draw(sourceRectangle, destinationRectangle, Vector2.Zero, 0, Colors.White);
 	}
 
 	private void CheckGrounded()
 	{
-		int leftFootX = (position.X + 1).GetFloored();
-		int rightFootX = (position.X + width - 2).GetFloored();
-		int feetY = (position.Y + height).GetFloored();
+		int leftFootX = (position.X + 1).Floored();
+		int rightFootX = (position.X + width - 2).Floored();
+		int feetY = (position.Y + height).Floored();
 		isGrounded = currentArea.IsWall(leftFootX, feetY) || currentArea.IsWall(rightFootX, feetY);
 	}
 
@@ -136,13 +135,18 @@ internal class Player : Entity
 
 	private void WallCollision(int checkLeftX, int checkRightX)
 	{
-		bool isLeftWall = currentArea.IsWall(checkLeftX, position.Y.GetFloored() + height - 1);
-		bool isRightWall = currentArea.IsWall(checkRightX, position.Y.GetFloored() + height - 1);
+		bool isLeftWall = currentArea.IsWall(checkLeftX, position.Y.Floored() + height - 1);
+		bool isRightWall = currentArea.IsWall(checkRightX, position.Y.Floored() + height - 1);
 		if (isLeftWall || isRightWall) velocity.X = 0;
 	}
 
 	private void Movement()
 	{
 		position += velocity * Engine.FrameTime;
+	}
+
+	public void SetArea(Area area)
+	{
+		currentArea = area;
 	}
 }

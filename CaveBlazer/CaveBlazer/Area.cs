@@ -1,12 +1,12 @@
 ﻿using HarpEngine;
 using HarpEngine.Graphics;
+using HarpEngine.Utilities;
 using ldtk;
 using System.Numerics;
 
 internal class Area : Entity
 {
-	private int pixelX;
-	private int pixelY;
+	public Vector2 Position { get; private set; }
 	private int widthInPixels;
 	private int heightInPixels;
 	private int widthInTiles;
@@ -20,8 +20,9 @@ internal class Area : Entity
 	public Area(Scene scene, Level levelData, Texture tilesetTexture) : base(scene)
 	{
 		// Set area coordinates
-		pixelX = (int)levelData.WorldX;
-		pixelY = (int)levelData.WorldY;
+		int pixelX = (int)levelData.WorldX;
+		int pixelY = (int)levelData.WorldY;
+		Position = new(pixelX, pixelY);
 		widthInPixels = (int)levelData.PxWid;
 		heightInPixels = (int)levelData.PxHei;
 		
@@ -35,7 +36,7 @@ internal class Area : Entity
 
 	public override void Draw()
 	{
-		renderTexture.Texture.Draw(renderRectangle, Vector2.Zero, Colors.White);
+		renderTexture.Texture.Draw(renderRectangle, Position, Colors.White);
 		//DrawCollisions();
 	}
 
@@ -43,7 +44,7 @@ internal class Area : Entity
 	{
 		// Prepare the render texture
 		renderTexture = RenderTexture.Load(widthInPixels, heightInPixels);
-		renderRectangle = new(pixelX, pixelY, widthInPixels, -heightInPixels);
+		renderRectangle = new(0, 0, widthInPixels, -heightInPixels);
 		RenderTexture.BeginDrawing(renderTexture);
 
 		// Loop through all tiles
@@ -85,23 +86,23 @@ internal class Area : Entity
 		for (int x = 0; x < widthInTiles; x++)
 			for (int y = 0; y < heightInTiles; y++)
 			{
-				int worldX = pixelX + x * tileSize;
-				int worldY = pixelY + y * tileSize;
+				int worldX = Position.X.Floored() + x * tileSize;
+				int worldY = Position.Y.Floored() + y * tileSize;
 				if (walls[x, y]) Primitives.DrawSquare(worldX, worldY, tileSize, Colors.Red.SetAlpha(100));
 			}
 	}
 
 	public bool IsWall(int pixelX, int pixelY)
 	{
-		int tileX = (pixelX - this.pixelX) / tileSize;
-		int tileY = (pixelY - this.pixelY) / tileSize;
+		int tileX = (pixelX - Position.X.Floored()) / tileSize;
+		int tileY = (pixelY - Position.Y.Floored()) / tileSize;
 		return walls[tileX, tileY];
 	}
 
 	public bool InBounds(int pixelX, int pixelY)
 	{
-		bool xCheck = pixelX >= 0 && pixelX < widthInPixels;
-		bool yCheck = pixelY >= 0 && pixelY < heightInPixels;
+		bool xCheck = pixelX >= Position.X.Floored() && pixelX < Position.X.Floored() + widthInPixels;
+		bool yCheck = pixelY >= Position.Y.Floored() && pixelY < Position.Y.Floored() + heightInPixels;
 		return xCheck && yCheck;
 	}
 }

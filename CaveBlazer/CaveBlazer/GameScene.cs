@@ -5,12 +5,13 @@ using System.Numerics;
 internal class GameScene : Scene
 {
 	public readonly World world;
+	private Player player;
 	private Camera2D camera;
 
 	public GameScene()
 	{
 		world = new(this);
-		Player player = new(this, world.SpawnArea, new(32, 32));
+		player = new(this, world.SpawnArea, new(32, 32));
 
 		camera = new Camera2D(this);
 		Camera = camera;
@@ -19,7 +20,8 @@ internal class GameScene : Scene
 
 	public void SwitchArea(int pixelX, int pixelY)
 	{
-		// set player's area
-		// move camera to new area
+		Area nextArea = world.GetArea(pixelX, pixelY);
+		player.SetArea(nextArea);
+		camera.TransitionWorldPosition(nextArea.Position, 1f); // need to rewrite camera transitions so that I can edit curve
 	}
 }
