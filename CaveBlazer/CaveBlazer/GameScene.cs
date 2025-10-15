@@ -1,4 +1,5 @@
 ﻿using HarpEngine;
+using HarpEngine.Animation;
 using HarpEngine.Graphics;
 using System.Numerics;
 
@@ -22,6 +23,8 @@ internal class GameScene : Scene
 	{
 		Area nextArea = world.GetArea(pixelX, pixelY);
 		player.SetArea(nextArea);
-		camera.TransitionWorldPosition(nextArea.Position, 1f); // need to rewrite camera transitions so that I can edit curve
+		Transform2DEaser transformEaser = new(this, camera.Transform, 1f);
+		transformEaser.TargetWorldPosition = nextArea.Position;
+		transformEaser.Start();
 	}
 }

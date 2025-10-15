@@ -69,8 +69,8 @@ internal class Player : Entity
 		}
 		else
 		{
-			if (leftInBounds) position.X += 8;
-			else position.X -= 8;
+			if (leftInBounds) position.X += width;
+			else position.X -= width;
 			gameScene.SwitchArea(leftInBounds ? checkRightX : checkLeftX, checkY);
 		}
 	}
