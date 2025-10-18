@@ -12,7 +12,7 @@ internal class GameScene : Scene
 	public GameScene()
 	{
 		world = new(this);
-		player = new(this, world.SpawnArea, world.SpawnArea.Position + new Vector2(32, 32));
+		player = new(this, world.SpawnArea, world.SpawnPosition);
 
 		camera = new Camera2D(this);
 		Camera = camera;

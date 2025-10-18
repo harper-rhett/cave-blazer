@@ -14,20 +14,27 @@ internal class Area : Entity
 	private RenderTexture renderTexture;
 	private Rectangle renderRectangle;
 	private bool[,] walls;
+	private Dictionary<string, LayerInstance> layersData = new();
+	private string Name;
 
 	private const int tileSize = 8;
 
 	public Area(Scene scene, Level levelData, Texture tilesetTexture) : base(scene)
 	{
-		// Set area coordinates
+		// Set level info
 		int pixelX = (int)levelData.WorldX;
 		int pixelY = (int)levelData.WorldY;
 		Position = new(pixelX, pixelY);
 		widthInPixels = (int)levelData.PxWid;
 		heightInPixels = (int)levelData.PxHei;
+		Name = levelData.Identifier;
+
+		// Serialize layers
+		foreach (LayerInstance layerData in levelData.LayerInstances)
+			layersData[layerData.Identifier] = layerData;
 		
 		// Get tile information
-		LayerInstance layerInstance = levelData.LayerInstances[0];
+		LayerInstance layerInstance = layersData["Tiles"];
 		widthInTiles = (int)layerInstance.CWid;
 		heightInTiles = (int)layerInstance.CHei;
 		ProcessTexture(layerInstance, tilesetTexture);
