@@ -1422,7 +1422,7 @@
 	], "enums": [], "externalEnums": [], "levelFields": [] },
 	"levels": [
 		{
-			"identifier": "Start",
+			"identifier": "Level_0",
 			"iid": "e5721370-8560-11f0-a9f7-39a8dc54ab47",
 			"uid": 0,
 			"worldX": 0,
@@ -1432,7 +1432,7 @@
 			"pxHei": 112,
 			"__bgColor": "#272727",
 			"bgColor": "#272727",
-			"useAutoIdentifier": false,
+			"useAutoIdentifier": true,
 			"bgRelPath": null,
 			"bgPos": null,
 			"bgPivotX": 0.5,

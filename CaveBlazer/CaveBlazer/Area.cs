@@ -19,7 +19,7 @@ internal class Area : Entity
 
 	private const int tileSize = 8;
 
-	public Area(Scene scene, Level levelData, Texture tilesetTexture) : base(scene)
+	public Area(Scene scene, Level levelData) : base(scene)
 	{
 		// Set level info
 		int pixelX = (int)levelData.WorldX;
@@ -30,15 +30,15 @@ internal class Area : Entity
 		Name = levelData.Identifier;
 
 		// Serialize layers
-		foreach (LayerInstance layerData in levelData.LayerInstances)
-			layersData[layerData.Identifier] = layerData;
+		SerializeLayers(levelData);
 		
 		// Get tile information
-		LayerInstance layerInstance = layersData["Tiles"];
-		widthInTiles = (int)layerInstance.CWid;
-		heightInTiles = (int)layerInstance.CHei;
-		ProcessTexture(layerInstance, tilesetTexture);
-		ProcessCollisions(layerInstance);
+		LayerInstance layerData = layersData["Tiles"];
+		
+		widthInTiles = (int)layerData.CWid;
+		heightInTiles = (int)layerData.CHei;
+		ProcessTexture(layerData);
+		ProcessCollisions(layerData);
 	}
 
 	public override void Draw()
@@ -47,7 +47,16 @@ internal class Area : Entity
 		//DrawCollisions();
 	}
 
-	private void ProcessTexture(LayerInstance layerInstance, Texture tilesetTexture)
+	private void SerializeLayers(Level levelData)
+	{
+		foreach (LayerInstance layerData in levelData.LayerInstances)
+		{
+			layersData[layerData.Identifier] = layerData;
+			Console.WriteLine(layerData.TilesetRelPath);
+		}
+	}
+
+	private void ProcessTexture(LayerInstance layerData)
 	{
 		// Prepare the render texture
 		renderTexture = RenderTexture.Load(widthInPixels, heightInPixels);
@@ -55,7 +64,7 @@ internal class Area : Entity
 		RenderTexture.BeginDrawing(renderTexture);
 
 		// Loop through all tiles
-		TileInstance[] tileInstances = layerInstance.AutoLayerTiles;
+		TileInstance[] tileInstances = layerData.AutoLayerTiles;
 		foreach (TileInstance tileInstance in tileInstances)
 		{
 			// Get the local position

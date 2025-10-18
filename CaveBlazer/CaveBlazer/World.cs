@@ -14,7 +14,7 @@ internal class World
 	private readonly int levelHeight;
 	private GameScene gameScene;
 	private LdtkJson worldData;
-	private Texture tileset;
+	private Dictionary<string, Texture> tilesetByPath = new();
 
 	public World(GameScene gameScene)
 	{
@@ -22,13 +22,17 @@ internal class World
 
 		string ldtkJSON = File.ReadAllText("world.ldtk");
 		worldData = LdtkJson.FromJson(ldtkJSON);
-		tileset = Texture.Load("sprites/cave-tileset.png");
 
 		levelWidth = (int)worldData.WorldGridWidth;
 		levelHeight = (int)worldData.WorldGridHeight;
 
 		SerializeLevels();
 		SerializeSpawn();
+	}
+
+	private void SerializeTilesets()
+	{
+		// HEY! I need to somehow load every tileset in only once.
 	}
 
 	private void SerializeLevels()
@@ -38,7 +42,7 @@ internal class World
 			int pixelX = (int)levelData.WorldX;
 			int pixelY = (int)levelData.WorldY;
 			Coordinate coordinate = new(pixelX / levelWidth, pixelY / levelHeight);
-			Area area = new(gameScene, levelData, tileset);
+			Area area = new(gameScene, levelData);
 			areas[coordinate] = area;
 			areasByName[levelData.Identifier] = area;
 			areasByID[levelData.Iid] = area;
