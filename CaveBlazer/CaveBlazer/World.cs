@@ -5,6 +5,7 @@ using ldtk;
 internal class World
 {
 	private Dictionary<Coordinate, Area> areas = new();
+	private Dictionary<string, Area> areasByIdentifier = new();
 	public readonly Area SpawnArea;
 	private readonly int levelWidth;
 	private readonly int levelHeight;
@@ -25,9 +26,10 @@ internal class World
 			Coordinate coordinate = new(pixelX / levelWidth, pixelY / levelHeight);
 			Area area = new(gameScene, levelData, tileset);
 			areas[coordinate] = area;
+			areasByIdentifier[levelData.Identifier] = area;
 		}
 
-		SpawnArea = areas[new Coordinate(0, 0)];
+		SpawnArea = areasByIdentifier["Start"];
 	}
 
 	public Area GetArea(int pixelX, int pixelY)

@@ -12,11 +12,12 @@ internal class GameScene : Scene
 	public GameScene()
 	{
 		world = new(this);
-		player = new(this, world.SpawnArea, new(32, 32));
+		player = new(this, world.SpawnArea, world.SpawnArea.Position + new Vector2(32, 32));
 
 		camera = new Camera2D(this);
 		Camera = camera;
 		camera.Offset = Vector2.Zero;
+		camera.Transform.WorldPosition = world.SpawnArea.Position;
 	}
 
 	public void SwitchArea(int pixelX, int pixelY)
