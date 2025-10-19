@@ -1,5 +1,6 @@
 ﻿using HarpEngine;
 using HarpEngine.Graphics;
+using HarpEngine.Utilities;
 using ldtk;
 using System.Numerics;
 
@@ -68,14 +69,22 @@ internal class World
 
 	public bool DoesAreaExist(int pixelX, int pixelY)
 	{
-		Coordinate coordinate = new(pixelX / levelWidth, pixelY / levelHeight);
+		Coordinate coordinate = PixelsToCoordinate(pixelX, pixelY);
 		return areas.ContainsKey(coordinate);
 	}
 
 	public Area GetArea(int pixelX, int pixelY)
 	{
-		Coordinate coordinate = new(pixelX / levelWidth, pixelY / levelHeight);
+		Coordinate coordinate = PixelsToCoordinate(pixelX, pixelY);
 		return areas[coordinate];
+	}
+
+	private Coordinate PixelsToCoordinate(int pixelX, int pixelY)
+	{
+		int coordinateX = ((float)pixelX / levelWidth).Floored();
+		int coordinateY = ((float)pixelY / levelHeight).Floored();
+		Coordinate coordinate = new(coordinateX, coordinateY);
+		return coordinate;
 	}
 
 	private struct Coordinate

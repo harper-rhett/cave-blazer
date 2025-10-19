@@ -69,7 +69,7 @@ internal class Player : Entity
 		}
 		else
 		{
-			bool areaExists = gameScene.World.DoesAreaExist(checkLeftX, checkRightX);
+			bool areaExists = gameScene.World.DoesAreaExist(leftInBounds ? checkRightX : checkLeftX, checkY);
 			if (areaExists)
 			{
 				if (leftInBounds) position.X += width;

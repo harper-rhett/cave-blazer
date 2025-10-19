@@ -9,7 +9,7 @@ internal class GameScene : Scene
 	private Player player;
 	private Camera2D camera;
 
-	public GameScene()
+	public GameScene() : base(Colors.SkyBlue)
 	{
 		World = new(this);
 		player = new(this, World.SpawnArea, World.SpawnPosition);
