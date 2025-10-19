@@ -69,9 +69,17 @@ internal class Player : Entity
 		}
 		else
 		{
-			if (leftInBounds) position.X += width;
-			else position.X -= width;
-			gameScene.SwitchArea(leftInBounds ? checkRightX : checkLeftX, checkY);
+			bool areaExists = gameScene.World.DoesAreaExist(checkLeftX, checkRightX);
+			if (areaExists)
+			{
+				if (leftInBounds) position.X += width;
+				else position.X -= width;
+				gameScene.SwitchArea(leftInBounds ? checkRightX : checkLeftX, checkY);
+			}
+			else
+			{
+				velocity.X = -velocity.X;
+			}
 		}
 	}
 

@@ -66,6 +66,12 @@ internal class World
 			}
 	}
 
+	public bool DoesAreaExist(int pixelX, int pixelY)
+	{
+		Coordinate coordinate = new(pixelX / levelWidth, pixelY / levelHeight);
+		return areas.ContainsKey(coordinate);
+	}
+
 	public Area GetArea(int pixelX, int pixelY)
 	{
 		Coordinate coordinate = new(pixelX / levelWidth, pixelY / levelHeight);
