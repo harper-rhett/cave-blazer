@@ -21,10 +21,10 @@ internal class Player : Entity
 	private int height;
 
 	// Settings
-	private const float gravity = 45;
-	private const float jumpForce = 30;
-	private const float walkSpeed = 15;
-	private const float floatAcceleration = 10;
+	private const float gravity = 90;
+	private const float jumpForce = 40;
+	private const float walkSpeed = 25;
+	private const float midairAcceleration = 10;
 
 	// Interface
 	public Vector2 Position => position;
@@ -131,12 +131,14 @@ internal class Player : Entity
 
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
 		{
-			velocity.X -= floatAcceleration * Engine.FrameTime;
+			float acceleration = velocity.X < 0 ? midairAcceleration : midairAcceleration * 2f;
+			velocity.X -= acceleration * Engine.FrameTime;
 			direction = -1;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
-			velocity.X += floatAcceleration * Engine.FrameTime;
+			float acceleration = velocity.X > 0 ? midairAcceleration : midairAcceleration * 2f;
+			velocity.X += acceleration * Engine.FrameTime;
 			direction = 1;
 		}
 	}
