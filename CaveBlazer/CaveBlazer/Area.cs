@@ -2,6 +2,7 @@
 using HarpEngine.Graphics;
 using HarpEngine.Utilities;
 using ldtk;
+using Newtonsoft.Json.Linq;
 using System.Numerics;
 
 internal class Area : Entity
@@ -77,7 +78,11 @@ internal class Area : Entity
 			// Get the tileset position
 			int tilesetX = (int)tileInstance.Src[0];
 			int tilesetY = (int)tileInstance.Src[1];
-			Rectangle tileRectangle = new(tilesetX, tilesetY, tileSize, tileSize);
+			bool xFlipped = (tileInstance.F & 1) != 0;
+			bool yFlipped = (tileInstance.F & (1L << 1)) != 0;
+			int tileWidth = xFlipped ? -tileSize : tileSize;
+			int tileHeight = yFlipped ? -tileSize : tileSize;
+			Rectangle tileRectangle = new(tilesetX, tilesetY, tileWidth, tileHeight);
 
 			// Draw the tile
 			Texture tilesetTexture = world.TilesetByPath[layerData.TilesetRelPath];
