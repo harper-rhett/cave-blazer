@@ -14,7 +14,7 @@ internal class World
 	private readonly int levelHeight;
 	private GameScene gameScene;
 	private LdtkJson worldData;
-	private Dictionary<string, Texture> tilesetByPath = new();
+	public Dictionary<string, Texture> TilesetByPath { get; private set; } = new();
 
 	public World(GameScene gameScene)
 	{
@@ -26,13 +26,18 @@ internal class World
 		levelWidth = (int)worldData.WorldGridWidth;
 		levelHeight = (int)worldData.WorldGridHeight;
 
+		SerializeTilesets();
 		SerializeLevels();
 		SerializeSpawn();
 	}
 
 	private void SerializeTilesets()
 	{
-		// HEY! I need to somehow load every tileset in only once.
+		foreach (TilesetDefinition tilesetData in worldData.Defs.Tilesets)
+		{
+			if (tilesetData.RelPath is null) continue;
+			TilesetByPath[tilesetData.RelPath] = Texture.Load(tilesetData.RelPath);
+		}
 	}
 
 	private void SerializeLevels()
@@ -42,7 +47,7 @@ internal class World
 			int pixelX = (int)levelData.WorldX;
 			int pixelY = (int)levelData.WorldY;
 			Coordinate coordinate = new(pixelX / levelWidth, pixelY / levelHeight);
-			Area area = new(gameScene, levelData);
+			Area area = new(gameScene, this, levelData);
 			areas[coordinate] = area;
 			areasByName[levelData.Identifier] = area;
 			areasByID[levelData.Iid] = area;

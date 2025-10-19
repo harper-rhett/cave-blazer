@@ -16,12 +16,14 @@ internal class Area : Entity
 	private bool[,] walls;
 	private Dictionary<string, LayerInstance> layersData = new();
 	private string Name;
+	private World world;
 
 	private const int tileSize = 8;
 
-	public Area(Scene scene, Level levelData) : base(scene)
+	public Area(Scene scene, World world, Level levelData) : base(scene)
 	{
 		// Set level info
+		this.world = world;
 		int pixelX = (int)levelData.WorldX;
 		int pixelY = (int)levelData.WorldY;
 		Position = new(pixelX, pixelY);
@@ -78,6 +80,7 @@ internal class Area : Entity
 			Rectangle tileRectangle = new(tilesetX, tilesetY, tileSize, tileSize);
 
 			// Draw the tile
+			Texture tilesetTexture = world.TilesetByPath[layerData.TilesetRelPath];
 			tilesetTexture.Draw(tileRectangle, pixelPosition, Colors.White);
 		}
 
