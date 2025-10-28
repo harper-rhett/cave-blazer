@@ -37,8 +37,8 @@ internal class WallChecker
 
 		TopInBounds = area.InBounds(leftX, topY) && area.InBounds(rightX, topY);
 		BottomInBounds = area.InBounds(leftX, bottomY) && area.InBounds(rightX, bottomY);
-		TopWall = TopInBounds && area.IsWall(leftX, topY) || area.IsWall(rightX, topY);
-		BottomWall = BottomInBounds && area.IsWall(leftX, bottomY) || area.IsWall(rightX, bottomY);
+		TopWall = TopInBounds && (area.IsWall(leftX, topY) || area.IsWall(rightX, topY));
+		BottomWall = BottomInBounds && (area.IsWall(leftX, bottomY) || area.IsWall(rightX, bottomY));
 	}
 
 	private void CheckLeftRight(Area area, Vector2 position)
@@ -50,7 +50,7 @@ internal class WallChecker
 
 		LeftInBounds = area.InBounds(leftX, topY) && area.InBounds(leftX, bottomY);
 		RightInBounds = area.InBounds(rightX, topY) && area.InBounds(rightX, bottomY);
-		LeftWall = LeftInBounds && area.IsWall(leftX, topY) || area.IsWall(leftX, bottomY);
-		RightWall = RightInBounds && area.IsWall(rightX, topY) || area.IsWall(rightX, bottomY);
+		LeftWall = LeftInBounds && (area.IsWall(leftX, topY) || area.IsWall(leftX, bottomY));
+		RightWall = RightInBounds && (area.IsWall(rightX, topY) || area.IsWall(rightX, bottomY));
 	}
 }

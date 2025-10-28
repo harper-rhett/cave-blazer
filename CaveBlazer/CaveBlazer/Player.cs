@@ -20,6 +20,8 @@ internal class Player : Entity
 	private Texture texture;
 	private int width;
 	private int height;
+	private int halfWidth;
+	private int halfHeight;
 
 	// Settings
 	private const float gravity = 90;
@@ -29,7 +31,6 @@ internal class Player : Entity
 
 	// Interface
 	public Vector2 Position => position;
-	public Vector2 Center => position + new Vector2(width, height);
 
 	public Player(GameScene gameScene, Area area, Vector2 position) : base(gameScene)
 	{
@@ -40,6 +41,8 @@ internal class Player : Entity
 		texture = Texture.Load("sprites/explorer.png");
 		width = texture.Width;
 		height = texture.Height;
+		halfWidth = width / 2;
+		halfHeight = height / 2;
 		wallChecker = new(width, height);
 	}
 
@@ -54,26 +57,25 @@ internal class Player : Entity
 		if (isGrounded) GroundedUpdate();
 		else MidairUpdate();
 
-		// Get next presumed position
-		Vector2 nextPosition = position + velocity * Engine.FrameTime;
-		int checkLeftX = nextPosition.X.Floored();
-		int checkRightX = (nextPosition.X + width - 1).Floored();
-		int checkY = nextPosition.Y.Floored();
+		// NEED TO REPLACE NEXT SEVERAL LINES WITH NEW WALL CHECKER CODE
+
+		// I believe we should only check out of bounds for the center of the character.
+		// We will teleport the character to the grid space they move out of bounds to.
 
 		// Check if in bounds
-		bool leftInBounds = currentArea.InBounds(checkLeftX, checkY);
-		bool rightInBounds = currentArea.InBounds(checkRightX, checkY);
-		bool inBounds = leftInBounds && rightInBounds;
+		int boundsCheckX = position.X.Floored() + halfWidth;
+		int boundsCheckY = position.Y.Floored() + halfHeight;
+		bool inBounds = currentArea.InBounds(boundsCheckX, boundsCheckY);
 
 		if (inBounds) Movement();
 		else
 		{
-			bool areaExists = gameScene.World.DoesAreaExist(leftInBounds ? checkRightX : checkLeftX, checkY);
+			bool areaExists = gameScene.World.DoesAreaExist(boundsCheckX, boundsCheckY);
 			if (areaExists)
 			{
-				if (leftInBounds) position.X += width;
-				else position.X -= width;
-				gameScene.SwitchArea(leftInBounds ? checkRightX : checkLeftX, checkY);
+				// TELEPORT PLAYER TO GRID SPACE THE MOVE OUT OF BOUNDS TO
+				// OR CREATE ENTRANCES IN LEVEL EDITOR, AND TELEPORT TO CLOSEST ENTRANCE
+				gameScene.SwitchArea(boundsCheckX, boundsCheckY);
 			}
 			else
 			{
