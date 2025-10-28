@@ -2,7 +2,6 @@
 using HarpEngine.Graphics;
 using HarpEngine.Utilities;
 using ldtk;
-using Newtonsoft.Json.Linq;
 using System.Numerics;
 
 internal class Area : Entity

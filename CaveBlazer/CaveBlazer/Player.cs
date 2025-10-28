@@ -10,10 +10,11 @@ internal class Player : Entity
 	// General
 	private Vector2 position;
 	private Vector2 velocity;
-	private bool isGrounded;
 	private int direction = 1;
+	private bool isGrounded;
 	private Area currentArea;
 	private GameScene gameScene;
+	private WallChecker wallChecker;
 
 	// Texture
 	private Texture texture;
@@ -39,12 +40,14 @@ internal class Player : Entity
 		texture = Texture.Load("sprites/explorer.png");
 		width = texture.Width;
 		height = texture.Height;
+		wallChecker = new(width, height);
 	}
 
 	public override void Update()
 	{
 		// State checks
-		CheckGrounded();
+		wallChecker.Refresh(currentArea, position);
+		isGrounded = wallChecker.BottomWall;
 		CheckJump();
 
 		// State updates
@@ -62,11 +65,7 @@ internal class Player : Entity
 		bool rightInBounds = currentArea.InBounds(checkRightX, checkY);
 		bool inBounds = leftInBounds && rightInBounds;
 
-		if (inBounds)
-		{
-			WallCollision(checkLeftX, checkRightX);
-			Movement();
-		}
+		if (inBounds) Movement();
 		else
 		{
 			bool areaExists = gameScene.World.DoesAreaExist(leftInBounds ? checkRightX : checkLeftX, checkY);
@@ -90,14 +89,6 @@ internal class Player : Entity
 		texture.Draw(sourceRectangle, destinationRectangle, Vector2.Zero, 0, Colors.White);
 	}
 
-	private void CheckGrounded()
-	{
-		int leftFootX = (position.X + 1).Floored();
-		int rightFootX = (position.X + width - 2).Floored();
-		int feetY = (position.Y + height).Floored();
-		isGrounded = currentArea.IsWall(leftFootX, feetY) || currentArea.IsWall(rightFootX, feetY);
-	}
-
 	private void CheckJump()
 	{
 		bool didJump = isGrounded && Keyboard.IsKeyPressed(KeyboardKey.Space);
@@ -114,12 +105,12 @@ internal class Player : Entity
 
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
 		{
-			velocity.X = -walkSpeed;
+			if (!wallChecker.LeftWall) velocity.X = -walkSpeed;
 			direction = -1;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
-			velocity.X = walkSpeed;
+			if (!wallChecker.RightWall) velocity.X = walkSpeed;
 			direction = 1;
 		}
 		else velocity.X = 0;
@@ -127,8 +118,10 @@ internal class Player : Entity
 
 	private void MidairUpdate()
 	{
+		// Apply gravity
 		velocity.Y += gravity * Engine.FrameTime;
 
+		// Get midair movement
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
 		{
 			float acceleration = velocity.X < 0 ? midairAcceleration : midairAcceleration * 2f;
@@ -141,13 +134,9 @@ internal class Player : Entity
 			velocity.X += acceleration * Engine.FrameTime;
 			direction = 1;
 		}
-	}
 
-	private void WallCollision(int checkLeftX, int checkRightX)
-	{
-		bool isLeftWall = currentArea.IsWall(checkLeftX, position.Y.Floored() + height - 1);
-		bool isRightWall = currentArea.IsWall(checkRightX, position.Y.Floored() + height - 1);
-		if (isLeftWall || isRightWall) velocity.X = 0;
+		// Check for wall collision
+		if (wallChecker.LeftWall && velocity.X < 0 || wallChecker.RightWall && velocity.X > 0) velocity.X = 0;
 	}
 
 	private void Movement()
