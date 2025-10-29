@@ -23,7 +23,7 @@ internal class GameScene : Scene
 	public void SwitchArea(int pixelX, int pixelY)
 	{
 		Area nextArea = World.GetArea(pixelX, pixelY);
-		player.SetArea(nextArea);
+		player.CurrentArea = nextArea;
 		Transform2DEaser transformEaser = new(this, camera.Transform, 1f);
 		transformEaser.TargetWorldPosition = nextArea.Position;
 		transformEaser.Start();

@@ -12,7 +12,6 @@ internal class Player : Entity
 	private Vector2 velocity;
 	private int direction = 1;
 	private bool isGrounded;
-	private Area currentArea;
 	private GameScene gameScene;
 	private WallChecker wallChecker;
 
@@ -27,15 +26,16 @@ internal class Player : Entity
 	private const float gravity = 90;
 	private const float jumpForce = 40;
 	private const float walkSpeed = 25;
-	private const float midairAcceleration = 10;
+	private const float midairAcceleration = 15;
 
 	// Interface
+	public Area CurrentArea;
 	public Vector2 Position => position;
 
 	public Player(GameScene gameScene, Area area, Vector2 position) : base(gameScene)
 	{
 		this.position = position;
-		currentArea = area;
+		CurrentArea = area;
 		this.gameScene = gameScene;
 
 		texture = Texture.Load("sprites/explorer.png");
@@ -49,7 +49,7 @@ internal class Player : Entity
 	public override void Update()
 	{
 		// State checks
-		wallChecker.Refresh(currentArea, position);
+		wallChecker.Refresh(CurrentArea, position);
 		isGrounded = wallChecker.BottomWall;
 		CheckJump();
 
@@ -57,15 +57,10 @@ internal class Player : Entity
 		if (isGrounded) GroundedUpdate();
 		else MidairUpdate();
 
-		// NEED TO REPLACE NEXT SEVERAL LINES WITH NEW WALL CHECKER CODE
-
-		// I believe we should only check out of bounds for the center of the character.
-		// We will teleport the character to the grid space they move out of bounds to.
-
 		// Check if in bounds
 		int boundsCheckX = position.X.Floored() + halfWidth;
 		int boundsCheckY = position.Y.Floored() + halfHeight;
-		bool inBounds = currentArea.InBounds(boundsCheckX, boundsCheckY);
+		bool inBounds = CurrentArea.InBounds(boundsCheckX, boundsCheckY);
 
 		if (inBounds) Movement();
 		else
@@ -73,9 +68,9 @@ internal class Player : Entity
 			bool areaExists = gameScene.World.DoesAreaExist(boundsCheckX, boundsCheckY);
 			if (areaExists)
 			{
-				// TELEPORT PLAYER TO GRID SPACE THE MOVE OUT OF BOUNDS TO
-				// OR CREATE ENTRANCES IN LEVEL EDITOR, AND TELEPORT TO CLOSEST ENTRANCE
 				gameScene.SwitchArea(boundsCheckX, boundsCheckY);
+				Vector2 tilePosition = CurrentArea.SnapPosition(boundsCheckX, boundsCheckY);
+				position = tilePosition;
 			}
 			else
 			{
@@ -104,15 +99,16 @@ internal class Player : Entity
 	private void GroundedUpdate()
 	{
 		velocity.Y = 0;
+		position.Y = position.Y.Floored();
 
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
 		{
-			if (!wallChecker.LeftWall) velocity.X = -walkSpeed;
+			velocity.X = wallChecker.LeftWall ? 0 : -walkSpeed;
 			direction = -1;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
-			if (!wallChecker.RightWall) velocity.X = walkSpeed;
+			velocity.X = wallChecker.RightWall ? 0 : walkSpeed;
 			direction = 1;
 		}
 		else velocity.X = 0;
@@ -144,10 +140,5 @@ internal class Player : Entity
 	private void Movement()
 	{
 		position += velocity * Engine.FrameTime;
-	}
-
-	public void SetArea(Area area)
-	{
-		currentArea = area;
 	}
 }

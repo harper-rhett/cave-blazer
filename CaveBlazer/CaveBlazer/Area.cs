@@ -18,7 +18,7 @@ internal class Area : Entity
 	private string Name;
 	private World world;
 
-	private const int tileSize = 8;
+	public const int TileSize = 8;
 
 	public Area(Scene scene, World world, Level levelData) : base(scene)
 	{
@@ -79,8 +79,8 @@ internal class Area : Entity
 			int tilesetY = (int)tileInstance.Src[1];
 			bool xFlipped = (tileInstance.F & 1) != 0;
 			bool yFlipped = (tileInstance.F & (1L << 1)) != 0;
-			int tileWidth = xFlipped ? -tileSize : tileSize;
-			int tileHeight = yFlipped ? -tileSize : tileSize;
+			int tileWidth = xFlipped ? -TileSize : TileSize;
+			int tileHeight = yFlipped ? -TileSize : TileSize;
 			Rectangle tileRectangle = new(tilesetX, tilesetY, tileWidth, tileHeight);
 
 			// Draw the tile
@@ -109,16 +109,16 @@ internal class Area : Entity
 		for (int x = 0; x < widthInTiles; x++)
 			for (int y = 0; y < heightInTiles; y++)
 			{
-				int worldX = Position.X.Floored() + x * tileSize;
-				int worldY = Position.Y.Floored() + y * tileSize;
-				if (walls[x, y]) Primitives.DrawSquare(worldX, worldY, tileSize, Colors.Red.SetAlpha(100));
+				int worldX = Position.X.Floored() + x * TileSize;
+				int worldY = Position.Y.Floored() + y * TileSize;
+				if (walls[x, y]) Primitives.DrawSquare(worldX, worldY, TileSize, Colors.Red.SetAlpha(100));
 			}
 	}
 
 	public bool IsWall(int pixelX, int pixelY)
 	{
-		int tileX = (pixelX - Position.X.Floored()) / tileSize;
-		int tileY = (pixelY - Position.Y.Floored()) / tileSize;
+		int tileX = (pixelX - Position.X.Floored()) / TileSize;
+		int tileY = (pixelY - Position.Y.Floored()) / TileSize;
 		return walls[tileX, tileY];
 	}
 
@@ -127,5 +127,12 @@ internal class Area : Entity
 		bool xCheck = pixelX >= Position.X.Floored() && pixelX < Position.X.Floored() + widthInPixels;
 		bool yCheck = pixelY >= Position.Y.Floored() && pixelY < Position.Y.Floored() + heightInPixels;
 		return xCheck && yCheck;
+	}
+
+	public Vector2 SnapPosition(int pixelX, int pixelY)
+	{
+		int tilePixelX = ((float)pixelX / TileSize).Floored() * TileSize;
+		int tilePixelY = ((float)pixelY / TileSize).Floored() * TileSize;
+		return new(tilePixelX, tilePixelY);
 	}
 }
