@@ -135,6 +135,7 @@ internal class Player : Entity
 
 		// Check for wall collision
 		if (wallChecker.LeftWall && velocity.X < 0 || wallChecker.RightWall && velocity.X > 0) velocity.X = 0;
+		if (wallChecker.TopWall && velocity.Y < 0) velocity.Y = 0;
 	}
 
 	private void Movement()
