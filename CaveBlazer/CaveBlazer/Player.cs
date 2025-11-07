@@ -13,7 +13,7 @@ internal class Player : Entity
 	private int direction = 1;
 	private bool isGrounded;
 	private GameScene gameScene;
-	private WallChecker wallChecker;
+	private TileChecker tileChecker;
 
 	// Texture
 	private Texture texture;
@@ -23,8 +23,8 @@ internal class Player : Entity
 	private int halfHeight;
 
 	// Settings
-	private const float gravity = 90;
-	private const float jumpForce = 40;
+	private const float gravity = 100;
+	private const float jumpForce = 45;
 	private const float walkSpeed = 25;
 	private const float midairAcceleration = 15;
 
@@ -43,14 +43,14 @@ internal class Player : Entity
 		height = texture.Height;
 		halfWidth = width / 2;
 		halfHeight = height / 2;
-		wallChecker = new(width, height);
+		tileChecker = new(width, height);
 	}
 
 	public override void Update()
 	{
 		// State checks
-		wallChecker.Refresh(CurrentArea, position);
-		isGrounded = wallChecker.BottomWall;
+		tileChecker.Refresh(CurrentArea, position);
+		isGrounded = tileChecker.BottomWall;
 		CheckJump();
 
 		// State updates
@@ -103,12 +103,12 @@ internal class Player : Entity
 
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
 		{
-			velocity.X = wallChecker.LeftWall ? 0 : -walkSpeed;
+			velocity.X = tileChecker.LeftWall ? 0 : -walkSpeed;
 			direction = -1;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
-			velocity.X = wallChecker.RightWall ? 0 : walkSpeed;
+			velocity.X = tileChecker.RightWall ? 0 : walkSpeed;
 			direction = 1;
 		}
 		else velocity.X = 0;
@@ -134,8 +134,8 @@ internal class Player : Entity
 		}
 
 		// Check for wall collision
-		if (wallChecker.LeftWall && velocity.X < 0 || wallChecker.RightWall && velocity.X > 0) velocity.X = 0;
-		if (wallChecker.TopWall && velocity.Y < 0) velocity.Y = 0;
+		if (tileChecker.LeftWall && velocity.X < 0 || tileChecker.RightWall && velocity.X > 0) velocity.X = 0;
+		if (tileChecker.TopWall && velocity.Y < 0) velocity.Y = 0;
 	}
 
 	private void Movement()

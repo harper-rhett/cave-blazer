@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using HarpEngine.Utilities;
 
-internal class WallChecker
+internal class TileChecker
 {
 	public bool LeftInBounds { get; private set; }
 	public bool RightInBounds { get; private set; }
@@ -16,7 +16,9 @@ internal class WallChecker
 	private int width;
 	private int height;
 
-	public WallChecker(int width, int height)
+	// Need to be able to check tile type of center left, center right, center top, center bottom, center
+
+	public TileChecker(int width, int height)
 	{
 		this.width = width;
 		this.height = height;
@@ -37,8 +39,14 @@ internal class WallChecker
 
 		TopInBounds = area.InBounds(leftX, topY) && area.InBounds(rightX, topY);
 		BottomInBounds = area.InBounds(leftX, bottomY) && area.InBounds(rightX, bottomY);
-		TopWall = TopInBounds && (area.IsWall(leftX, topY) || area.IsWall(rightX, topY));
-		BottomWall = BottomInBounds && (area.IsWall(leftX, bottomY) || area.IsWall(rightX, bottomY));
+		TopWall = TopInBounds && (
+			area.GetTile(leftX, topY) == Tile.Wall 
+			|| area.GetTile(rightX, topY) == Tile.Wall
+		);
+		BottomWall = BottomInBounds && (
+			area.GetTile(leftX, bottomY) == Tile.Wall
+			|| area.GetTile(rightX, bottomY) == Tile.Wall
+		);
 	}
 
 	private void CheckLeftRight(Area area, Vector2 position)
@@ -50,7 +58,13 @@ internal class WallChecker
 
 		LeftInBounds = area.InBounds(leftX, topY) && area.InBounds(leftX, bottomY);
 		RightInBounds = area.InBounds(rightX, topY) && area.InBounds(rightX, bottomY);
-		LeftWall = LeftInBounds && (area.IsWall(leftX, topY) || area.IsWall(leftX, bottomY));
-		RightWall = RightInBounds && (area.IsWall(rightX, topY) || area.IsWall(rightX, bottomY));
+		LeftWall = LeftInBounds && (
+			area.GetTile(leftX, topY) == Tile.Wall
+			|| area.GetTile(leftX, bottomY) == Tile.Wall
+		);
+		RightWall = RightInBounds && (
+			area.GetTile(rightX, topY) == Tile.Wall
+			|| area.GetTile(rightX, bottomY) == Tile.Wall
+		);
 	}
 }
