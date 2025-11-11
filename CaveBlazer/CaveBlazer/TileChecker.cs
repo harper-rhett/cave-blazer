@@ -40,12 +40,12 @@ internal class TileChecker
 		TopInBounds = area.InBounds(leftX, topY) && area.InBounds(rightX, topY);
 		BottomInBounds = area.InBounds(leftX, bottomY) && area.InBounds(rightX, bottomY);
 		TopWall = TopInBounds && (
-			area.GetTile(leftX, topY) == Tile.Wall 
-			|| area.GetTile(rightX, topY) == Tile.Wall
+			area.GetTile(leftX, topY) == TileType.Wall 
+			|| area.GetTile(rightX, topY) == TileType.Wall
 		);
 		BottomWall = BottomInBounds && (
-			area.GetTile(leftX, bottomY) == Tile.Wall
-			|| area.GetTile(rightX, bottomY) == Tile.Wall
+			area.GetTile(leftX, bottomY) == TileType.Wall
+			|| area.GetTile(rightX, bottomY) == TileType.Wall
 		);
 	}
 
@@ -59,12 +59,12 @@ internal class TileChecker
 		LeftInBounds = area.InBounds(leftX, topY) && area.InBounds(leftX, bottomY);
 		RightInBounds = area.InBounds(rightX, topY) && area.InBounds(rightX, bottomY);
 		LeftWall = LeftInBounds && (
-			area.GetTile(leftX, topY) == Tile.Wall
-			|| area.GetTile(leftX, bottomY) == Tile.Wall
+			area.GetTile(leftX, topY) == TileType.Wall
+			|| area.GetTile(leftX, bottomY) == TileType.Wall
 		);
 		RightWall = RightInBounds && (
-			area.GetTile(rightX, topY) == Tile.Wall
-			|| area.GetTile(rightX, bottomY) == Tile.Wall
+			area.GetTile(rightX, topY) == TileType.Wall
+			|| area.GetTile(rightX, bottomY) == TileType.Wall
 		);
 	}
 }

@@ -1,4 +1,4 @@
-﻿public enum Tile
+﻿public enum TileType
 {
 	None,
 	Wall,

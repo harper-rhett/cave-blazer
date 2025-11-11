@@ -13,7 +13,7 @@ internal class Area : Entity
 	private int heightInTiles;
 	private RenderTexture renderTexture;
 	private Rectangle renderRectangle;
-	private Tile[,] tiles;
+	private TileType[,] tiles;
 	private Dictionary<string, LayerInstance> layersData = new();
 	private string Name;
 	private World world;
@@ -94,13 +94,13 @@ internal class Area : Entity
 
 	private void ProcessCollisions(LayerInstance layerInstance)
 	{
-		tiles = new Tile[widthInTiles, heightInTiles];
+		tiles = new TileType[widthInTiles, heightInTiles];
 		long[] tileValues = layerInstance.IntGridCsv;
 		for (int x = 0; x < widthInTiles; x++)
 			for (int y = 0; y < heightInTiles; y++)
 			{
 				int tileValue = (int)tileValues[x + y * widthInTiles];
-				tiles[x, y] = (Tile)tileValue;
+				tiles[x, y] = (TileType)tileValue;
 			}
 	}
 
@@ -111,11 +111,11 @@ internal class Area : Entity
 			{
 				int worldX = Position.X.Floored() + x * TileSize;
 				int worldY = Position.Y.Floored() + y * TileSize;
-				if (tiles[x, y] != Tile.None) Primitives.DrawSquare(worldX, worldY, TileSize, Colors.Red.SetAlpha(100));
+				if (tiles[x, y] != TileType.None) Primitives.DrawSquare(worldX, worldY, TileSize, Colors.Red.SetAlpha(100));
 			}
 	}
 
-	public Tile GetTile(int pixelX, int pixelY)
+	public TileType GetTile(int pixelX, int pixelY)
 	{
 		int tileX = (pixelX - Position.X.Floored()) / TileSize;
 		int tileY = (pixelY - Position.Y.Floored()) / TileSize;
