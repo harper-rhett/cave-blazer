@@ -5,10 +5,11 @@ using ldtk;
 using System.Numerics;
 using Tiles;
 
-internal class LDTKImporter<TileType> where TileType : Enum
+internal class LDTKImporter
 {
 	private LdtkJson ldtkData;
 	private Dictionary<string, Texture> tilesetsByPath = new();
+	private Dictionary<string, TiledArea> areasByID = new();
 	private int tileSize;
 
 	public LDTKImporter(string filePath, int tileSize)
@@ -18,11 +19,12 @@ internal class LDTKImporter<TileType> where TileType : Enum
 		this.tileSize = tileSize;
 	}
 
-	public TiledWorld<TileType> GenerateWorld()
+	public TiledWorld GenerateWorld()
 	{
 		DeserializeTilesets();
-		List<TiledArea<TileType>> areas = DeserializeLevels();
-		TiledWorld<TileType> world = new(areas, tileSize);
+		List<TiledArea> areas = DeserializeLevels();
+		TiledWorld world = new(areas, tileSize);
+		DeserializeSpawn();
 		return world;
 	}
 
@@ -42,37 +44,57 @@ internal class LDTKImporter<TileType> where TileType : Enum
 		return layersData;
 	}
 
-	private Tile<TileType>[,] DeserializeTiles(LayerInstance layerData, int widthInTiles, int heightInTiles, int tileSize)
+	private Tile[] DeserializeTiles(LayerInstance layerData, int tileSize)
 	{
-		Tile<TileType>[,] tiles = new Tile<TileType>[widthInTiles, heightInTiles];
-
+		// Initialize collections
 		TileInstance[] tilesData = layerData.AutoLayerTiles;
-		long[] tileTypes = layerData.IntGridCsv;
-		for (int x = 0; x < widthInTiles; x++)
-			for (int y = 0; y < heightInTiles; y++)
-			{
-				// Get the data
-				int tileIndex = x + y * widthInTiles;
-				TileInstance tileData = tilesData[tileIndex];
-				TileType tileType = (TileType)(object)tileTypes[tileIndex];
+		Tile[] tiles = new Tile[tilesData.Length];
 
-				// Get the tileset information
-				int tilesetX = (int)tileData.Src[0];
-				int tilesetY = (int)tileData.Src[1];
-				bool xFlipped = (tileData.F & 1) != 0;
-				bool yFlipped = (tileData.F & (1L << 1)) != 0;
+		// Populate tiles
+		for (int tileIndex = 0; tileIndex < tiles.Length; tileIndex++)
+		{
+			TileInstance tileData = tilesData[tileIndex];
 
-				// Create the tile
-				Texture tilesetTexture = tilesetsByPath[layerData.TilesetRelPath];
-				Tile<TileType> tile = new(tilesetTexture, tilesetX, tilesetY, tileSize, tileType, xFlipped, yFlipped);
-			}
+			// Get the position
+			int pixelX = (int)tileData.Px[0];
+			int pixelY = (int)tileData.Px[1];
+			Vector2 pixelPosition = new(pixelX, pixelY);
+
+			// Get the tileset information
+			int tilesetX = (int)tileData.Src[0];
+			int tilesetY = (int)tileData.Src[1];
+			bool xFlipped = (tileData.F & 1) != 0;
+			bool yFlipped = (tileData.F & (1L << 1)) != 0;
+
+			// Create the tile
+			Texture tilesetTexture = tilesetsByPath[layerData.TilesetRelPath];
+			Tile tile = new(pixelPosition, tilesetTexture, tilesetX, tilesetY, tileSize, xFlipped, yFlipped);
+			tiles[tileIndex] = tile;
+		}
 
 		return tiles;
 	}
 
-	private List<TiledArea<TileType>> DeserializeLevels()
+	private int[,] DeserializeTileTypes(LayerInstance layerData, int widthInTiles, int heightInTiles)
 	{
-		List<TiledArea<TileType>> areas = new();
+		// Initialize collections
+		long[] gridData = layerData.IntGridCsv;
+		int[,] tileIDs = new int[widthInTiles, heightInTiles];
+
+		// Preprocess tile IDs
+		for (int x = 0; x < widthInTiles; x++)
+			for (int y = 0; y < heightInTiles; y++)
+			{
+				int tileIndex = x + y * widthInTiles;
+				tileIDs[x, y] = (int)gridData[tileIndex];
+			}
+
+		return tileIDs;
+	}
+
+	private List<TiledArea> DeserializeLevels()
+	{
+		List<TiledArea> areas = new();
 		foreach (Level levelData in ldtkData.Levels)
 		{
 			// Get tiles layer
@@ -84,14 +106,20 @@ internal class LDTKImporter<TileType> where TileType : Enum
 			int heightInTiles = (int)tileLayerData.CHei;
 
 			// Create area
-			Tile<TileType>[,] tiles = DeserializeTiles(tileLayerData, widthInTiles, heightInTiles, tileSize);
 			Vector2 position = new((int)levelData.WorldX, (int)levelData.WorldY);
-			TiledArea<TileType> area = new(position, widthInTiles, heightInTiles, tileSize, tiles);
+			TiledArea area = new(position, widthInTiles, heightInTiles, tileSize);
+			area.Tiles = DeserializeTiles(tileLayerData, tileSize);
+			area.TileTypes = DeserializeTileTypes(tileLayerData, widthInTiles, heightInTiles);
+
+			// Register area
 			areas.Add(area);
+			areasByID[levelData.Iid] = area;
 		}
 		return areas;
 	}
 
+	public TiledArea SpawnArea { get; private set; }
+	public Vector2 SpawnPosition { get; private set; }
 	private void DeserializeSpawn() // change to deserialize entities? spawn should be temporary
 	{
 		foreach (LdtkTableOfContentEntry entityData in ldtkData.Toc)

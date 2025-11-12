@@ -1,35 +1,36 @@
 ﻿using HarpEngine;
 using HarpEngine.Animation;
 using HarpEngine.Graphics;
+using HarpEngine.Tiles;
 using System.Numerics;
 using Tiles;
 
 internal class GameScene : Scene
 {
-	public readonly TiledWorld<TileType> World;
+	public readonly TiledWorld World;
 	private Player player;
 	private Camera2D camera;
 
 	public GameScene() : base(Colors.SkyBlue)
 	{
-		LDTKImporter<TileType> importer = new("world.ldtk", 8);
+		LDTKImporter importer = new("world.ldtk", 8);
 		World = importer.GenerateWorld();
-		player = new(this, World.SpawnArea, World.SpawnPosition);
+		player = new(this, importer.SpawnArea, importer.SpawnPosition);
 
 		camera = new Camera2D(this);
 		Camera = camera;
 		camera.Offset = Vector2.Zero;
-		camera.Transform.WorldPosition = World.SpawnArea.Position;
+		camera.Transform.WorldPosition = importer.SpawnArea.Position;
 	}
 
-	public void TempDraw()
+	public override void Draw()
 	{
 		World.Draw();
 	}
 
 	public void SwitchArea(int pixelX, int pixelY)
 	{
-		OldArea nextArea = World.GetArea(pixelX, pixelY);
+		TiledArea nextArea = World.GetArea(pixelX, pixelY);
 		player.CurrentArea = nextArea;
 		Transform2DEaser transformEaser = new(this, camera.Transform, 1f);
 		transformEaser.TargetWorldPosition = nextArea.Position;

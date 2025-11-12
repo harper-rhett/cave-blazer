@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using HarpEngine.Tiles;
 using HarpEngine.Utilities;
 
 internal class TileChecker
@@ -24,13 +25,13 @@ internal class TileChecker
 		this.height = height;
 	}
 
-	public void Refresh(OldArea area, Vector2 position)
+	public void Refresh(TiledArea area, Vector2 position)
 	{
 		CheckLeftRight(area, position);
 		CheckUpperLower(area, position);
 	}
 
-	private void CheckUpperLower(OldArea area, Vector2 position)
+	private void CheckUpperLower(TiledArea area, Vector2 position)
 	{
 		int leftX = (position.X).Floored();
 		int rightX = (position.X + width - 1).Floored();
@@ -40,16 +41,16 @@ internal class TileChecker
 		TopInBounds = area.InBounds(leftX, topY) && area.InBounds(rightX, topY);
 		BottomInBounds = area.InBounds(leftX, bottomY) && area.InBounds(rightX, bottomY);
 		TopWall = TopInBounds && (
-			area.GetTile(leftX, topY) == TileType.Wall 
-			|| area.GetTile(rightX, topY) == TileType.Wall
+			area.GetTileType<TileType>(leftX, topY) == TileType.Wall 
+			|| area.GetTileType<TileType>(rightX, topY) == TileType.Wall
 		);
 		BottomWall = BottomInBounds && (
-			area.GetTile(leftX, bottomY) == TileType.Wall
-			|| area.GetTile(rightX, bottomY) == TileType.Wall
+			area.GetTileType<TileType>(leftX, bottomY) == TileType.Wall
+			|| area.GetTileType<TileType>(rightX, bottomY) == TileType.Wall
 		);
 	}
 
-	private void CheckLeftRight(OldArea area, Vector2 position)
+	private void CheckLeftRight(TiledArea area, Vector2 position)
 	{
 		int leftX = (position.X - 1).Floored();
 		int rightX = (position.X + width).Floored();
@@ -59,12 +60,12 @@ internal class TileChecker
 		LeftInBounds = area.InBounds(leftX, topY) && area.InBounds(leftX, bottomY);
 		RightInBounds = area.InBounds(rightX, topY) && area.InBounds(rightX, bottomY);
 		LeftWall = LeftInBounds && (
-			area.GetTile(leftX, topY) == TileType.Wall
-			|| area.GetTile(leftX, bottomY) == TileType.Wall
+			area.GetTileType<TileType>(leftX, topY) == TileType.Wall
+			|| area.GetTileType<TileType>(leftX, bottomY) == TileType.Wall
 		);
 		RightWall = RightInBounds && (
-			area.GetTile(rightX, topY) == TileType.Wall
-			|| area.GetTile(rightX, bottomY) == TileType.Wall
+			area.GetTileType<TileType>(rightX, topY) == TileType.Wall
+			|| area.GetTileType<TileType>(rightX, bottomY) == TileType.Wall
 		);
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using HarpEngine;
 using HarpEngine.Graphics;
 using HarpEngine.Input;
+using HarpEngine.Tiles;
 using HarpEngine.Utilities;
 using System.Diagnostics;
 using System.Numerics;
@@ -29,10 +30,10 @@ internal class Player : Entity
 	private const float midairAcceleration = 15;
 
 	// Interface
-	public OldArea CurrentArea;
+	public TiledArea CurrentArea;
 	public Vector2 Position => position;
 
-	public Player(GameScene gameScene, OldArea area, Vector2 position) : base(gameScene)
+	public Player(GameScene gameScene, TiledArea area, Vector2 position) : base(gameScene)
 	{
 		this.position = position;
 		CurrentArea = area;
