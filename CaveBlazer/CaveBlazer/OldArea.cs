@@ -4,7 +4,7 @@ using HarpEngine.Utilities;
 using ldtk;
 using System.Numerics;
 
-internal class Area : Entity
+internal class OldArea : Entity
 {
 	public Vector2 Position { get; private set; }
 	private int widthInPixels;
@@ -16,11 +16,11 @@ internal class Area : Entity
 	private TileType[,] tiles;
 	private Dictionary<string, LayerInstance> layersData = new();
 	private string Name;
-	private World world;
+	private OldWorld world;
 
 	public const int TileSize = 8;
 
-	public Area(Scene scene, World world, Level levelData) : base(scene)
+	public OldArea(Scene scene, OldWorld world, Level levelData) : base(scene)
 	{
 		// Set level info
 		this.world = world;

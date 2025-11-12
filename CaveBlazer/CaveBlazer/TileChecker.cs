@@ -24,13 +24,13 @@ internal class TileChecker
 		this.height = height;
 	}
 
-	public void Refresh(Area area, Vector2 position)
+	public void Refresh(OldArea area, Vector2 position)
 	{
 		CheckLeftRight(area, position);
 		CheckUpperLower(area, position);
 	}
 
-	private void CheckUpperLower(Area area, Vector2 position)
+	private void CheckUpperLower(OldArea area, Vector2 position)
 	{
 		int leftX = (position.X).Floored();
 		int rightX = (position.X + width - 1).Floored();
@@ -49,7 +49,7 @@ internal class TileChecker
 		);
 	}
 
-	private void CheckLeftRight(Area area, Vector2 position)
+	private void CheckLeftRight(OldArea area, Vector2 position)
 	{
 		int leftX = (position.X - 1).Floored();
 		int rightX = (position.X + width).Floored();

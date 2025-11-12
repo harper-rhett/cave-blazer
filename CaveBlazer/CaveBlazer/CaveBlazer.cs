@@ -20,5 +20,6 @@ internal class CaveBlazer : Game
 	public override void Draw()
 	{
 		gameScene.Draw();
+		gameScene.TempDraw();
 	}
 }

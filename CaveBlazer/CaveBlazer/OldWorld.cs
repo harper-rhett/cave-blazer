@@ -4,12 +4,12 @@ using HarpEngine.Utilities;
 using ldtk;
 using System.Numerics;
 
-internal class World
+internal class OldWorld
 {
-	private Dictionary<Coordinate, Area> areas = new();
-	private Dictionary<string, Area> areasByName = new();
-	private Dictionary<string, Area> areasByID = new();
-	public Area SpawnArea { get; private set; }
+	private Dictionary<Coordinate, OldArea> areas = new();
+	private Dictionary<string, OldArea> areasByName = new();
+	private Dictionary<string, OldArea> areasByID = new();
+	public OldArea SpawnArea { get; private set; }
 	public Vector2 SpawnPosition { get; private set; }
 	private readonly int levelWidth;
 	private readonly int levelHeight;
@@ -17,7 +17,7 @@ internal class World
 	private LdtkJson worldData;
 	public Dictionary<string, Texture> TilesetByPath { get; private set; } = new();
 
-	public World(GameScene gameScene)
+	public OldWorld(GameScene gameScene)
 	{
 		this.gameScene = gameScene;
 
@@ -48,7 +48,7 @@ internal class World
 			int pixelX = (int)levelData.WorldX;
 			int pixelY = (int)levelData.WorldY;
 			Coordinate coordinate = new(pixelX / levelWidth, pixelY / levelHeight);
-			Area area = new(gameScene, this, levelData);
+			OldArea area = new(gameScene, this, levelData);
 			areas[coordinate] = area;
 			areasByName[levelData.Identifier] = area;
 			areasByID[levelData.Iid] = area;
@@ -73,7 +73,7 @@ internal class World
 		return areas.ContainsKey(coordinate);
 	}
 
-	public Area GetArea(int pixelX, int pixelY)
+	public OldArea GetArea(int pixelX, int pixelY)
 	{
 		Coordinate coordinate = PixelsToCoordinate(pixelX, pixelY);
 		return areas[coordinate];
@@ -85,17 +85,5 @@ internal class World
 		int coordinateY = ((float)pixelY / levelHeight).Floored();
 		Coordinate coordinate = new(coordinateX, coordinateY);
 		return coordinate;
-	}
-
-	private struct Coordinate
-	{
-		public int X;
-		public int Y;
-
-		public Coordinate(int x, int y)
-		{
-			X = x;
-			Y = y;
-		}
 	}
 }

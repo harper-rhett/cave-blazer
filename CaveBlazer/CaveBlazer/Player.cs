@@ -29,10 +29,10 @@ internal class Player : Entity
 	private const float midairAcceleration = 15;
 
 	// Interface
-	public Area CurrentArea;
+	public OldArea CurrentArea;
 	public Vector2 Position => position;
 
-	public Player(GameScene gameScene, Area area, Vector2 position) : base(gameScene)
+	public Player(GameScene gameScene, OldArea area, Vector2 position) : base(gameScene)
 	{
 		this.position = position;
 		CurrentArea = area;
