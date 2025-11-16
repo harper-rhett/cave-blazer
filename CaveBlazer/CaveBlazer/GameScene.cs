@@ -3,7 +3,6 @@ using HarpEngine.Animation;
 using HarpEngine.Graphics;
 using HarpEngine.Tiles;
 using System.Numerics;
-using Tiles;
 
 internal class GameScene : Scene
 {

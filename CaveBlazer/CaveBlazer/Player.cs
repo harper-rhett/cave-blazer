@@ -14,7 +14,7 @@ internal class Player : Entity
 	private int direction = 1;
 	private bool isGrounded;
 	private GameScene gameScene;
-	private TileChecker tileChecker;
+	private EntityTileCollider tileChecker;
 
 	// Texture
 	private Texture texture;
@@ -50,7 +50,7 @@ internal class Player : Entity
 	public override void OnUpdate()
 	{
 		// State checks
-		tileChecker.Refresh(CurrentArea, position);
+		tileChecker.Update(CurrentArea, position);
 		isGrounded = tileChecker.BottomWall;
 		CheckJump();
 

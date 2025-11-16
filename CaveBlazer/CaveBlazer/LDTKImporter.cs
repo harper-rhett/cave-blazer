@@ -3,7 +3,6 @@ using HarpEngine.Tiles;
 using HarpEngine.Utilities;
 using ldtk;
 using System.Numerics;
-using Tiles;
 
 internal class LDTKImporter
 {
@@ -109,7 +108,7 @@ internal class LDTKImporter
 			Vector2 position = new((int)levelData.WorldX, (int)levelData.WorldY);
 			TiledArea area = new(position, widthInTiles, heightInTiles, tileSize);
 			area.Tiles = DeserializeTiles(tileLayerData);
-			area.TileTypes = DeserializeTileTypes(tileLayerData, widthInTiles, heightInTiles);
+			area.TilesByID = DeserializeTileTypes(tileLayerData, widthInTiles, heightInTiles);
 
 			// Register area
 			areas.Add(area);
