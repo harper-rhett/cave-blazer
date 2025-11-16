@@ -20,7 +20,7 @@ internal class OldArea : Entity
 
 	public const int TileSize = 8;
 
-	public OldArea(Scene scene, OldWorld world, Level levelData) : base(scene)
+	public OldArea(Scene scene, OldWorld world, Level levelData)
 	{
 		// Set level info
 		this.world = world;
@@ -43,7 +43,7 @@ internal class OldArea : Entity
 		ProcessCollisions(layerData);
 	}
 
-	public override void Draw()
+	public override void OnDraw()
 	{
 		renderTexture.Texture.Draw(renderRectangle, Position, Colors.White);
 		//DrawCollisions();

@@ -44,7 +44,7 @@ internal class LDTKImporter
 		return layersData;
 	}
 
-	private Tile[] DeserializeTiles(LayerInstance layerData, int tileSize)
+	private Tile[] DeserializeTiles(LayerInstance layerData)
 	{
 		// Initialize collections
 		TileInstance[] tilesData = layerData.AutoLayerTiles;
@@ -56,9 +56,9 @@ internal class LDTKImporter
 			TileInstance tileData = tilesData[tileIndex];
 
 			// Get the position
-			int pixelX = (int)tileData.Px[0];
-			int pixelY = (int)tileData.Px[1];
-			Vector2 pixelPosition = new(pixelX, pixelY);
+			int localX = (int)tileData.Px[0];
+			int localY = (int)tileData.Px[1];
+			Vector2 localPosition = new(localX, localY);
 
 			// Get the tileset information
 			int tilesetX = (int)tileData.Src[0];
@@ -68,7 +68,7 @@ internal class LDTKImporter
 
 			// Create the tile
 			Texture tilesetTexture = tilesetsByPath[layerData.TilesetRelPath];
-			Tile tile = new(pixelPosition, tilesetTexture, tilesetX, tilesetY, tileSize, xFlipped, yFlipped);
+			Tile tile = new(localPosition, tilesetTexture, tilesetX, tilesetY, tileSize, xFlipped, yFlipped);
 			tiles[tileIndex] = tile;
 		}
 
@@ -108,7 +108,7 @@ internal class LDTKImporter
 			// Create area
 			Vector2 position = new((int)levelData.WorldX, (int)levelData.WorldY);
 			TiledArea area = new(position, widthInTiles, heightInTiles, tileSize);
-			area.Tiles = DeserializeTiles(tileLayerData, tileSize);
+			area.Tiles = DeserializeTiles(tileLayerData);
 			area.TileTypes = DeserializeTileTypes(tileLayerData, widthInTiles, heightInTiles);
 
 			// Register area

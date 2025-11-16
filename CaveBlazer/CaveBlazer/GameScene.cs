@@ -14,25 +14,20 @@ internal class GameScene : Scene
 	public GameScene() : base(Colors.SkyBlue)
 	{
 		LDTKImporter importer = new("world.ldtk", 8);
-		World = importer.GenerateWorld();
-		player = new(this, importer.SpawnArea, importer.SpawnPosition);
-
-		camera = new Camera2D(this);
+		World = AddEntity(importer.GenerateWorld());
+		player = AddEntity(new Player(this, importer.SpawnArea, importer.SpawnPosition));
+		
+		camera = AddEntity(new Camera2D());
 		Camera = camera;
 		camera.Offset = Vector2.Zero;
 		camera.Transform.WorldPosition = importer.SpawnArea.Position;
-	}
-
-	public override void Draw()
-	{
-		World.Draw();
 	}
 
 	public void SwitchArea(int pixelX, int pixelY)
 	{
 		TiledArea nextArea = World.GetArea(pixelX, pixelY);
 		player.CurrentArea = nextArea;
-		Transform2DEaser transformEaser = new(this, camera.Transform, 1f);
+		Transform2DEaser transformEaser = AddEntity(new Transform2DEaser(camera.Transform, 1f));
 		transformEaser.TargetWorldPosition = nextArea.Position;
 		transformEaser.Start();
 	}

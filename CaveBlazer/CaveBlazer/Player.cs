@@ -33,7 +33,7 @@ internal class Player : Entity
 	public TiledArea CurrentArea;
 	public Vector2 Position => position;
 
-	public Player(GameScene gameScene, TiledArea area, Vector2 position) : base(gameScene)
+	public Player(GameScene gameScene, TiledArea area, Vector2 position)
 	{
 		this.position = position;
 		CurrentArea = area;
@@ -47,7 +47,7 @@ internal class Player : Entity
 		tileChecker = new(width, height);
 	}
 
-	public override void Update()
+	public override void OnUpdate()
 	{
 		// State checks
 		tileChecker.Refresh(CurrentArea, position);
@@ -80,7 +80,7 @@ internal class Player : Entity
 		}
 	}
 
-	public override void Draw()
+	public override void OnDraw()
 	{
 		Rectangle sourceRectangle = new(0, 0, width * direction, height);
 		Rectangle destinationRectangle = new(position.X.Floored(), position.Y.Floored(), width, height);

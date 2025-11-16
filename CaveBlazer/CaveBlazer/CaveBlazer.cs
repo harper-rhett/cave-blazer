@@ -14,11 +14,11 @@ internal class CaveBlazer : Game
 
 	public override void Update()
 	{
-		gameScene.UpdateSystems();
+		gameScene.Update();
 	}
 
 	public override void Draw()
 	{
-		gameScene.DrawSystems();
+		gameScene.Draw();
 	}
 }
