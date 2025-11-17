@@ -2,7 +2,7 @@
 using HarpEngine.Tiles;
 using HarpEngine.Utilities;
 
-internal class TileChecker
+internal class EntityTileCollider
 {
 	public bool LeftInBounds { get; private set; }
 	public bool RightInBounds { get; private set; }
@@ -19,13 +19,13 @@ internal class TileChecker
 
 	// Need to be able to check tile type of center left, center right, center top, center bottom, center
 
-	public TileChecker(int width, int height)
+	public EntityTileCollider(int width, int height)
 	{
 		this.width = width;
 		this.height = height;
 	}
 
-	public void Refresh(TiledArea area, Vector2 position)
+	public void Update(TiledArea area, Vector2 position)
 	{
 		CheckLeftRight(area, position);
 		CheckUpperLower(area, position);
