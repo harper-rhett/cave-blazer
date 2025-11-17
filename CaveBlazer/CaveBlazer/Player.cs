@@ -14,7 +14,7 @@ internal class Player : Entity
 	private int direction = 1;
 	private bool isGrounded;
 	private GameScene gameScene;
-	private EntityTileCollider tileChecker;
+	private TiledCollider<TileType> collider;
 
 	// Texture
 	private Texture texture;
@@ -44,14 +44,14 @@ internal class Player : Entity
 		height = texture.Height;
 		halfWidth = width / 2;
 		halfHeight = height / 2;
-		tileChecker = new(width, height);
+		collider = new(width, height);
 	}
 
 	public override void OnUpdate()
 	{
 		// State checks
-		tileChecker.Update(CurrentArea, position);
-		isGrounded = tileChecker.BottomWall;
+		collider.Update(CurrentArea, position);
+		isGrounded = collider.IsTileBottom(TileType.Wall);
 		CheckJump();
 
 		// State updates
@@ -59,6 +59,7 @@ internal class Player : Entity
 		else MidairUpdate();
 
 		// Check if in bounds
+		// REPLACE THESE WITH COLLIDER CALLS
 		int boundsCheckX = position.X.Floored() + halfWidth;
 		int boundsCheckY = position.Y.Floored() + halfHeight;
 		bool inBounds = CurrentArea.InBounds(boundsCheckX, boundsCheckY);
@@ -104,12 +105,14 @@ internal class Player : Entity
 
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
 		{
-			velocity.X = tileChecker.LeftWall ? 0 : -walkSpeed;
+			bool isWallLeft = collider.IsTileLeft(TileType.Wall);
+			velocity.X = isWallLeft ? 0 : -walkSpeed;
 			direction = -1;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
-			velocity.X = tileChecker.RightWall ? 0 : walkSpeed;
+			bool isWallRight = collider.IsTileRight(TileType.Wall);
+			velocity.X = isWallRight ? 0 : walkSpeed;
 			direction = 1;
 		}
 		else velocity.X = 0;
@@ -135,8 +138,11 @@ internal class Player : Entity
 		}
 
 		// Check for wall collision
-		if (tileChecker.LeftWall && velocity.X < 0 || tileChecker.RightWall && velocity.X > 0) velocity.X = 0;
-		if (tileChecker.TopWall && velocity.Y < 0) velocity.Y = 0;
+		bool isWallLeft = collider.IsTileLeft(TileType.Wall);
+		bool isWallRight = collider.IsTileRight(TileType.Wall);
+		bool isWallTop = collider.IsTileTop(TileType.Wall);
+		if (isWallLeft && velocity.X < 0 || isWallRight && velocity.X > 0) velocity.X = 0;
+		if (isWallTop && velocity.Y < 0) velocity.Y = 0;
 	}
 
 	private void Movement()
