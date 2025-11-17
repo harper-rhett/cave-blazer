@@ -59,26 +59,8 @@ internal class Player : Entity
 		else MidairUpdate();
 
 		// Check if in bounds
-		// REPLACE THESE WITH COLLIDER CALLS
-		int boundsCheckX = position.X.Floored() + halfWidth;
-		int boundsCheckY = position.Y.Floored() + halfHeight;
-		bool inBounds = CurrentArea.InBounds(boundsCheckX, boundsCheckY);
-
-		if (inBounds) Movement();
-		else
-		{
-			bool areaExists = gameScene.World.DoesAreaExist(boundsCheckX, boundsCheckY);
-			if (areaExists)
-			{
-				gameScene.SwitchArea(boundsCheckX, boundsCheckY);
-				Vector2 tilePosition = CurrentArea.SnapPosition(boundsCheckX, boundsCheckY);
-				position = tilePosition;
-			}
-			else
-			{
-				velocity.X = -velocity.X;
-			}
-		}
+		if (collider.CenterInBounds) Movement();
+		else OutOfBounds();
 	}
 
 	public override void OnDraw()
@@ -148,5 +130,18 @@ internal class Player : Entity
 	private void Movement()
 	{
 		position += velocity * Engine.FrameTime;
+	}
+
+	private void OutOfBounds()
+	{
+		bool areaExists = gameScene.World.DoesAreaExist(collider.CenterX, collider.CenterY);
+
+		if (areaExists)
+		{
+			gameScene.SwitchArea(collider.CenterX, collider.CenterY);
+			Vector2 tilePosition = gameScene.World.SnapPosition(collider.CenterX, collider.CenterY);
+			position = tilePosition;
+		}
+		else velocity.X = -velocity.X;
 	}
 }
