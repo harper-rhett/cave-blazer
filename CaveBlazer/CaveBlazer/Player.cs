@@ -20,8 +20,6 @@ internal class Player : Entity
 	private Texture texture;
 	private int width;
 	private int height;
-	private int halfWidth;
-	private int halfHeight;
 
 	// Settings
 	private const float gravity = 100;
@@ -42,8 +40,6 @@ internal class Player : Entity
 		texture = Texture.Load("sprites/explorer.png");
 		width = texture.Width;
 		height = texture.Height;
-		halfWidth = width / 2;
-		halfHeight = height / 2;
 		collider = new(width, height);
 	}
 
