@@ -20,13 +20,11 @@ internal class Player : Entity
 	private Texture texture;
 	private int width;
 	private int height;
-	private int halfWidth;
-	private int halfHeight;
 
 	// Settings
-	private const float gravity = 100;
-	private const float jumpForce = 45;
-	private const float walkSpeed = 25;
+	private const float gravity = 135;
+	private const float jumpForce = 75;
+	private const float walkSpeed = 35;
 	private const float midairAcceleration = 15;
 
 	// Interface
@@ -39,11 +37,9 @@ internal class Player : Entity
 		CurrentArea = area;
 		this.gameScene = gameScene;
 
-		texture = Texture.Load("sprites/explorer.png");
+		texture = Texture.Load("sprites/character/explorer.png");
 		width = texture.Width;
 		height = texture.Height;
-		halfWidth = width / 2;
-		halfHeight = height / 2;
 		collider = new(width, height);
 	}
 
