@@ -22,9 +22,9 @@ internal class Player : Entity
 	private int height;
 
 	// Settings
-	private const float gravity = 100;
-	private const float jumpForce = 45;
-	private const float walkSpeed = 25;
+	private const float gravity = 135;
+	private const float jumpForce = 75;
+	private const float walkSpeed = 35;
 	private const float midairAcceleration = 15;
 
 	// Interface
@@ -37,7 +37,7 @@ internal class Player : Entity
 		CurrentArea = area;
 		this.gameScene = gameScene;
 
-		texture = Texture.Load("sprites/explorer.png");
+		texture = Texture.Load("sprites/character/explorer.png");
 		width = texture.Width;
 		height = texture.Height;
 		collider = new(width, height);

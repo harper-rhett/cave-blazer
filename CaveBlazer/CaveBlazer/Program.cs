@@ -1,4 +1,4 @@
 ﻿using HarpEngine;
 
-Engine.Initialize("Cave Blazer", 192, 112);
+Engine.Initialize("Cave Blazer", 368, 192);
 Engine.Start(new CaveBlazer());
