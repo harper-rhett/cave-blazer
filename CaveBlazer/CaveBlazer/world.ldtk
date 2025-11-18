@@ -11,7 +11,7 @@
 	"iid": "51b31410-ac70-11f0-ab93-c593e284ebf6",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 27,
+	"nextUid": 28,
 	"identifierStyle": "Capitalize",
 	"toc": [{
 		"identifier": "Spawn",
@@ -232,6 +232,38 @@
 					"active": true,
 					"isOptional": false,
 					"rules": [
+						{
+							"uid": 27,
+							"active": true,
+							"size": 3,
+							"tileRectsIds": [[2]],
+							"alpha": 1,
+							"chance": 1,
+							"breakOnMatch": true,
+							"pattern": [0,-1,0,0,1,2,0,1,0],
+							"flipX": true,
+							"flipY": false,
+							"xModulo": 1,
+							"yModulo": 1,
+							"xOffset": 0,
+							"yOffset": 0,
+							"tileXOffset": 0,
+							"tileYOffset": 0,
+							"tileRandomXMin": 0,
+							"tileRandomXMax": 0,
+							"tileRandomYMin": 0,
+							"tileRandomYMax": 0,
+							"checker": "None",
+							"tileMode": "Single",
+							"pivotX": 0,
+							"pivotY": 0,
+							"outOfBoundsValue": null,
+							"invalidated": false,
+							"perlinActive": false,
+							"perlinSeed": 6169726,
+							"perlinScale": 0.2,
+							"perlinOctaves": 2
+						},
 						{
 							"uid": 9,
 							"active": true,
@@ -492,7 +524,7 @@
 							"uid": 14,
 							"active": true,
 							"size": 1,
-							"tileRectsIds": [[10]],
+							"tileRectsIds": [[15]],
 							"alpha": 1,
 							"chance": 1,
 							"breakOnMatch": true,
@@ -644,8 +676,8 @@
 			"customData": [],
 			"savedSelections": [],
 			"cachedPixelData": {
-				"opaqueTiles": "000000001110001111000",
-				"averageColors": "e9b6f796f79688316931b9310000f796f455f454f565f67689320000f685f344f344f344f57500000000"
+				"opaqueTiles": "000000001100001110001",
+				"averageColors": "e9b6f796f79688316931b931f676f796f455f454eac600008932f575f685f565f344eab600000000f344"
 			}
 		}
 	], "enums": [], "externalEnums": [], "levelFields": [] },
