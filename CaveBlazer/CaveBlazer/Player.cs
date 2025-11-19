@@ -24,6 +24,7 @@ internal class Player : Entity
 	private const float jumpForce = 75;
 	private const float walkSpeed = 35;
 	private const float midairAcceleration = 15;
+	private const float newLevelBoost = 1.5f;
 	private const int colliderWidth = 8;
 	private const int colliderHeight = 15;
 
@@ -42,6 +43,9 @@ internal class Player : Entity
 		collider = new(colliderWidth, colliderHeight);
 	}
 
+	// NOTE: For some reason, when going out of bounds and grounded, velocity is > 0.
+	// This is why the player falls off the map.
+
 	public override void OnUpdate()
 	{
 		// State checks
@@ -54,8 +58,8 @@ internal class Player : Entity
 		else MidairUpdate();
 
 		// Check if in bounds
-		if (collider.CenterInBounds) Movement();
-		else OutOfBounds();
+		if (!collider.CenterInBounds) OutOfBounds();
+		Movement();
 	}
 
 	public override void OnDraw()
@@ -70,7 +74,7 @@ internal class Player : Entity
 		if (didJump)
 		{
 			isGrounded = false;
-			velocity.Y -= jumpForce;
+			velocity.Y = -jumpForce;
 		}
 	}
 
@@ -133,8 +137,7 @@ internal class Player : Entity
 		if (areaExists)
 		{
 			gameScene.SwitchArea(collider.CenterX, collider.CenterY);
-			Vector2 tilePosition = gameScene.World.SnapPosition(collider.CenterX, collider.CenterY);
-			position = tilePosition;
+			velocity *= newLevelBoost;
 		}
 		else velocity.X = -velocity.X;
 	}
