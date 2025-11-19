@@ -16,7 +16,7 @@ internal class Player : Entity
 	private bool isGrounded;
 	private GameScene gameScene;
 	private TiledCollider<TileType> collider;
-	private TextureAnimator textureAnimator;
+	private TextureAnimationManager<AnimationID> animationManager = new();
 	private Vector2 colliderOffset = new(4, 1);
 
 	// Settings
@@ -32,19 +32,32 @@ internal class Player : Entity
 	public TiledArea CurrentArea;
 	public Vector2 Position => position;
 
+	public enum AnimationID
+	{
+		Idle,
+		Walk,
+	}
+
 	public Player(GameScene gameScene, TiledArea area, Vector2 position)
 	{
 		this.position = position;
 		CurrentArea = area;
 		this.gameScene = gameScene;
 
-		Texture idleTexture = Texture.Load("sprites/player/idle.png");
-		textureAnimator = new(idleTexture, 4, 16, 16, 0.4f);
+		RegisterAnimations();
 		collider = new(colliderWidth, colliderHeight);
 	}
 
-	// NOTE: For some reason, when going out of bounds and grounded, velocity is > 0.
-	// This is why the player falls off the map.
+	private void RegisterAnimations()
+	{
+		Texture idleTexture = Texture.Load("sprites/player/idle.png");
+		TextureAnimation idleAnimation = new(idleTexture, 4, 16, 16, 0.4f);
+		animationManager.RegisterAnimation(idleAnimation, AnimationID.Idle);
+
+		Texture walkTexture = Texture.Load("sprites/player/walk.png");
+		TextureAnimation walkAnimation = new(walkTexture, 4, 16, 16, 0.4f);
+		animationManager.RegisterAnimation(walkAnimation, AnimationID.Walk);
+	}
 
 	public override void OnUpdate()
 	{
@@ -64,7 +77,7 @@ internal class Player : Entity
 
 	public override void OnDraw()
 	{
-		textureAnimator.Draw(position, Engine.FrameTime, Colors.White);
+		animationManager.Draw(position, new(direction, 1), Engine.FrameTime, Colors.White);
 		//collider.Draw(position + colliderOffset, Colors.Red);
 	}
 
