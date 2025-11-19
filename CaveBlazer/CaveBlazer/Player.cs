@@ -55,7 +55,7 @@ internal class Player : Entity
 		animationManager.RegisterAnimation(idleAnimation, AnimationID.Idle);
 
 		Texture walkTexture = Texture.Load("sprites/player/walk.png");
-		TextureAnimation walkAnimation = new(walkTexture, 4, 16, 16, 0.4f);
+		TextureAnimation walkAnimation = new(walkTexture, 4, 16, 16, 0.2f);
 		animationManager.RegisterAnimation(walkAnimation, AnimationID.Walk);
 	}
 
@@ -101,14 +101,20 @@ internal class Player : Entity
 			bool isWallLeft = collider.IsTileLeft(TileType.Wall);
 			velocity.X = isWallLeft ? 0 : -walkSpeed;
 			direction = -1;
+			animationManager.SetAnimation(AnimationID.Walk, 0);
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
 			bool isWallRight = collider.IsTileRight(TileType.Wall);
 			velocity.X = isWallRight ? 0 : walkSpeed;
 			direction = 1;
+			animationManager.SetAnimation(AnimationID.Walk, 0);
 		}
-		else velocity.X = 0;
+		else
+		{
+			velocity.X = 0;
+			animationManager.SetAnimation(AnimationID.Idle, 0);
+		}
 	}
 
 	private void MidairUpdate()
