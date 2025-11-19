@@ -31,10 +31,7 @@
     <None Update="sprites\player\walk.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="sprites\mountain-tileset.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="sprites\tile-sets\terrain-v6.png">
+    <None Update="sprites\tile-sets\mountain.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="world.ldtk">
