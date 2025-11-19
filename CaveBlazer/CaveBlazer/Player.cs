@@ -16,7 +16,7 @@ internal class Player : Entity
 	private bool isGrounded;
 	private GameScene gameScene;
 	private TiledCollider<TileType> collider;
-	private TextureAnimationManager<AnimationID> animationManager = new();
+	private TextureAnimationManager<Animation> animationManager = new();
 	private Vector2 colliderOffset = new(4, 1);
 
 	// Settings
@@ -32,10 +32,11 @@ internal class Player : Entity
 	public TiledArea CurrentArea;
 	public Vector2 Position => position;
 
-	public enum AnimationID
+	public enum Animation
 	{
 		Idle,
 		Walk,
+		Jump,
 	}
 
 	public Player(GameScene gameScene, TiledArea area, Vector2 position)
@@ -52,11 +53,16 @@ internal class Player : Entity
 	{
 		Texture idleTexture = Texture.Load("sprites/player/idle.png");
 		TextureAnimation idleAnimation = new(idleTexture, 4, 16, 16, 0.4f);
-		animationManager.RegisterAnimation(idleAnimation, AnimationID.Idle);
+		animationManager.RegisterAnimation(idleAnimation, Animation.Idle);
 
 		Texture walkTexture = Texture.Load("sprites/player/walk.png");
 		TextureAnimation walkAnimation = new(walkTexture, 4, 16, 16, 0.2f);
-		animationManager.RegisterAnimation(walkAnimation, AnimationID.Walk);
+		animationManager.RegisterAnimation(walkAnimation, Animation.Walk);
+
+		Texture jumpTexture = Texture.Load("sprites/player/jump.png");
+		TextureAnimation jumpAnimation = new(jumpTexture, 4, 16, 16, 0.2f);
+		jumpAnimation.PlayOnce = true;
+		animationManager.RegisterAnimation(jumpAnimation, Animation.Jump);
 	}
 
 	public override void OnUpdate()
@@ -84,11 +90,15 @@ internal class Player : Entity
 	private void CheckJump()
 	{
 		bool didJump = isGrounded && Keyboard.IsKeyPressed(KeyboardKey.Space);
-		if (didJump)
-		{
-			isGrounded = false;
-			velocity.Y = -jumpForce;
-		}
+		if (didJump) Jump();
+	}
+
+	private void Jump()
+	{
+		isGrounded = false;
+		velocity.Y = -jumpForce;
+		animationManager.CurrentID = Animation.Jump;
+		animationManager.CurrentAnimation.Reset();
 	}
 
 	private void GroundedUpdate()
@@ -101,19 +111,19 @@ internal class Player : Entity
 			bool isWallLeft = collider.IsTileLeft(TileType.Wall);
 			velocity.X = isWallLeft ? 0 : -walkSpeed;
 			direction = -1;
-			animationManager.SetAnimation(AnimationID.Walk, 0);
+			animationManager.CurrentID = Animation.Walk;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
 			bool isWallRight = collider.IsTileRight(TileType.Wall);
 			velocity.X = isWallRight ? 0 : walkSpeed;
 			direction = 1;
-			animationManager.SetAnimation(AnimationID.Walk, 0);
+			animationManager.CurrentID = Animation.Walk;
 		}
 		else
 		{
 			velocity.X = 0;
-			animationManager.SetAnimation(AnimationID.Idle, 0);
+			animationManager.CurrentID = Animation.Idle;
 		}
 	}
 
