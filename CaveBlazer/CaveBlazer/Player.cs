@@ -1,4 +1,5 @@
 ﻿using HarpEngine;
+using HarpEngine.Animation;
 using HarpEngine.Graphics;
 using HarpEngine.Input;
 using HarpEngine.Tiles;
@@ -15,17 +16,16 @@ internal class Player : Entity
 	private bool isGrounded;
 	private GameScene gameScene;
 	private TiledCollider<TileType> collider;
-
-	// Texture
-	private Texture texture;
-	private int width;
-	private int height;
+	private TextureAnimator textureAnimator;
+	private Vector2 colliderOffset = new(4, 1);
 
 	// Settings
 	private const float gravity = 135;
 	private const float jumpForce = 75;
 	private const float walkSpeed = 35;
 	private const float midairAcceleration = 15;
+	private const int colliderWidth = 8;
+	private const int colliderHeight = 15;
 
 	// Interface
 	public TiledArea CurrentArea;
@@ -37,16 +37,15 @@ internal class Player : Entity
 		CurrentArea = area;
 		this.gameScene = gameScene;
 
-		texture = Texture.Load("sprites/character/explorer.png");
-		width = texture.Width;
-		height = texture.Height;
-		collider = new(width, height);
+		Texture idleTexture = Texture.Load("sprites/player/idle.png");
+		textureAnimator = new(idleTexture, 4, 16, 16, 0.4f);
+		collider = new(colliderWidth, colliderHeight);
 	}
 
 	public override void OnUpdate()
 	{
 		// State checks
-		collider.Update(CurrentArea, position);
+		collider.Update(CurrentArea, position + colliderOffset);
 		isGrounded = collider.IsTileBottom(TileType.Wall);
 		CheckJump();
 
@@ -61,9 +60,8 @@ internal class Player : Entity
 
 	public override void OnDraw()
 	{
-		Rectangle sourceRectangle = new(0, 0, width * direction, height);
-		Rectangle destinationRectangle = new(position.X.Floored(), position.Y.Floored(), width, height);
-		texture.Draw(sourceRectangle, destinationRectangle, Vector2.Zero, 0, Colors.White);
+		textureAnimator.Draw(position, Engine.FrameTime, Colors.White);
+		//collider.Draw(position + colliderOffset);
 	}
 
 	private void CheckJump()
