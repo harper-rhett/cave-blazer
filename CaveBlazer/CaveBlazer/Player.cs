@@ -65,7 +65,7 @@ internal class Player : Entity
 	public override void OnDraw()
 	{
 		textureAnimator.Draw(position, Engine.FrameTime, Colors.White);
-		//collider.Draw(position + colliderOffset);
+		//collider.Draw(position + colliderOffset, Colors.Red);
 	}
 
 	private void CheckJump()
