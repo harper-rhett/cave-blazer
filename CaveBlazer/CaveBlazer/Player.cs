@@ -83,7 +83,7 @@ internal class Player : Entity
 
 	public override void OnDraw()
 	{
-		animationManager.Draw(position, new(direction, 1), Engine.FrameTime, Colors.White);
+		animationManager.Draw(position, new(direction, 1), Colors.White);
 		//collider.Draw(position + colliderOffset, Colors.Red);
 	}
 
@@ -97,7 +97,7 @@ internal class Player : Entity
 	{
 		isGrounded = false;
 		velocity.Y = -jumpForce;
-		animationManager.CurrentID = Animation.Jump;
+		animationManager.CurrentAnimationID = Animation.Jump;
 		animationManager.CurrentAnimation.Reset();
 	}
 
@@ -111,19 +111,19 @@ internal class Player : Entity
 			bool isWallLeft = collider.IsTileLeft(TileType.Wall);
 			velocity.X = isWallLeft ? 0 : -walkSpeed;
 			direction = -1;
-			animationManager.CurrentID = Animation.Walk;
+			animationManager.CurrentAnimationID = Animation.Walk;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
 			bool isWallRight = collider.IsTileRight(TileType.Wall);
 			velocity.X = isWallRight ? 0 : walkSpeed;
 			direction = 1;
-			animationManager.CurrentID = Animation.Walk;
+			animationManager.CurrentAnimationID = Animation.Walk;
 		}
 		else
 		{
 			velocity.X = 0;
-			animationManager.CurrentID = Animation.Idle;
+			animationManager.CurrentAnimationID = Animation.Idle;
 		}
 	}
 
