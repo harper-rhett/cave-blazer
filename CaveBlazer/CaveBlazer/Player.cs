@@ -7,16 +7,15 @@ using HarpEngine.Utilities;
 using System.Diagnostics;
 using System.Numerics;
 
-internal class Player : Entity
+public class Player : Entity
 {
 	// General
 	private Vector2 position;
 	private Vector2 velocity;
 	private int direction = 1;
-	private bool isGrounded;
-	private bool isPlatformed;
 	private GameScene gameScene;
 	private TiledCollider<TileType> collider;
+	private PlayerState playerState;
 	private PlayerAnimationManager animationManager = new();
 	private Vector2 colliderOffset = new(4, 1);
 
@@ -40,22 +39,27 @@ internal class Player : Entity
 		this.gameScene = gameScene;
 
 		collider = new(colliderWidth, colliderHeight);
+		playerState = new(this);
 	}
 
 	public override void OnUpdate()
 	{
-		// State checks
+		// Update states
 		collider.Update(CurrentArea, position + colliderOffset);
-		isPlatformed = collider.IsTileBottom(TileType.Platform) && collider.BottomY % 16 == 0;
-		isGrounded = collider.IsTileBottom(TileType.Wall) || isPlatformed;
-		CheckJump();
+		playerState.Update(collider);
 
-		// State updates
-		if (isGrounded) GroundedUpdate();
+		// Check states
+
+		if (playerState.DidJump) Jump();
+
+		if (playerState.IsClimbingLadder)
+		{
+
+		}
+		if (playerState.IsGrounded) GroundedUpdate();
 		else MidairUpdate();
 
-		// Check if in bounds
-		if (!collider.CenterInBounds) OutOfBounds();
+		if (playerState.OutOfBounds) OutOfBounds();
 		Movement();
 	}
 
@@ -65,15 +69,8 @@ internal class Player : Entity
 		//collider.Draw(position + colliderOffset, Colors.Red);
 	}
 
-	private void CheckJump()
-	{
-		bool didJump = isGrounded && Keyboard.IsKeyPressed(KeyboardKey.Space);
-		if (didJump) Jump();
-	}
-
 	private void Jump()
 	{
-		isGrounded = false;
 		velocity.Y = -jumpForce;
 		animationManager.CurrentAnimationID = PlayerAnimation.Jumping;
 		animationManager.CurrentAnimation.Reset();
@@ -86,7 +83,7 @@ internal class Player : Entity
 
 		WalkingUpdate();
 
-		if (Keyboard.IsKeyPressed(KeyboardKey.Down) && isPlatformed) position.Y += 1;
+		if (Keyboard.IsKeyPressed(KeyboardKey.Down) && playerState.IsOnPlatform) position.Y += 1;
 	}
 
 	private void WalkingUpdate()

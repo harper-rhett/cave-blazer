@@ -14,7 +14,7 @@ public class PlayerAnimationManager : TextureAnimationManager<PlayerAnimation>
 	public PlayerAnimationManager()
 	{
 		Texture idleTexture = Texture.Load("sprites/player/idle.png");
-		TextureAnimation idleAnimation = new(idleTexture, 4, 16, 16, 0.4f);
+		TextureAnimation idleAnimation = new(idleTexture, 4, 16, 16, 0.3f);
 		RegisterAnimation(idleAnimation, PlayerAnimation.Idle);
 
 		Texture walkTexture = Texture.Load("sprites/player/walking.png");

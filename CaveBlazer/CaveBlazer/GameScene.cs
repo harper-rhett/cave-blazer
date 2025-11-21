@@ -4,7 +4,7 @@ using HarpEngine.Graphics;
 using HarpEngine.Tiles;
 using System.Numerics;
 
-internal class GameScene : Scene
+public class GameScene : Scene
 {
 	public readonly TiledWorld World;
 	private Player player;
