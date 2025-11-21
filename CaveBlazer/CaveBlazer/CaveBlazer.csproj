@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="sprites\player\ladder-climbing.png">
+    <None Update="sprites\player\climbing-ladder.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="sprites\player\falling.png">

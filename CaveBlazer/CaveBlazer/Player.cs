@@ -27,6 +27,7 @@ public class Player : Entity
 	private const float newLevelBoost = 1.5f;
 	private const int colliderWidth = 8;
 	private const int colliderHeight = 15;
+	private const float ladderClimbSpeed = 25;
 
 	// Interface
 	public TiledArea CurrentArea;
@@ -39,7 +40,7 @@ public class Player : Entity
 		this.gameScene = gameScene;
 
 		collider = new(colliderWidth, colliderHeight);
-		playerState = new(this);
+		playerState = new();
 	}
 
 	public override void OnUpdate()
@@ -51,13 +52,15 @@ public class Player : Entity
 		// Check states
 
 		if (playerState.DidJump) Jump();
-
-		if (playerState.IsClimbingLadder)
+		else
 		{
-
+			if (playerState.IsOnLadder) LadderUpdate();
+			else
+			{
+				if (playerState.IsGrounded) GroundedUpdate();
+				else MidairUpdate();
+			}
 		}
-		if (playerState.IsGrounded) GroundedUpdate();
-		else MidairUpdate();
 
 		if (playerState.OutOfBounds) OutOfBounds();
 		Movement();
@@ -72,8 +75,23 @@ public class Player : Entity
 	private void Jump()
 	{
 		velocity.Y = -jumpForce;
-		animationManager.CurrentAnimationID = PlayerAnimation.Jumping;
+		animationManager.State = PlayerAnimation.Jumping;
 		animationManager.CurrentAnimation.Reset();
+	}
+
+	private void LadderUpdate()
+	{
+		WalkingUpdate(); // need to add climbing animation for side to side movement here
+		velocity.Y = 0;
+
+		if (!playerState.IsGrounded)
+		{
+			animationManager.State = PlayerAnimation.ClimbingLadder;
+			animationManager.CurrentAnimation.IsPaused = !playerState.IsClimbingLadder;
+		}
+
+		if (playerState.IsClimbingUpLadder) position.Y -= ladderClimbSpeed * Engine.FrameTime;
+		else if (playerState.IsClimbingDownLadder) position.Y += ladderClimbSpeed * Engine.FrameTime;
 	}
 
 	private void GroundedUpdate()
@@ -93,19 +111,19 @@ public class Player : Entity
 			bool isWallLeft = collider.IsTileLeft(TileType.Wall);
 			velocity.X = isWallLeft ? 0 : -walkSpeed;
 			direction = -1;
-			animationManager.CurrentAnimationID = PlayerAnimation.Walking;
+			animationManager.State = PlayerAnimation.Walking;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
 			bool isWallRight = collider.IsTileRight(TileType.Wall);
 			velocity.X = isWallRight ? 0 : walkSpeed;
 			direction = 1;
-			animationManager.CurrentAnimationID = PlayerAnimation.Walking;
+			animationManager.State = PlayerAnimation.Walking;
 		}
 		else
 		{
 			velocity.X = 0;
-			animationManager.CurrentAnimationID = PlayerAnimation.Idle;
+			animationManager.State = PlayerAnimation.Idle;
 		}
 	}
 

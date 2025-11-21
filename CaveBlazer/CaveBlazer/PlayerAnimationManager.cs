@@ -6,7 +6,8 @@ public enum PlayerAnimation
 	Idle,
 	Walking,
 	Jumping,
-	Falling
+	Falling,
+	ClimbingLadder
 }
 
 public class PlayerAnimationManager : TextureAnimationManager<PlayerAnimation>
@@ -30,5 +31,9 @@ public class PlayerAnimationManager : TextureAnimationManager<PlayerAnimation>
 		TextureAnimation fallingAnimation = new(fallingTexture, 4, 16, 16, 0.1f);
 		fallingAnimation.PlayOnce = true;
 		RegisterAnimation(fallingAnimation, PlayerAnimation.Falling);
+
+		Texture climbingLadderTexture = Texture.Load("sprites/player/climbing-ladder.png");
+		TextureAnimation climbingLadderAnimation = new(climbingLadderTexture, 4, 16, 16, 0.15f);
+		RegisterAnimation(climbingLadderAnimation, PlayerAnimation.ClimbingLadder);
 	}
 }
