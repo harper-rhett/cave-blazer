@@ -14,6 +14,7 @@ internal class Player : Entity
 	private Vector2 velocity;
 	private int direction = 1;
 	private bool isGrounded;
+	private bool isPlatformed;
 	private GameScene gameScene;
 	private TiledCollider<TileType> collider;
 	private TextureAnimationManager<Animation> animationManager = new();
@@ -23,7 +24,7 @@ internal class Player : Entity
 	private const float gravity = 135;
 	private const float jumpForce = 75;
 	private const float walkSpeed = 35;
-	private const float midairAcceleration = 15;
+	private const float midairAcceleration = 25;
 	private const float newLevelBoost = 1.5f;
 	private const int colliderWidth = 8;
 	private const int colliderHeight = 15;
@@ -60,7 +61,7 @@ internal class Player : Entity
 		animationManager.RegisterAnimation(walkAnimation, Animation.Walk);
 
 		Texture jumpTexture = Texture.Load("sprites/player/jump.png");
-		TextureAnimation jumpAnimation = new(jumpTexture, 4, 16, 16, 0.2f);
+		TextureAnimation jumpAnimation = new(jumpTexture, 4, 16, 16, 0.1f);
 		jumpAnimation.PlayOnce = true;
 		animationManager.RegisterAnimation(jumpAnimation, Animation.Jump);
 	}
@@ -69,7 +70,8 @@ internal class Player : Entity
 	{
 		// State checks
 		collider.Update(CurrentArea, position + colliderOffset);
-		isGrounded = collider.IsTileBottom(TileType.Wall);
+		isPlatformed = collider.IsTileBottom(TileType.Platform) && collider.BottomY % 16 == 0;
+		isGrounded = collider.IsTileBottom(TileType.Wall) || isPlatformed;
 		CheckJump();
 
 		// State updates
@@ -103,9 +105,16 @@ internal class Player : Entity
 
 	private void GroundedUpdate()
 	{
-		velocity.Y = 0;
+		if (velocity.Y > 0) velocity.Y = 0;
 		position.Y = position.Y.Floored();
 
+		WalkingUpdate();
+
+		if (Keyboard.IsKeyPressed(KeyboardKey.Down) && isPlatformed) position.Y += 1;
+	}
+
+	private void WalkingUpdate()
+	{
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
 		{
 			bool isWallLeft = collider.IsTileLeft(TileType.Wall);
