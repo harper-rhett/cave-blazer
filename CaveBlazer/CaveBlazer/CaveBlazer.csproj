@@ -16,19 +16,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="sprites\player\climb.png">
+    <None Update="sprites\player\ladder-climbing.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="sprites\player\fall.png">
+    <None Update="sprites\player\falling.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="sprites\player\idle.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="sprites\player\jump.png">
+    <None Update="sprites\player\jumping.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="sprites\player\walk.png">
+    <None Update="sprites\player\walking.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="sprites\tile-sets\mountain.png">
