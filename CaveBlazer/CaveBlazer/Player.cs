@@ -58,7 +58,7 @@ public class Player : Entity
 			else
 			{
 				if (playerState.IsGrounded) GroundedUpdate();
-				else MidairUpdate();
+				else MidairUpdate(); // need to add falling animation!
 			}
 		}
 
