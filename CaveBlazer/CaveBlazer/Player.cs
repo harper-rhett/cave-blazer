@@ -7,37 +7,31 @@ using HarpEngine.Utilities;
 using System.Diagnostics;
 using System.Numerics;
 
-internal class Player : Entity
+public class Player : Entity
 {
 	// General
 	private Vector2 position;
 	private Vector2 velocity;
 	private int direction = 1;
-	private bool isGrounded;
 	private GameScene gameScene;
 	private TiledCollider<TileType> collider;
-	private TextureAnimationManager<Animation> animationManager = new();
+	private PlayerState playerState;
+	private PlayerAnimationManager animationManager = new();
 	private Vector2 colliderOffset = new(4, 1);
 
 	// Settings
 	private const float gravity = 135;
 	private const float jumpForce = 75;
 	private const float walkSpeed = 35;
-	private const float midairAcceleration = 15;
+	private const float midairAcceleration = 25;
 	private const float newLevelBoost = 1.5f;
 	private const int colliderWidth = 8;
 	private const int colliderHeight = 15;
+	private const float ladderClimbSpeed = 25;
 
 	// Interface
 	public TiledArea CurrentArea;
 	public Vector2 Position => position;
-
-	public enum Animation
-	{
-		Idle,
-		Walk,
-		Jump,
-	}
 
 	public Player(GameScene gameScene, TiledArea area, Vector2 position)
 	{
@@ -45,85 +39,91 @@ internal class Player : Entity
 		CurrentArea = area;
 		this.gameScene = gameScene;
 
-		RegisterAnimations();
 		collider = new(colliderWidth, colliderHeight);
-	}
-
-	private void RegisterAnimations()
-	{
-		Texture idleTexture = Texture.Load("sprites/player/idle.png");
-		TextureAnimation idleAnimation = new(idleTexture, 4, 16, 16, 0.4f);
-		animationManager.RegisterAnimation(idleAnimation, Animation.Idle);
-
-		Texture walkTexture = Texture.Load("sprites/player/walk.png");
-		TextureAnimation walkAnimation = new(walkTexture, 4, 16, 16, 0.2f);
-		animationManager.RegisterAnimation(walkAnimation, Animation.Walk);
-
-		Texture jumpTexture = Texture.Load("sprites/player/jump.png");
-		TextureAnimation jumpAnimation = new(jumpTexture, 4, 16, 16, 0.2f);
-		jumpAnimation.PlayOnce = true;
-		animationManager.RegisterAnimation(jumpAnimation, Animation.Jump);
+		playerState = new();
 	}
 
 	public override void OnUpdate()
 	{
-		// State checks
+		// Update states
 		collider.Update(CurrentArea, position + colliderOffset);
-		isGrounded = collider.IsTileBottom(TileType.Wall);
-		CheckJump();
+		playerState.Update(collider);
 
-		// State updates
-		if (isGrounded) GroundedUpdate();
-		else MidairUpdate();
+		// Check states
 
-		// Check if in bounds
-		if (!collider.CenterInBounds) OutOfBounds();
+		if (playerState.DidJump) Jump();
+		else
+		{
+			if (playerState.IsOnLadder) LadderUpdate();
+			else
+			{
+				if (playerState.IsGrounded) GroundedUpdate();
+				else MidairUpdate(); // need to add falling animation!
+			}
+		}
+
+		if (playerState.OutOfBounds) OutOfBounds();
 		Movement();
 	}
 
 	public override void OnDraw()
 	{
-		animationManager.Draw(position, new(direction, 1), Engine.FrameTime, Colors.White);
+		animationManager.Draw(position, new(direction, 1), Colors.White);
 		//collider.Draw(position + colliderOffset, Colors.Red);
-	}
-
-	private void CheckJump()
-	{
-		bool didJump = isGrounded && Keyboard.IsKeyPressed(KeyboardKey.Space);
-		if (didJump) Jump();
 	}
 
 	private void Jump()
 	{
-		isGrounded = false;
 		velocity.Y = -jumpForce;
-		animationManager.CurrentID = Animation.Jump;
+		animationManager.State = PlayerAnimation.Jumping;
 		animationManager.CurrentAnimation.Reset();
+	}
+
+	private void LadderUpdate()
+	{
+		WalkingUpdate(); // need to add climbing animation for side to side movement here
+		velocity.Y = 0;
+
+		if (!playerState.IsGrounded)
+		{
+			animationManager.State = PlayerAnimation.ClimbingLadder;
+			animationManager.CurrentAnimation.IsPaused = !playerState.IsClimbingLadder;
+		}
+
+		if (playerState.IsClimbingUpLadder) position.Y -= ladderClimbSpeed * Engine.FrameTime;
+		else if (playerState.IsClimbingDownLadder) position.Y += ladderClimbSpeed * Engine.FrameTime;
 	}
 
 	private void GroundedUpdate()
 	{
-		velocity.Y = 0;
+		if (velocity.Y > 0) velocity.Y = 0;
 		position.Y = position.Y.Floored();
 
+		WalkingUpdate();
+
+		if (Keyboard.IsKeyPressed(KeyboardKey.Down) && playerState.IsOnPlatform) position.Y += 1;
+	}
+
+	private void WalkingUpdate()
+	{
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
 		{
 			bool isWallLeft = collider.IsTileLeft(TileType.Wall);
 			velocity.X = isWallLeft ? 0 : -walkSpeed;
 			direction = -1;
-			animationManager.CurrentID = Animation.Walk;
+			animationManager.State = PlayerAnimation.Walking;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
 			bool isWallRight = collider.IsTileRight(TileType.Wall);
 			velocity.X = isWallRight ? 0 : walkSpeed;
 			direction = 1;
-			animationManager.CurrentID = Animation.Walk;
+			animationManager.State = PlayerAnimation.Walking;
 		}
 		else
 		{
 			velocity.X = 0;
-			animationManager.CurrentID = Animation.Idle;
+			animationManager.State = PlayerAnimation.Idle;
 		}
 	}
 

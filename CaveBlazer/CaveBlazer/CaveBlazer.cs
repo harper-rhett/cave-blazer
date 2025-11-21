@@ -12,12 +12,12 @@ internal class CaveBlazer : Game
 		Window.SetRendererUnclipped(Colors.Black);
 	}
 
-	public override void Update()
+	public override void OnUpdate()
 	{
 		gameScene.Update();
 	}
 
-	public override void Draw()
+	public override void OnDraw()
 	{
 		gameScene.Draw();
 	}
