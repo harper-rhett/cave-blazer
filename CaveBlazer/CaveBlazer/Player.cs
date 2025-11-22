@@ -54,11 +54,11 @@ public class Player : Entity
 		if (playerState.DidJump) Jump();
 		else
 		{
-			if (playerState.IsOnLadder) LadderUpdate();
+			if (playerState.IsOnLadder) OnLadder();
 			else
 			{
-				if (playerState.IsGrounded) GroundedUpdate();
-				else MidairUpdate(); // need to add falling animation!
+				if (playerState.IsGrounded) Grounded();
+				else Midair();
 			}
 		}
 
@@ -76,12 +76,13 @@ public class Player : Entity
 	{
 		velocity.Y = -jumpForce;
 		animationManager.State = PlayerAnimation.Jumping;
-		animationManager.CurrentAnimation.Reset();
+		animationManager.jumpingAnimation.Reset();
+		animationManager.fallingAnimation.Reset();
 	}
 
-	private void LadderUpdate()
+	private void OnLadder()
 	{
-		WalkingUpdate(); // need to add climbing animation for side to side movement here
+		Walking(); // need to add climbing animation for side to side movement here
 		velocity.Y = 0;
 
 		if (!playerState.IsGrounded)
@@ -94,17 +95,17 @@ public class Player : Entity
 		else if (playerState.IsClimbingDownLadder) position.Y += ladderClimbSpeed * Engine.FrameTime;
 	}
 
-	private void GroundedUpdate()
+	private void Grounded()
 	{
 		if (velocity.Y > 0) velocity.Y = 0;
 		position.Y = position.Y.Floored();
 
-		WalkingUpdate();
+		Walking();
 
 		if (Keyboard.IsKeyPressed(KeyboardKey.Down) && playerState.IsOnPlatform) position.Y += 1;
 	}
 
-	private void WalkingUpdate()
+	private void Walking()
 	{
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
 		{
@@ -127,10 +128,11 @@ public class Player : Entity
 		}
 	}
 
-	private void MidairUpdate()
+	private void Midair()
 	{
 		// Apply gravity
 		velocity.Y += gravity * Engine.FrameTime;
+		if (velocity.Y > 0) animationManager.State = PlayerAnimation.Falling;
 
 		// Get midair movement
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
