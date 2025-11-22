@@ -12,7 +12,7 @@ public class GameScene : Scene
 
 	public GameScene() : base(Colors.SkyBlue)
 	{
-		LDTKImporter importer = new("world.ldtk", 16);
+		LDTKImporter importer = new("world.ldtk", 8);
 		World = AddEntity(importer.GenerateWorld());
 		player = AddEntity(new Player(this, importer.SpawnArea, importer.SpawnPosition));
 		
