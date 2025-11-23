@@ -28,8 +28,9 @@ public class GameScene : Scene
 	{
 		TiledArea nextArea = World.GetArea(pixelX, pixelY);
 		player.CurrentArea = nextArea;
-		Transform2DEaser transformEaser = AddEntity(new Transform2DEaser(camera.Transform, 1f));
-		transformEaser.TargetWorldPosition = nextArea.Position;
-		transformEaser.Start();
+		Transform2DEaser cameraEaser = AddEntity(new Transform2DEaser(camera.Transform, 1f));
+		cameraEaser.Curve = Curves.SmoothStep;
+		cameraEaser.TargetWorldPosition = nextArea.Position;
+		cameraEaser.Start();
 	}
 }

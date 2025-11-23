@@ -24,7 +24,7 @@ public class Player : Entity
 	private const float jumpForce = 75;
 	private const float walkSpeed = 35;
 	private const float midairAcceleration = 25;
-	private const float newLevelBoost = 1.5f;
+	private const float newAreaBoost = 1.5f;
 	private const int colliderWidth = 8;
 	private const int colliderHeight = 15;
 	private const float ladderClimbSpeed = 25;
@@ -175,8 +175,12 @@ public class Player : Entity
 		if (areaExists)
 		{
 			gameScene.SwitchArea(collider.CenterX, collider.CenterY);
-			velocity *= newLevelBoost;
+			velocity *= newAreaBoost;
 		}
-		else velocity.X = -velocity.X;
+		else
+		{
+			velocity.X = -float.Sign(velocity.X) * jumpForce;
+			velocity.Y = -jumpForce;
+		}
 	}
 }
