@@ -39,7 +39,7 @@ public class PlayerAnimationManager : TextureAnimationManager<PlayerAnimation>
 		RegisterAnimation(fallingAnimation, PlayerAnimation.Falling);
 
 		Texture climbingLadderTexture = Texture.Load("sprites/player/climbing-ladder.png");
-		climbingLadderAnimation = new(climbingLadderTexture, 4, 16, 16, 0.15f);
+		climbingLadderAnimation = new(climbingLadderTexture, 4, 16, 16, 0.2f);
 		RegisterAnimation(climbingLadderAnimation, PlayerAnimation.ClimbingLadder);
 	}
 }
