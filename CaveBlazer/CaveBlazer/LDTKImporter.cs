@@ -11,9 +11,9 @@ internal class LDTKImporter
 	private Dictionary<string, TiledArea> areasByID = new();
 	private int tileSize;
 
-	public LDTKImporter(string filePath, int tileSize)
+	public LDTKImporter(string localPath, int tileSize)
 	{
-		string ldtkJSON = File.ReadAllText(filePath);
+		string ldtkJSON = File.ReadAllText(localPath);
 		ldtkData = LdtkJson.FromJson(ldtkJSON);
 		this.tileSize = tileSize;
 	}

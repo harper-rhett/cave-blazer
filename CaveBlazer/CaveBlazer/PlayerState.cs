@@ -5,6 +5,7 @@ public class PlayerState
 {
 	public bool IsGrounded { get; private set; }
 	public bool IsOnPlatform { get; private set; }
+	public bool IsOverTile { get; private set; }
 	public bool IsOnWall { get; private set; }
 	public bool IsOnLadder { get; private set; }
 	public bool IsClimbingLadder { get; private set; }
@@ -25,14 +26,15 @@ public class PlayerState
 	{
 		bool isOverLadder = collider.IsTileBottom(TileType.Ladder) && collider.CenterTile != TileType.Ladder;
 		bool isOverPlatform = collider.IsTileBottom(TileType.Platform);
-		IsOnPlatform = (isOverLadder || isOverPlatform) && collider.BottomY % 16 == 0;
+		IsOverTile = collider.BottomY % GameScene.TileSize == 0;
+		IsOnPlatform = (isOverLadder || isOverPlatform) && IsOverTile;
 		IsOnWall = collider.IsTileBottom(TileType.Wall);
 		IsGrounded = IsOnWall || IsOnPlatform;
 	}
 
 	private void CheckForLadder(TiledCollider<TileType> collider)
 	{
-		IsOnLadder = collider.CenterTile == TileType.Ladder || collider.IsTileBottom(TileType.Ladder);
+		IsOnLadder = collider.CenterTile == TileType.Ladder || (collider.IsTileBottom(TileType.Ladder) && !IsOverTile);
 		IsClimbingUpLadder = false;
 		IsClimbingDownLadder = false;
 		IsClimbingLadder = false;

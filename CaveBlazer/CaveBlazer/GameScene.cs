@@ -9,6 +9,7 @@ public class GameScene : Scene
 	public readonly TiledWorld World;
 	private Player player;
 	private Camera2D camera;
+	public const int TileSize = 16;
 
 	public GameScene() : base(Colors.SkyBlue)
 	{

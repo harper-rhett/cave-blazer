@@ -82,13 +82,15 @@ public class Player : Entity
 
 	private void OnLadder()
 	{
-		Walking(); // need to add climbing animation for side to side movement here
+		Strafe();
+		Walk();
 		velocity.Y = 0;
 
 		if (!playerState.IsGrounded)
 		{
 			animationManager.State = PlayerAnimation.ClimbingLadder;
-			animationManager.CurrentAnimation.IsPaused = !playerState.IsClimbingLadder;
+			if (float.Abs(velocity.X) > 0 || playerState.IsClimbingLadder) animationManager.climbingLadderAnimation.IsPaused = false;
+			else animationManager.climbingLadderAnimation.IsPaused = true;
 		}
 
 		if (playerState.IsClimbingUpLadder) position.Y -= ladderClimbSpeed * Engine.FrameTime;
@@ -100,32 +102,36 @@ public class Player : Entity
 		if (velocity.Y > 0) velocity.Y = 0;
 		position.Y = position.Y.Floored();
 
-		Walking();
+		Strafe();
+		Walk();
 
 		if (Keyboard.IsKeyPressed(KeyboardKey.Down) && playerState.IsOnPlatform) position.Y += 1;
 	}
 
-	private void Walking()
+	private void Strafe()
 	{
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
 		{
 			bool isWallLeft = collider.IsTileLeft(TileType.Wall);
 			velocity.X = isWallLeft ? 0 : -walkSpeed;
 			direction = -1;
-			animationManager.State = PlayerAnimation.Walking;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
 			bool isWallRight = collider.IsTileRight(TileType.Wall);
 			velocity.X = isWallRight ? 0 : walkSpeed;
 			direction = 1;
-			animationManager.State = PlayerAnimation.Walking;
 		}
 		else
 		{
 			velocity.X = 0;
-			animationManager.State = PlayerAnimation.Idle;
 		}
+	}
+
+	private void Walk()
+	{
+		if (float.Abs(velocity.X) > 0) animationManager.State = PlayerAnimation.Walking;
+		else animationManager.State = PlayerAnimation.Idle;
 	}
 
 	private void Midair()
