@@ -3,6 +3,7 @@ using HarpEngine.Animation;
 using HarpEngine.Graphics;
 using HarpEngine.Tiles;
 using System.Numerics;
+using HarpEngine.LDTKImporter;
 
 public class GameScene : Scene
 {

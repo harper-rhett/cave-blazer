@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaveBlazer", "CaveBlazer\Ca
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarpEngine", "..\..\harp-engine\HarpEngine\HarpEngine.csproj", "{651439E8-9A23-92FD-ABA8-99F4CB0073FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarpEngineLDTKImporter", "..\..\harp-engine-ldtk-importer\HarpEngineLDTKImporter\HarpEngineLDTKImporter\HarpEngineLDTKImporter.csproj", "{893F616A-5F16-5A98-0117-34410ECD382E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{651439E8-9A23-92FD-ABA8-99F4CB0073FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{651439E8-9A23-92FD-ABA8-99F4CB0073FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{651439E8-9A23-92FD-ABA8-99F4CB0073FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{893F616A-5F16-5A98-0117-34410ECD382E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{893F616A-5F16-5A98-0117-34410ECD382E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{893F616A-5F16-5A98-0117-34410ECD382E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{893F616A-5F16-5A98-0117-34410ECD382E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
