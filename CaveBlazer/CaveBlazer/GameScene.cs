@@ -4,10 +4,11 @@ using HarpEngine.Graphics;
 using HarpEngine.Tiles;
 using System.Numerics;
 using HarpEngine.LDTKImporter;
+using HarpEngineLDTKImporter;
 
 public class GameScene : Scene
 {
-	public readonly TiledWorld World;
+	public readonly LDTKWorld World;
 	private Player player;
 	private Camera2D camera;
 	public const int TileSize = 16;
@@ -16,12 +17,14 @@ public class GameScene : Scene
 	{
 		LDTKImporter importer = new("world.ldtk", 8);
 		World = AddEntity(importer.GenerateWorld());
-		player = AddEntity(new Player(this, importer.SpawnArea, importer.SpawnPosition));
+		LDTKArea spawnArea = World.AreasByID["spawn"];
+		Vector2 spawnPosition = spawnArea.EntitiesByID["spawn"][0].Position;
+		player = AddEntity(new Player(this, spawnArea, spawnPosition));
 		
 		camera = AddEntity(new Camera2D());
 		Camera = camera;
 		camera.Offset = Vector2.Zero;
-		camera.Transform.WorldPosition = importer.SpawnArea.Position;
+		camera.Transform.WorldPosition = spawnArea.Position;
 	}
 
 	public void SwitchArea(int pixelX, int pixelY)
