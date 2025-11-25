@@ -18,6 +18,7 @@ public class GameScene : Scene
 		LDTKImporter importer = new("world.ldtk", 8);
 		World = AddEntity(importer.GenerateWorld());
 		LDTKArea spawnArea = World.AreasByID["spawn"];
+		World.FocusArea = spawnArea;
 		Vector2 spawnPosition = spawnArea.EntitiesByID["spawn"][0].Position;
 		player = AddEntity(new Player(this, spawnArea, spawnPosition));
 		
@@ -30,6 +31,7 @@ public class GameScene : Scene
 	public void SwitchArea(int pixelX, int pixelY)
 	{
 		TiledArea nextArea = World.GetArea(pixelX, pixelY);
+		World.FocusArea = nextArea;
 		player.CurrentArea = nextArea;
 		Transform2DEaser cameraEaser = AddEntity(new Transform2DEaser(camera.Transform, 1f));
 		cameraEaser.Curve = Curves.SmoothStep;
