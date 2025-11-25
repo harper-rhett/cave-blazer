@@ -22,13 +22,13 @@ public class Player : Entity
 	// Settings
 	private const float gravity = 135;
 	private const float jumpForce = 75;
-	private const float walkSpeed = 35;
-	private const float midairAcceleration = 25;
+	private const float walkSpeed = 45;
+	private const float midairAcceleration = 10;
 	private const float newAreaBoost = 1.5f;
 	private const int colliderWidth = 8;
 	private const int colliderHeight = 15;
 	private const float ladderClimbSpeed = 25;
-	private const float deccelerationMultiplier = 2.5f;
+	private const float midairDecceleration = 25f;
 
 	// Interface
 	public TiledArea CurrentArea;
@@ -144,13 +144,13 @@ public class Player : Entity
 		// Get midair movement
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
 		{
-			float acceleration = velocity.X < 0 ? midairAcceleration : midairAcceleration * deccelerationMultiplier;
+			float acceleration = velocity.X < 0 ? midairAcceleration : midairDecceleration;
 			velocity.X -= acceleration * Engine.FrameTime;
 			direction = -1;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
-			float acceleration = velocity.X > 0 ? midairAcceleration : midairAcceleration * deccelerationMultiplier;
+			float acceleration = velocity.X > 0 ? midairAcceleration : midairDecceleration;
 			velocity.X += acceleration * Engine.FrameTime;
 			direction = 1;
 		}

@@ -25,7 +25,7 @@ public class PlayerAnimationManager : TextureAnimationManager<PlayerAnimation>
 		RegisterAnimation(idleAnimation, PlayerAnimation.Idle);
 
 		Texture walkTexture = Texture.Load("sprites/player/walking.png");
-		walkingAnimation = new(walkTexture, 4, 16, 16, 0.2f);
+		walkingAnimation = new(walkTexture, 4, 16, 16, 0.15f);
 		RegisterAnimation(walkingAnimation, PlayerAnimation.Walking);
 
 		Texture jumpTexture = Texture.Load("sprites/player/jumping.png");
