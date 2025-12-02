@@ -73,6 +73,11 @@ public class Player : Entity
 		//collider.Draw(position + colliderOffset, Colors.Red);
 	}
 
+	public override void OnDrawGUI()
+	{
+		Engine.DrawDebug(5, 5);
+	}
+
 	private void Jump()
 	{
 		velocity.Y = -jumpForce;
@@ -101,7 +106,13 @@ public class Player : Entity
 	private void Grounded()
 	{
 		if (velocity.Y > 0) velocity.Y = 0;
-		position.Y = position.Y.Floored();
+		
+		if (collider.IsTileInner(TileType.Wall))
+		{
+			int tileY = (position.Y.Floored() / GameScene.TileSize) - 1;
+			position.Y = tileY * GameScene.TileSize;
+		}
+		else position.Y = position.Y.Floored();
 
 		Strafe();
 		Walk();
