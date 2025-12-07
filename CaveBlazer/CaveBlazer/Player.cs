@@ -22,12 +22,13 @@ public class Player : Entity
 	// Settings
 	private const float gravity = 135;
 	private const float jumpForce = 75;
-	private const float walkSpeed = 35;
-	private const float midairAcceleration = 25;
-	private const float newLevelBoost = 1.5f;
+	private const float walkSpeed = 45;
+	private const float midairAcceleration = 10;
+	private const float newAreaBoost = 1.5f;
 	private const int colliderWidth = 8;
 	private const int colliderHeight = 15;
 	private const float ladderClimbSpeed = 25;
+	private const float midairDecceleration = 25f;
 
 	// Interface
 	public TiledArea CurrentArea;
@@ -54,11 +55,11 @@ public class Player : Entity
 		if (playerState.DidJump) Jump();
 		else
 		{
-			if (playerState.IsOnLadder) LadderUpdate();
+			if (playerState.IsOnLadder) OnLadder();
 			else
 			{
-				if (playerState.IsGrounded) GroundedUpdate();
-				else MidairUpdate(); // need to add falling animation!
+				if (playerState.IsGrounded) Grounded();
+				else Midair();
 			}
 		}
 
@@ -72,76 +73,95 @@ public class Player : Entity
 		//collider.Draw(position + colliderOffset, Colors.Red);
 	}
 
+	public override void OnDrawGUI()
+	{
+		Engine.DrawDebug(5, 5);
+	}
+
 	private void Jump()
 	{
 		velocity.Y = -jumpForce;
 		animationManager.State = PlayerAnimation.Jumping;
-		animationManager.CurrentAnimation.Reset();
+		animationManager.jumpingAnimation.Reset();
+		animationManager.fallingAnimation.Reset();
 	}
 
-	private void LadderUpdate()
+	private void OnLadder()
 	{
-		WalkingUpdate(); // need to add climbing animation for side to side movement here
+		Strafe();
+		Walk();
 		velocity.Y = 0;
 
 		if (!playerState.IsGrounded)
 		{
 			animationManager.State = PlayerAnimation.ClimbingLadder;
-			animationManager.CurrentAnimation.IsPaused = !playerState.IsClimbingLadder;
+			if (float.Abs(velocity.X) > 0 || playerState.IsClimbingLadder) animationManager.climbingLadderAnimation.IsPaused = false;
+			else animationManager.climbingLadderAnimation.IsPaused = true;
 		}
 
 		if (playerState.IsClimbingUpLadder) position.Y -= ladderClimbSpeed * Engine.FrameTime;
 		else if (playerState.IsClimbingDownLadder) position.Y += ladderClimbSpeed * Engine.FrameTime;
 	}
 
-	private void GroundedUpdate()
+	private void Grounded()
 	{
 		if (velocity.Y > 0) velocity.Y = 0;
-		position.Y = position.Y.Floored();
+		
+		if (collider.IsTileInner(TileType.Wall))
+		{
+			int tileY = (position.Y.Floored() / GameScene.TileSize) - 1;
+			position.Y = tileY * GameScene.TileSize;
+		}
+		else position.Y = position.Y.Floored();
 
-		WalkingUpdate();
+		Strafe();
+		Walk();
 
 		if (Keyboard.IsKeyPressed(KeyboardKey.Down) && playerState.IsOnPlatform) position.Y += 1;
 	}
 
-	private void WalkingUpdate()
+	private void Strafe()
 	{
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
 		{
 			bool isWallLeft = collider.IsTileLeft(TileType.Wall);
 			velocity.X = isWallLeft ? 0 : -walkSpeed;
 			direction = -1;
-			animationManager.State = PlayerAnimation.Walking;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
 			bool isWallRight = collider.IsTileRight(TileType.Wall);
 			velocity.X = isWallRight ? 0 : walkSpeed;
 			direction = 1;
-			animationManager.State = PlayerAnimation.Walking;
 		}
 		else
 		{
 			velocity.X = 0;
-			animationManager.State = PlayerAnimation.Idle;
 		}
 	}
 
-	private void MidairUpdate()
+	private void Walk()
+	{
+		if (float.Abs(velocity.X) > 0) animationManager.State = PlayerAnimation.Walking;
+		else animationManager.State = PlayerAnimation.Idle;
+	}
+
+	private void Midair()
 	{
 		// Apply gravity
 		velocity.Y += gravity * Engine.FrameTime;
+		if (velocity.Y > 0) animationManager.State = PlayerAnimation.Falling;
 
 		// Get midair movement
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
 		{
-			float acceleration = velocity.X < 0 ? midairAcceleration : midairAcceleration * 2f;
+			float acceleration = velocity.X < 0 ? midairAcceleration : midairDecceleration;
 			velocity.X -= acceleration * Engine.FrameTime;
 			direction = -1;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
-			float acceleration = velocity.X > 0 ? midairAcceleration : midairAcceleration * 2f;
+			float acceleration = velocity.X > 0 ? midairAcceleration : midairDecceleration;
 			velocity.X += acceleration * Engine.FrameTime;
 			direction = 1;
 		}
@@ -166,8 +186,12 @@ public class Player : Entity
 		if (areaExists)
 		{
 			gameScene.SwitchArea(collider.CenterX, collider.CenterY);
-			velocity *= newLevelBoost;
+			velocity *= newAreaBoost;
 		}
-		else velocity.X = -velocity.X;
+		else
+		{
+			velocity.X = -float.Sign(velocity.X) * jumpForce;
+			velocity.Y = -jumpForce;
+		}
 	}
 }
