@@ -15,6 +15,7 @@ public class GameScene : Scene
 
 	public GameScene() : base(Colors.SkyBlue)
 	{
+		// Initialize world and player
 		LDTKImporter importer = new("world.ldtk", 8);
 		World = AddEntity(importer.GenerateWorld());
 		LDTKArea spawnArea = World.AreasByID["spawn"];
@@ -22,10 +23,16 @@ public class GameScene : Scene
 		Vector2 spawnPosition = spawnArea.EntitiesByID["spawn"][0].Position;
 		player = AddEntity(new Player(this, spawnArea, spawnPosition));
 		
+		// Initialize camera
 		camera = AddEntity(new Camera2D());
 		Camera = camera;
 		camera.Offset = Vector2.Zero;
 		camera.Transform.WorldPosition = spawnArea.Position;
+
+		// Initialize parallax
+		Parallax parallax = AddEntity(new Parallax(camera));
+		parallax.DrawLayer = -1;
+		parallax.AddLayer(Texture.Load("sprites/backgrounds/background.png"), new(0, -320), 0.25f);
 	}
 
 	public void SwitchArea(int pixelX, int pixelY)
