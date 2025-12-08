@@ -40,7 +40,7 @@ public class PlayerState
 		IsClimbingLadder = false;
 		if (IsOnLadder)
 		{
-			if (Keyboard.IsKeyDown(KeyboardKey.Up)) IsClimbingUpLadder = true;
+			if (Keyboard.IsKeyDown(KeyboardKey.Up) && !collider.IsTileTop(TileType.Wall)) IsClimbingUpLadder = true;
 			else if (Keyboard.IsKeyDown(KeyboardKey.Down) && !IsOnWall) IsClimbingDownLadder = true;
 			IsClimbingLadder = IsClimbingUpLadder || IsClimbingDownLadder;
 		}
