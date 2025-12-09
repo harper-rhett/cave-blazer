@@ -32,7 +32,7 @@ public class GameScene : Scene
 		// Initialize parallax
 		Parallax parallax = AddEntity(new Parallax(camera));
 		parallax.DrawLayer = -1;
-		parallax.AddLayer(Texture.Load("sprites/backgrounds/background.png"), new(0, -320), 0.25f);
+		parallax.AddLayer(Texture.Load("sprites/backgrounds/background.png"), new(0, -256), 0.25f);
 	}
 
 	public void SwitchArea(int pixelX, int pixelY)
