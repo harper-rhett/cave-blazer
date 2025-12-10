@@ -13,13 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="sprites\backgrounds\background.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="sprites\backgrounds\clouds.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="sprites\backgrounds\fields.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="sprites\backgrounds\grass.png">
@@ -28,7 +22,7 @@
     <None Update="sprites\backgrounds\large-mountains.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="sprites\backgrounds\old\background.png">
+    <None Update="sprites\backgrounds\plains.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="sprites\backgrounds\sky.png">
@@ -52,9 +46,9 @@
     <None Update="sprites\player\walking.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="sprites\tile-sets\mountain.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+	<None Update="sprites\tile-sets\mountain.png">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
     <None Update="world.ldtk">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

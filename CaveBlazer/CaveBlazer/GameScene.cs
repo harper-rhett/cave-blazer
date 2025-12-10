@@ -30,9 +30,8 @@ public class GameScene : Scene
 		camera.Transform.WorldPosition = spawnArea.Position;
 
 		// Initialize parallax
-		Parallax parallax = AddEntity(new Parallax(camera));
+		MountainParallax parallax = AddEntity(new MountainParallax(camera));
 		parallax.DrawLayer = -1;
-		parallax.AddLayer(Texture.Load("sprites/backgrounds/background.png"), new(0, -256), 0.25f);
 	}
 
 	public void SwitchArea(int pixelX, int pixelY)
