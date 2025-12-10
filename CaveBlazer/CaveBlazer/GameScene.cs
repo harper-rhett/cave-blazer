@@ -30,7 +30,7 @@ public class GameScene : Scene
 		camera.Transform.WorldPosition = spawnArea.Position;
 
 		// Initialize parallax
-		MountainParallax parallax = AddEntity(new MountainParallax(camera));
+		MountainParallax parallax = AddEntity(new MountainParallax(camera, new(0, -256)));
 		parallax.DrawLayer = -1;
 	}
 
