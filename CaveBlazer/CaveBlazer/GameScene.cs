@@ -40,6 +40,7 @@ public class GameScene : Scene
 		World.FocusArea = nextArea;
 		player.CurrentArea = nextArea;
 		Transform2DEaser cameraEaser = AddEntity(new Transform2DEaser(camera.Transform, 1f));
+		cameraEaser.UpdateLayer = -1;
 		cameraEaser.Curve = Curves.SmoothStep;
 		cameraEaser.TargetWorldPosition = nextArea.Position;
 		cameraEaser.Start();
