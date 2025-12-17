@@ -13,6 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="fonts\Tiny5-Regular.fnt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="fonts\Tiny5-Regular_0.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="sprites\backgrounds\clouds.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

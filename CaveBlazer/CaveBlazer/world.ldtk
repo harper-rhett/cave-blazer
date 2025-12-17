@@ -1939,9 +1939,9 @@
 									"id": "V_String",
 									"params": ["sign"]
 								}] },
-								{ "__identifier": "text", "__type": "String", "__value": "Welcome to Buddha Mountain", "__tile": null, "defUid": 119, "realEditorValues": [{
+								{ "__identifier": "text", "__type": "String", "__value": "Welcome to Jangchub Mountain", "__tile": null, "defUid": 119, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["Welcome to Buddha Mountain"]
+									"params": ["Welcome to Jangchub Mountain"]
 								}] }
 							],
 							"__worldX": 80,
