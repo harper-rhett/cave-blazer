@@ -12,6 +12,7 @@ public class GameScene : Scene
 	private Player player;
 	private Camera2D camera;
 	public const int TileSize = 16;
+	private Transform2DEaser cameraEaser;
 
 	public GameScene() : base(Colors.SkyBlue)
 	{
@@ -22,7 +23,7 @@ public class GameScene : Scene
 
 		// Process player spawn
 		LDTKArea spawnArea = World.AreasByID["spawn"];
-		World.FocusArea = spawnArea;
+		World.AddFocus(spawnArea);
 		Vector2 spawnPosition = spawnArea.EntitiesByID["spawn"][0].Position;
 		player = AddEntity(new Player(this, spawnArea, spawnPosition));
 		
@@ -47,6 +48,7 @@ public class GameScene : Scene
 			if (ldtkEntity.ID == "dialogue") entity = new DialogueEntity(ldtkEntity);
 
 			// Register entity
+			if (entity is null) continue;
 			AddEntity(entity);
 			area.RegisterEntity(entity);
 		}
@@ -54,13 +56,26 @@ public class GameScene : Scene
 
 	public void SwitchArea(int pixelX, int pixelY)
 	{
+		// Cache areas
+		TiledArea previousArea = player.CurrentArea;
 		TiledArea nextArea = World.GetArea(pixelX, pixelY);
-		World.FocusArea = nextArea;
+
+		// Set new area
+		if (cameraEaser is not null) cameraEaser.Finish();
+		World.AddFocus(nextArea);
 		player.CurrentArea = nextArea;
-		Transform2DEaser cameraEaser = AddEntity(new Transform2DEaser(camera.Transform, 1f));
+
+		// Ease camera to next area
+		cameraEaser = AddEntity(new Transform2DEaser(camera.Transform, 1f));
 		cameraEaser.UpdateLayer = -1;
 		cameraEaser.Curve = Curves.SmoothStep;
 		cameraEaser.TargetWorldPosition = nextArea.Position;
 		cameraEaser.Start();
+		cameraEaser.Finished += () => AreaSwitched(previousArea);
+	}
+
+	private void AreaSwitched(TiledArea previousArea)
+	{
+		World.RemoveFocus(previousArea);
 	}
 }
