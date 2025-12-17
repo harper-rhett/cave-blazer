@@ -4865,9 +4865,9 @@
 									"id": "V_String",
 									"params": ["monk"]
 								}] },
-								{ "__identifier": "text", "__type": "String", "__value": "Monk says what", "__tile": null, "defUid": 119, "realEditorValues": [{
+								{ "__identifier": "text", "__type": "String", "__value": "Are you searching for something, or are you just lost?", "__tile": null, "defUid": 119, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["Monk says what"]
+									"params": ["Are you searching for something, or are you just lost?"]
 								}] }
 							],
 							"__worldX": 2016,
@@ -5229,9 +5229,9 @@
 									"id": "V_String",
 									"params": ["monk"]
 								}] },
-								{ "__identifier": "text", "__type": "String", "__value": "Good spot for a piss", "__tile": null, "defUid": 119, "realEditorValues": [{
+								{ "__identifier": "text", "__type": "String", "__value": "I wonder if you have come here for the same reason as many others.", "__tile": null, "defUid": 119, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["Good spot for a piss"]
+									"params": ["I wonder if you have come here for the same reason as many others."]
 								}] }
 							],
 							"__worldX": 896,
