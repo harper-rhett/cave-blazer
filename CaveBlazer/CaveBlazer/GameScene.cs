@@ -9,7 +9,7 @@ using HarpEngineLDTKImporter;
 public class GameScene : Scene
 {
 	public readonly LDTKWorld World;
-	private Player player;
+	public readonly Player Player;
 	private Camera2D camera;
 	public const int TileSize = 16;
 	private Transform2DEaser cameraEaser;
@@ -25,7 +25,7 @@ public class GameScene : Scene
 		LDTKArea spawnArea = World.AreasByID["spawn"];
 		World.AddFocus(spawnArea);
 		Vector2 spawnPosition = spawnArea.EntitiesByID["spawn"][0].Position;
-		player = AddEntity(new Player(this, spawnArea, spawnPosition));
+		Player = AddEntity(new Player(this, spawnArea, spawnPosition));
 		
 		// Initialize camera
 		camera = AddEntity(new Camera2D());
@@ -45,7 +45,7 @@ public class GameScene : Scene
 		{
 			// Get relevant entity
 			Entity entity = null;
-			if (ldtkEntity.ID == "dialogue") entity = new DialogueEntity(ldtkEntity);
+			if (ldtkEntity.ID == "dialogue") entity = new DialogueEntity(ldtkEntity, this);
 
 			// Register entity
 			if (entity is null) continue;
@@ -57,13 +57,13 @@ public class GameScene : Scene
 	public void SwitchArea(int pixelX, int pixelY)
 	{
 		// Cache areas
-		TiledArea previousArea = player.CurrentArea;
+		TiledArea previousArea = Player.CurrentArea;
 		TiledArea nextArea = World.GetArea(pixelX, pixelY);
 
 		// Set new area
 		if (cameraEaser is not null) cameraEaser.Finish();
 		World.AddFocus(nextArea);
-		player.CurrentArea = nextArea;
+		Player.CurrentArea = nextArea;
 
 		// Ease camera to next area
 		cameraEaser = AddEntity(new Transform2DEaser(camera.Transform, 1f));

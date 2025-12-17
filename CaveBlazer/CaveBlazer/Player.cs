@@ -1,38 +1,42 @@
 ﻿using HarpEngine;
-using HarpEngine.Animation;
 using HarpEngine.Graphics;
 using HarpEngine.Input;
+using HarpEngine.Shapes;
 using HarpEngine.Tiles;
 using HarpEngine.Utilities;
-using System.Diagnostics;
 using System.Numerics;
 
-public class Player : Entity
+public class Player : Entity, IIntersectsWithRectangle
 {
-	// General
+	// Position
 	private Vector2 position;
+	public Vector2 Position => position;
 	private Vector2 velocity;
-	private int direction = 1;
+
+	// General
 	private GameScene gameScene;
-	private TiledCollider<TileType> collider;
 	private PlayerState playerState;
-	private PlayerAnimationManager animationManager = new();
+	public TiledArea CurrentArea;
+
+	// Animation
+	private PlayerAnimation animationManager = new();
+	private int direction = 1;
+
+	// Collision
+	private TiledCollider<TileType> collider;
 	private Vector2 colliderOffset = new(4, 1);
+	private Vector2 colliderPosition => position + colliderOffset;
+	public const int ColliderWidth = 8;
+	public const int ColliderHeight = 15;
 
 	// Settings
 	private const float gravity = 135;
 	private const float jumpForce = 75;
 	private const float walkSpeed = 45;
 	private const float midairAcceleration = 10;
-	private const float newAreaBoost = 1.5f;
-	private const int colliderWidth = 8;
-	private const int colliderHeight = 15;
-	private const float ladderClimbSpeed = 25;
 	private const float midairDecceleration = 25f;
-
-	// Interface
-	public TiledArea CurrentArea;
-	public Vector2 Position => position;
+	private const float newAreaBoost = 1.5f;
+	private const float ladderClimbSpeed = 25;
 
 	public Player(GameScene gameScene, TiledArea area, Vector2 position)
 	{
@@ -40,14 +44,14 @@ public class Player : Entity
 		CurrentArea = area;
 		this.gameScene = gameScene;
 
-		collider = new(colliderWidth, colliderHeight);
+		collider = new(ColliderWidth, ColliderHeight);
 		playerState = new();
 	}
 
 	public override void OnUpdate()
 	{
 		// Update states
-		collider.Update(CurrentArea, position + colliderOffset);
+		collider.Update(CurrentArea, colliderPosition);
 		playerState.Update(collider);
 
 		// Check states
@@ -70,7 +74,7 @@ public class Player : Entity
 	public override void OnDraw()
 	{
 		animationManager.Draw(position, new(direction, 1), Colors.White);
-		//collider.Draw(position + colliderOffset, Colors.Red);
+		//collider.Draw(colliderPosition, Colors.Red);
 	}
 
 	public override void OnDrawGUI()
@@ -81,7 +85,7 @@ public class Player : Entity
 	private void Jump()
 	{
 		velocity.Y = -jumpForce;
-		animationManager.State = PlayerAnimation.Jumping;
+		animationManager.State = PlayerAnimationState.Jumping;
 		animationManager.jumpingAnimation.Reset();
 		animationManager.fallingAnimation.Reset();
 	}
@@ -94,7 +98,7 @@ public class Player : Entity
 
 		if (!playerState.IsGrounded)
 		{
-			animationManager.State = PlayerAnimation.ClimbingLadder;
+			animationManager.State = PlayerAnimationState.ClimbingLadder;
 			if (float.Abs(velocity.X) > 0 || playerState.IsClimbingLadder) animationManager.climbingLadderAnimation.IsPaused = false;
 			else animationManager.climbingLadderAnimation.IsPaused = true;
 		}
@@ -142,15 +146,15 @@ public class Player : Entity
 
 	private void Walk()
 	{
-		if (float.Abs(velocity.X) > 0) animationManager.State = PlayerAnimation.Walking;
-		else animationManager.State = PlayerAnimation.Idle;
+		if (float.Abs(velocity.X) > 0) animationManager.State = PlayerAnimationState.Walking;
+		else animationManager.State = PlayerAnimationState.Idle;
 	}
 
 	private void Midair()
 	{
 		// Apply gravity
 		velocity.Y += gravity * Engine.FrameTime;
-		if (velocity.Y > 0) animationManager.State = PlayerAnimation.Falling;
+		if (velocity.Y > 0) animationManager.State = PlayerAnimationState.Falling;
 
 		// Get midair movement
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
@@ -193,5 +197,11 @@ public class Player : Entity
 			velocity.X = -float.Sign(velocity.X) * jumpForce;
 			velocity.Y = -jumpForce;
 		}
+	}
+
+	public bool IntersectsWithRectangle(Rectangle rectangle)
+	{
+		Rectangle playerRectangle = new(colliderPosition, ColliderWidth, ColliderHeight);
+		return Intersection.RectangleOnRectangle(playerRectangle, rectangle);
 	}
 }
