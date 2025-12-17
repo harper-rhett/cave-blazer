@@ -15,9 +15,12 @@ public class GameScene : Scene
 
 	public GameScene() : base(Colors.SkyBlue)
 	{
-		// Initialize world and player
+		// Import world
 		LDTKImporter importer = new("world.ldtk", 8);
+		importer.AreaImported += ProcessArea;
 		World = AddEntity(importer.GenerateWorld());
+
+		// Process player spawn
 		LDTKArea spawnArea = World.AreasByID["spawn"];
 		World.FocusArea = spawnArea;
 		Vector2 spawnPosition = spawnArea.EntitiesByID["spawn"][0].Position;
@@ -31,7 +34,22 @@ public class GameScene : Scene
 
 		// Initialize parallax
 		MountainParallax parallax = AddEntity(new MountainParallax(camera, new(0, -256)));
+		parallax.RepeatY = false;
 		parallax.DrawLayer = -1;
+	}
+
+	private void ProcessArea(LDTKArea area)
+	{
+		foreach (LDTKEntity ldtkEntity in area.Entities)
+		{
+			// Get relevant entity
+			Entity entity = null;
+			if (ldtkEntity.ID == "dialogue") entity = new DialogueEntity(ldtkEntity);
+
+			// Register entity
+			AddEntity(entity);
+			area.RegisterEntity(entity);
+		}
 	}
 
 	public void SwitchArea(int pixelX, int pixelY)
