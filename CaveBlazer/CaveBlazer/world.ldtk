@@ -11,7 +11,7 @@
 	"iid": "51b31410-ac70-11f0-ab93-c593e284ebf6",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 135,
+	"nextUid": 136,
 	"identifierStyle": "Lowercase",
 	"toc": [{
 		"identifier": "spawn",
@@ -1203,8 +1203,8 @@
 					"identifier": "text",
 					"doc": null,
 					"__type": "String",
-					"uid": 119,
-					"type": "F_String",
+					"uid": 135,
+					"type": "F_Text",
 					"isArray": false,
 					"canBeNull": true,
 					"arrayMinLength": null,
@@ -1939,7 +1939,7 @@
 									"id": "V_String",
 									"params": ["sign"]
 								}] },
-								{ "__identifier": "text", "__type": "String", "__value": "Welcome to Jangchub Mountain", "__tile": null, "defUid": 119, "realEditorValues": [{
+								{ "__identifier": "text", "__type": "String", "__value": "Welcome to Jangchub Mountain", "__tile": null, "defUid": 135, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Welcome to Jangchub Mountain"]
 								}] }
@@ -4865,9 +4865,9 @@
 									"id": "V_String",
 									"params": ["monk"]
 								}] },
-								{ "__identifier": "text", "__type": "String", "__value": "Are you searching for something, or are you just lost?", "__tile": null, "defUid": 119, "realEditorValues": [{
+								{ "__identifier": "text", "__type": "String", "__value": "Are you lost? What is it you search for?", "__tile": null, "defUid": 135, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["Are you searching for something, or are you just lost?"]
+									"params": ["Are you lost? What is it you search for?"]
 								}] }
 							],
 							"__worldX": 2016,
@@ -5229,7 +5229,7 @@
 									"id": "V_String",
 									"params": ["monk"]
 								}] },
-								{ "__identifier": "text", "__type": "String", "__value": "I wonder if you have come here for the same reason as many others.", "__tile": null, "defUid": 119, "realEditorValues": [{
+								{ "__identifier": "text", "__type": "String", "__value": "I wonder if you have come here for the same reason as many others.", "__tile": null, "defUid": 135, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["I wonder if you have come here for the same reason as many others."]
 								}] }

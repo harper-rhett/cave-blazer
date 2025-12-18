@@ -57,8 +57,8 @@ public class DialogueEntity : Entity
 
 		if (gameScene.Player.IntersectsWithRectangle(rectangle))
 		{
-			Primitives.DrawRectangle(boxPosition, boxSize, Colors.White.SetAlpha(0.5f));
-			Text.Draw(font, text, textPosition, Vector2.Zero, 0, fontSize, fontSpacing, Colors.Black);
+			Primitives.DrawRectangle(boxPosition, boxSize, Colors.Black.SetAlpha(0.15f));
+			Text.Draw(font, text, textPosition, Vector2.Zero, 0, fontSize, fontSpacing, Colors.White);
 		}
 	}
 }
