@@ -74,7 +74,12 @@ public class Player : Entity, IIntersectsWithRectangle
 	public override void OnDraw()
 	{
 		animationManager.Draw(position, new(direction, 1), Colors.White);
-		if (playerState.CanGrabLadder) Primitives.DrawCircle(colliderPosition + new Vector2(collider.HalfWidth, -collider.HalfHeight / 2f), 2, Colors.SkyBlue);
+		if (playerState.CanGrabLadder)
+		{
+			Vector2 statusPosition = colliderPosition + new Vector2(collider.HalfWidth, -collider.HalfHeight / 2f);
+			Primitives.DrawCircle(statusPosition, 3, Colors.Blue);
+			Primitives.DrawCircle(statusPosition, 2, Colors.SkyBlue);
+		}
 		//collider.Draw(colliderPosition, Colors.Red);
 	}
 

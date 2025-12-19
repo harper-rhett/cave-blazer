@@ -13,6 +13,7 @@ public class GameScene : Scene
 	private Camera2D camera;
 	public const int TileSize = 16;
 	private Transform2DEaser cameraEaser;
+	private const string spawnAreaID = "origin";
 
 	public GameScene() : base(Colors.SkyBlue)
 	{
@@ -22,7 +23,8 @@ public class GameScene : Scene
 		World = AddEntity(importer.GenerateWorld());
 
 		// Process player spawn
-		LDTKArea spawnArea = World.AreasByID["spawn"];
+		LDTKArea originArea = World.AreasByID["origin"];
+		LDTKArea spawnArea = World.AreasByID[spawnAreaID];
 		World.AddFocus(spawnArea);
 		Vector2 spawnPosition = spawnArea.EntitiesByID["spawn"][0].Position;
 		Player = AddEntity(new Player(this, spawnArea, spawnPosition));
@@ -34,7 +36,7 @@ public class GameScene : Scene
 		camera.Transform.WorldPosition = spawnArea.Position;
 
 		// Initialize parallax
-		MountainParallax parallax = AddEntity(new MountainParallax(camera, new(0, -256)));
+		MountainParallax parallax = AddEntity(new MountainParallax(camera, originArea.Position, new(0, -256)));
 		parallax.RepeatY = false;
 		parallax.DrawLayer = -1;
 	}

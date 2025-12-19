@@ -16,12 +16,20 @@
 	"toc": [{
 		"identifier": "spawn",
 		"instances": [],
-		"instancesData": [{ "iids": {
-			"worldIid": "51b31411-ac70-11f0-ab93-4b001d1767ba",
-			"levelIid": "51b36230-ac70-11f0-ab93-29d0c7d6dfab",
-			"layerIid": "d9bf91d0-ac70-11f0-ab93-fd2c09985e57",
-			"entityIid": "79bcc740-ac70-11f0-ab93-ed440ca80169"
-		}, "worldX": 48, "worldY": -128, "widPx": 16, "heiPx": 16, "fields" : {} }]
+		"instancesData": [
+			{ "iids": {
+				"worldIid": "51b31411-ac70-11f0-ab93-4b001d1767ba",
+				"levelIid": "51b36230-ac70-11f0-ab93-29d0c7d6dfab",
+				"layerIid": "d9bf91d0-ac70-11f0-ab93-fd2c09985e57",
+				"entityIid": "79bcc740-ac70-11f0-ab93-ed440ca80169"
+			}, "worldX": 48, "worldY": -128, "widPx": 16, "heiPx": 16, "fields" : {} },
+			{ "iids": {
+				"worldIid": "51b31411-ac70-11f0-ab93-4b001d1767ba",
+				"levelIid": "33a231d0-ac70-11f0-b762-d7719a2b902a",
+				"layerIid": "33a258e1-ac70-11f0-b762-91eeee2f23a3",
+				"entityIid": "6d4d1980-d380-11f0-bd74-c783a5e498f4"
+			}, "worldX": 784, "worldY": -96, "widPx": 16, "heiPx": 16, "fields" : {} }
+		]
 	}],
 	"worldLayout": "GridVania",
 	"worldGridWidth": 368,
@@ -1286,7 +1294,7 @@
 	], "enums": [{ "identifier": "dialogue_type", "uid": 117, "values": [ { "id": "sign", "tileRect": null, "color": 14120515 }, { "id": "monk", "tileRect": null, "color": 14957380 } ], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] }], "externalEnums": [], "levelFields": [] },
 	"levels": [
 		{
-			"identifier": "spawn",
+			"identifier": "origin",
 			"iid": "51b36230-ac70-11f0-ab93-29d0c7d6dfab",
 			"uid": 0,
 			"worldX": 0,
@@ -3008,7 +3016,24 @@
 					"seed": 470706,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
-					"entityInstances": []
+					"entityInstances": [
+						{
+							"__identifier": "spawn",
+							"__grid": [3,6],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 2, "x": 48, "y": 80, "w": 16, "h": 16 },
+							"__smartColor": "#FF0044",
+							"iid": "6d4d1980-d380-11f0-bd74-c783a5e498f4",
+							"width": 16,
+							"height": 16,
+							"defUid": 20,
+							"px": [48,96],
+							"fieldInstances": [],
+							"__worldX": 784,
+							"__worldY": -96
+						}
+					]
 				}
 			],
 			"__neighbours": [ { "levelIid": "1024e3a0-ac70-11f0-ab93-e13aebb5a849", "dir": "w" }, { "levelIid": "5b452300-ac70-11f0-b762-3b1cd2844b95", "dir": "e" }, { "levelIid": "c02e9260-ac70-11f0-b762-2384a843840a", "dir": "ne" }, { "levelIid": "c844d1f0-ac70-11f0-a14a-9f7be6bbe171", "dir": "n" } ]

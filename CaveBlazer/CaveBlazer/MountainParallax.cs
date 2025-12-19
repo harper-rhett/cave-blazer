@@ -4,7 +4,7 @@ using System.Numerics;
 
 public class MountainParallax : Parallax
 {
-	public MountainParallax(Camera2D camera, Vector2 startPosition) : base(camera, startPosition)
+	public MountainParallax(Camera2D camera, Vector2 originPosition, Vector2 startPosition) : base(camera, originPosition, startPosition)
 	{
 		int yOffset = 0;
 		AddLayer(Texture.Load("sprites/backgrounds/sky.png"), new(0, yOffset), 0.8f);
