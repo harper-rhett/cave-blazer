@@ -9,19 +9,25 @@ using HarpEngineLDTKImporter;
 public class GameScene : Scene
 {
 	public readonly LDTKWorld World;
-	private Player player;
+	public readonly Player Player;
 	private Camera2D camera;
 	public const int TileSize = 16;
+	private Transform2DEaser cameraEaser;
+	private const string spawnAreaID = "origin";
 
 	public GameScene() : base(Colors.SkyBlue)
 	{
-		// Initialize world and player
+		// Import world
 		LDTKImporter importer = new("world.ldtk", 8);
+		importer.AreaImported += ProcessArea;
 		World = AddEntity(importer.GenerateWorld());
-		LDTKArea spawnArea = World.AreasByID["spawn"];
-		World.FocusArea = spawnArea;
+
+		// Process player spawn
+		LDTKArea originArea = World.AreasByID["origin"];
+		LDTKArea spawnArea = World.AreasByID[spawnAreaID];
+		World.AddFocus(spawnArea);
 		Vector2 spawnPosition = spawnArea.EntitiesByID["spawn"][0].Position;
-		player = AddEntity(new Player(this, spawnArea, spawnPosition));
+		Player = AddEntity(new Player(this, spawnArea, spawnPosition));
 		
 		// Initialize camera
 		camera = AddEntity(new Camera2D());
@@ -30,19 +36,48 @@ public class GameScene : Scene
 		camera.Transform.WorldPosition = spawnArea.Position;
 
 		// Initialize parallax
-		Parallax parallax = AddEntity(new Parallax(camera));
+		MountainParallax parallax = AddEntity(new MountainParallax(camera, originArea.Position, new(0, -256)));
+		parallax.RepeatY = false;
 		parallax.DrawLayer = -1;
-		parallax.AddLayer(Texture.Load("sprites/backgrounds/background.png"), new(0, -256), 0.25f);
+	}
+
+	private void ProcessArea(LDTKArea area)
+	{
+		foreach (LDTKEntity ldtkEntity in area.Entities)
+		{
+			// Get relevant entity
+			Entity entity = null;
+			if (ldtkEntity.ID == "dialogue") entity = new DialogueEntity(ldtkEntity, this);
+
+			// Register entity
+			if (entity is null) continue;
+			AddEntity(entity);
+			area.RegisterEntity(entity);
+		}
 	}
 
 	public void SwitchArea(int pixelX, int pixelY)
 	{
+		// Cache areas
+		TiledArea previousArea = Player.CurrentArea;
 		TiledArea nextArea = World.GetArea(pixelX, pixelY);
-		World.FocusArea = nextArea;
-		player.CurrentArea = nextArea;
-		Transform2DEaser cameraEaser = AddEntity(new Transform2DEaser(camera.Transform, 1f));
+
+		// Set new area
+		if (cameraEaser is not null) cameraEaser.Finish();
+		World.AddFocus(nextArea);
+		Player.CurrentArea = nextArea;
+
+		// Ease camera to next area
+		cameraEaser = AddEntity(new Transform2DEaser(camera.Transform, 1f));
+		cameraEaser.UpdateLayer = -1;
 		cameraEaser.Curve = Curves.SmoothStep;
 		cameraEaser.TargetWorldPosition = nextArea.Position;
 		cameraEaser.Start();
+		cameraEaser.Finished += () => AreaSwitched(previousArea);
+	}
+
+	private void AreaSwitched(TiledArea previousArea)
+	{
+		World.RemoveFocus(previousArea);
 	}
 }

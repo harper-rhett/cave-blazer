@@ -10,7 +10,8 @@ internal class CaveBlazer : Game
 	{
 		Window.SetResizable(true);
 		Window.SetRendererUnclipped(Colors.Black);
-		Engine.TargetFPS = 60;
+		Window.Resize(368 * 5, 192 * 5);
+		Window.SetPosition(32, 32);
 	}
 
 	public override void OnUpdate()

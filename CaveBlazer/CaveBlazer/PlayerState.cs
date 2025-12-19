@@ -7,6 +7,8 @@ public class PlayerState
 	public bool IsOnPlatform { get; private set; }
 	public bool IsOverTile { get; private set; }
 	public bool IsOnWall { get; private set; }
+	public bool IsOverLadder { get; private set; }
+	public bool CanGrabLadder { get; private set; }
 	public bool IsOnLadder { get; private set; }
 	public bool IsClimbingLadder { get; private set; }
 	public bool IsClimbingUpLadder { get; private set; }
@@ -34,11 +36,14 @@ public class PlayerState
 
 	private void CheckForLadder(TiledCollider<TileType> collider)
 	{
-		IsOnLadder = collider.CenterTile == TileType.Ladder || (collider.IsTileBottom(TileType.Ladder) && !IsOverTile);
+		IsOverLadder = collider.CenterTile == TileType.Ladder || (collider.IsTileBottom(TileType.Ladder) && !IsOverTile);
+		IsOnLadder = IsOnLadder && IsOverLadder;
+		IsOnLadder = IsOnLadder || IsOverLadder && Keyboard.IsKeyPressed(KeyboardKey.Up);
+		CanGrabLadder = IsOverLadder && !IsOnLadder;
 		IsClimbingUpLadder = false;
 		IsClimbingDownLadder = false;
 		IsClimbingLadder = false;
-		if (IsOnLadder)
+		if (IsOverLadder && IsOnLadder)
 		{
 			if (Keyboard.IsKeyDown(KeyboardKey.Up) && !collider.IsTileTop(TileType.Wall)) IsClimbingUpLadder = true;
 			else if (Keyboard.IsKeyDown(KeyboardKey.Down) && !IsOnWall) IsClimbingDownLadder = true;
