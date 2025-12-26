@@ -19,7 +19,9 @@ public class PlayerState
 
 	// Climbing
 	public bool CanGrabWall { get; private set; }
-	public bool HasGrabbedWall {  get; private set; }
+	public bool IsGrabbingWall {  get; private set; }
+	public bool IsGrabbingLeftWall { get; private set; }
+	public bool IsGrabbingRightWall { get; private set; }
 	public bool IsClimbingWall { get; private set; }
 	public bool IsClimbingUpWall { get; private set; }
 	public bool IsClimbingDownWall { get; private set; }
@@ -66,7 +68,20 @@ public class PlayerState
 
 	private void CheckClimbing(TiledCollider<TileType> collider)
 	{
+		// Check for walls to grab
+		bool isWallLeft = collider.IsTileLeft(TileType.Wall);
+		bool isWallRight = collider.IsTileRight(TileType.Wall);
+		CanGrabWall = !IsGrounded && (isWallLeft || isWallRight);
 
+		// Grab wall
+		bool grabbedWall = CanGrabWall && Keyboard.IsKeyPressed(KeyboardKey.Space);
+		IsGrabbingWall = IsGrabbingWall || grabbedWall;
+		IsGrabbingLeftWall = grabbedWall && isWallLeft;
+		IsGrabbingRightWall = grabbedWall && isWallRight;
+
+		// Climb
+		IsClimbingUpWall = IsGrabbingWall && Keyboard.IsKeyDown(KeyboardKey.Up);
+		IsClimbingDownWall = IsGrabbingWall && Keyboard.IsKeyDown(KeyboardKey.Down);
 	}
 
 	private void CheckForJump(TiledCollider<TileType> collider)

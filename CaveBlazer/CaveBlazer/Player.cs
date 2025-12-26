@@ -61,6 +61,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		else
 		{
 			if (state.IsOnLadder) OnLadder();
+			else if (state.IsGrabbingWall) GrabbingWall();
 			else
 			{
 				if (state.IsGrounded) Grounded();
@@ -74,13 +75,18 @@ public class Player : Entity, IIntersectsWithRectangle
 
 	public override void OnDraw()
 	{
+		// Draw player texture
 		animationManager.Draw(position, new(direction, 1), Colors.White);
-		if (state.CanGrabLadder)
+
+		// Draw status
+		if (state.CanGrabLadder || state.CanGrabWall)
 		{
 			Vector2 statusPosition = colliderPosition + new Vector2(collider.HalfWidth, -collider.HalfHeight / 2f);
 			Primitives.DrawCircle(statusPosition, 3, Colors.Blue);
 			Primitives.DrawCircle(statusPosition, 2, Colors.SkyBlue);
 		}
+
+		// Draw collider
 		//collider.Draw(colliderPosition, Colors.Red);
 	}
 
@@ -111,6 +117,11 @@ public class Player : Entity, IIntersectsWithRectangle
 		// Move up or down
 		if (state.IsClimbingUpLadder) position.Y -= ladderClimbSpeed * Engine.FrameTime;
 		else if (state.IsClimbingDownLadder) position.Y += ladderClimbSpeed * Engine.FrameTime;
+	}
+
+	private void GrabbingWall()
+	{
+
 	}
 
 	private void Grounded()
