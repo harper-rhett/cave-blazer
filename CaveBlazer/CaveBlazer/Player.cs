@@ -98,25 +98,27 @@ public class Player : Entity, IIntersectsWithRectangle
 
 	private void OnLadder()
 	{
-		Strafe();
-		Walk();
+		// Move left or right
+		StrafeCheck();
 		velocity.Y = 0;
 
-		if (!playerState.IsGrounded)
-		{
-			animationManager.State = PlayerAnimationState.ClimbingLadder;
-			if (float.Abs(velocity.X) > 0 || playerState.IsClimbingLadder) animationManager.climbingLadderAnimation.IsPaused = false;
-			else animationManager.climbingLadderAnimation.IsPaused = true;
-		}
+		// Animation
+		animationManager.State = PlayerAnimationState.ClimbingLadder;
+		if (float.Abs(velocity.X) > 0 || playerState.IsClimbingLadder) animationManager.climbingLadderAnimation.IsPaused = false;
+		else animationManager.climbingLadderAnimation.IsPaused = true;
 
+		// Move up or down
 		if (playerState.IsClimbingUpLadder) position.Y -= ladderClimbSpeed * Engine.FrameTime;
 		else if (playerState.IsClimbingDownLadder) position.Y += ladderClimbSpeed * Engine.FrameTime;
 	}
 
 	private void Grounded()
 	{
+		// Zero velocity
 		if (velocity.Y > 0) velocity.Y = 0;
-		
+		animationManager.fallingAnimation.Reset();
+
+		// Correct tile clipping
 		if (collider.IsTileInner(TileType.Wall))
 		{
 			int tileY = (position.Y.Floored() / GameScene.TileSize) - 1;
@@ -124,33 +126,36 @@ public class Player : Entity, IIntersectsWithRectangle
 		}
 		else position.Y = position.Y.Floored();
 
-		Strafe();
-		Walk();
+		// Walk
+		StrafeCheck();
+		WalkAnimation();
 
+		// Drop through platforms
 		if (Keyboard.IsKeyPressed(KeyboardKey.Down) && playerState.IsOnPlatform) position.Y += 1;
 	}
 
-	private void Strafe()
+	private void StrafeCheck()
 	{
-		if (Keyboard.IsKeyDown(KeyboardKey.Left))
-		{
-			bool isWallLeft = collider.IsTileLeft(TileType.Wall);
-			velocity.X = isWallLeft ? 0 : -walkSpeed;
-			direction = -1;
-		}
-		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
-		{
-			bool isWallRight = collider.IsTileRight(TileType.Wall);
-			velocity.X = isWallRight ? 0 : walkSpeed;
-			direction = 1;
-		}
-		else
-		{
-			velocity.X = 0;
-		}
+		if (Keyboard.IsKeyDown(KeyboardKey.Left)) StrafeLeft();
+		else if (Keyboard.IsKeyDown(KeyboardKey.Right)) StrafeRight();
+		else velocity.X = 0;
 	}
 
-	private void Walk()
+	private void StrafeLeft()
+	{
+		bool isWallLeft = collider.IsTileLeft(TileType.Wall);
+		velocity.X = isWallLeft ? 0 : -walkSpeed;
+		direction = -1;
+	}
+
+	private void StrafeRight()
+	{
+		bool isWallRight = collider.IsTileRight(TileType.Wall);
+		velocity.X = isWallRight ? 0 : walkSpeed;
+		direction = 1;
+	}
+
+	private void WalkAnimation()
 	{
 		if (float.Abs(velocity.X) > 0) animationManager.State = PlayerAnimationState.Walking;
 		else animationManager.State = PlayerAnimationState.Idle;
