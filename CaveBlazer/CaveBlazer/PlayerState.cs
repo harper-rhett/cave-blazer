@@ -3,16 +3,28 @@ using HarpEngine.Tiles;
 
 public class PlayerState
 {
+	// Grounded
 	public bool IsGrounded { get; private set; }
 	public bool IsOnPlatform { get; private set; }
 	public bool IsOverTile { get; private set; }
 	public bool IsOnWall { get; private set; }
+
+	// Ladders
 	public bool IsOverLadder { get; private set; }
 	public bool CanGrabLadder { get; private set; }
 	public bool IsOnLadder { get; private set; }
 	public bool IsClimbingLadder { get; private set; }
 	public bool IsClimbingUpLadder { get; private set; }
 	public bool IsClimbingDownLadder { get; private set; }
+
+	// Climbing
+	public bool CanGrabWall { get; private set; }
+	public bool HasGrabbedWall {  get; private set; }
+	public bool IsClimbingWall { get; private set; }
+	public bool IsClimbingUpWall { get; private set; }
+	public bool IsClimbingDownWall { get; private set; }
+
+	// Etcetera
 	public bool DidJump { get; private set; }
 	public bool OutOfBounds { get; private set; }
 
@@ -20,6 +32,7 @@ public class PlayerState
 	{
 		CheckGrounded(collider);
 		CheckForLadder(collider);
+		CheckClimbing(collider);
 		CheckForJump(collider);
 		CheckBounds(collider);
 	}
@@ -49,6 +62,11 @@ public class PlayerState
 			else if (Keyboard.IsKeyDown(KeyboardKey.Down) && !IsOnWall) IsClimbingDownLadder = true;
 			IsClimbingLadder = IsClimbingUpLadder || IsClimbingDownLadder;
 		}
+	}
+
+	private void CheckClimbing(TiledCollider<TileType> collider)
+	{
+
 	}
 
 	private void CheckForJump(TiledCollider<TileType> collider)

@@ -15,7 +15,8 @@ public class Player : Entity, IIntersectsWithRectangle
 
 	// General
 	private GameScene gameScene;
-	private PlayerState playerState;
+	private PlayerState state = new();
+	private PlayerInventory inventory = new();
 	public TiledArea CurrentArea;
 
 	// Animation
@@ -45,36 +46,36 @@ public class Player : Entity, IIntersectsWithRectangle
 		this.gameScene = gameScene;
 
 		collider = new(ColliderWidth, ColliderHeight);
-		playerState = new();
+		inventory.UnlockClimbing();
 	}
 
 	public override void OnUpdate()
 	{
 		// Update states
 		collider.Update(CurrentArea, colliderPosition);
-		playerState.Update(collider);
+		state.Update(collider);
 
 		// Check states
 
-		if (playerState.DidJump) Jump();
+		if (state.DidJump) Jump();
 		else
 		{
-			if (playerState.IsOnLadder) OnLadder();
+			if (state.IsOnLadder) OnLadder();
 			else
 			{
-				if (playerState.IsGrounded) Grounded();
+				if (state.IsGrounded) Grounded();
 				else Midair();
 			}
 		}
 
-		if (playerState.OutOfBounds) OutOfBounds();
+		if (state.OutOfBounds) OutOfBounds();
 		Movement();
 	}
 
 	public override void OnDraw()
 	{
 		animationManager.Draw(position, new(direction, 1), Colors.White);
-		if (playerState.CanGrabLadder)
+		if (state.CanGrabLadder)
 		{
 			Vector2 statusPosition = colliderPosition + new Vector2(collider.HalfWidth, -collider.HalfHeight / 2f);
 			Primitives.DrawCircle(statusPosition, 3, Colors.Blue);
@@ -104,12 +105,12 @@ public class Player : Entity, IIntersectsWithRectangle
 
 		// Animation
 		animationManager.State = PlayerAnimationState.ClimbingLadder;
-		if (float.Abs(velocity.X) > 0 || playerState.IsClimbingLadder) animationManager.climbingLadderAnimation.IsPaused = false;
+		if (float.Abs(velocity.X) > 0 || state.IsClimbingLadder) animationManager.climbingLadderAnimation.IsPaused = false;
 		else animationManager.climbingLadderAnimation.IsPaused = true;
 
 		// Move up or down
-		if (playerState.IsClimbingUpLadder) position.Y -= ladderClimbSpeed * Engine.FrameTime;
-		else if (playerState.IsClimbingDownLadder) position.Y += ladderClimbSpeed * Engine.FrameTime;
+		if (state.IsClimbingUpLadder) position.Y -= ladderClimbSpeed * Engine.FrameTime;
+		else if (state.IsClimbingDownLadder) position.Y += ladderClimbSpeed * Engine.FrameTime;
 	}
 
 	private void Grounded()
@@ -131,7 +132,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		WalkAnimation();
 
 		// Drop through platforms
-		if (Keyboard.IsKeyPressed(KeyboardKey.Down) && playerState.IsOnPlatform) position.Y += 1;
+		if (Keyboard.IsKeyPressed(KeyboardKey.Down) && state.IsOnPlatform) position.Y += 1;
 	}
 
 	private void StrafeCheck()
