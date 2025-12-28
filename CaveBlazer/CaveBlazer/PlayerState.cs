@@ -6,6 +6,7 @@ public class PlayerState
 	// General
 	private Player player;
 	private TiledCollider<TileType> collider;
+	private PlayerInventory inventory;
 
 	// Grounded
 	public bool IsGrounded { get; private set; }
@@ -37,10 +38,11 @@ public class PlayerState
 	public bool DidJump { get; private set; }
 	public bool OutOfBounds { get; private set; }
 
-	public PlayerState(Player player, TiledCollider<TileType> collider)
+	public PlayerState(Player player, TiledCollider<TileType> collider, PlayerInventory inventory)
 	{
 		this.player = player;
 		this.collider = collider;
+		this.inventory = inventory;
 	}
 
 	public void Update()
@@ -61,6 +63,7 @@ public class PlayerState
 		IsStandingOnPlatform = (isOverLadder || isOverPlatform) && IsStandingOnTile;
 		IsStandingOnWall = collider.IsTileBottom(TileType.Wall);
 		IsGrounded = IsStandingOnWall || IsStandingOnPlatform;
+		if (IsGrounded) inventory.ResetStamina();
 	}
 
 	private void CheckForLadder()
@@ -97,7 +100,7 @@ public class PlayerState
 		bool isWallLeft = collider.LeftCenterTile == TileType.Wall && player.FacingLeft;
 		bool isWallRight = collider.RightCenterTile == TileType.Wall && player.FacingRight;
 		bool isWall = isWallLeft || isWallRight;
-		CanGrabWall = !IsGrounded && isWall && !IsOverLadder;
+		CanGrabWall = !IsGrounded && isWall && !IsOverLadder && inventory.Stamina > 0;
 
 		// Grab wall
 		DidGrabWall = CanGrabWall && Keyboard.IsKeyPressed(KeyboardKey.Space);
@@ -111,12 +114,18 @@ public class PlayerState
 
 	private void CheckClimbing()
 	{
+		// Check stamina
+		if (inventory.Stamina <= 0)
+		{
+			Ungrab();
+			return;
+		}
+
 		// Dismount
 		DidWallJump = Keyboard.IsKeyPressed(KeyboardKey.Space) && IsGrabbingWall && !DidGrabWall;
 		if (DidWallJump)
 		{
-			IsGrabbingWall = false;
-			CanGrabWall = false;
+			Ungrab();
 			return;
 		}
 
@@ -130,14 +139,16 @@ public class PlayerState
 		bool rightVaultTile = IsGrabbingRightWall && collider.RightCenterTile == TileType.None;
 		bool vaultTile = leftVaultTile || rightVaultTile;
 		DidVault = IsGrabbingWall && vaultTile;
-		if (DidVault)
-		{
-			IsGrabbingWall = false;
-			CanGrabWall = false;
-		}
+		if (DidVault) Ungrab();
 
 		// Reset states
 		DidGrabWall = false;
+	}
+
+	private void Ungrab()
+	{
+		IsGrabbingWall = false;
+		CanGrabWall = false;
 	}
 
 	private void CheckForJump()

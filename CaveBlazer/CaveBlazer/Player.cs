@@ -8,6 +8,8 @@ using System.Numerics;
 
 public class Player : Entity, IIntersectsWithRectangle
 {
+	#region Fields
+
 	// Position
 	private Vector2 position;
 	public Vector2 Position => position;
@@ -42,6 +44,10 @@ public class Player : Entity, IIntersectsWithRectangle
 	private const float newAreaBoost = 1.5f;
 	private const float climbSpeed = 25;
 
+	#endregion
+
+	#region Base Class
+
 	public Player(GameScene gameScene, TiledArea area, Vector2 position)
 	{
 		this.position = position;
@@ -49,7 +55,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		this.gameScene = gameScene;
 
 		collider = new(ColliderWidth, ColliderHeight);
-		state = new(this, collider);
+		state = new(this, collider, inventory);
 		inventory.UnlockClimbing();
 	}
 
@@ -99,6 +105,10 @@ public class Player : Entity, IIntersectsWithRectangle
 	{
 		Engine.DrawDebug(5, 5);
 	}
+
+	#endregion
+
+	#region Behavior
 
 	private void Jump()
 	{
@@ -154,8 +164,10 @@ public class Player : Entity, IIntersectsWithRectangle
 		if (state.IsClimbingWall)
 		{
 			animationManager.climbingWallAnimation.IsPaused = false;
-			if (state.IsClimbingWallUp) position.Y -= climbSpeed * Engine.FrameTime;
-			else if (state.IsClimbingWallDown) position.Y += climbSpeed * Engine.FrameTime;
+			float stamina = climbSpeed * Engine.FrameTime;
+			if (state.IsClimbingWallUp) position.Y -= stamina;
+			else if (state.IsClimbingWallDown) position.Y += stamina;
+			inventory.UseStamina(stamina);
 		}
 		else animationManager.climbingWallAnimation.IsPaused = true;
 	}
@@ -258,9 +270,15 @@ public class Player : Entity, IIntersectsWithRectangle
 		}
 	}
 
+	#endregion
+
+	#region Extra
+
 	public bool IntersectsWithRectangle(Rectangle rectangle)
 	{
 		Rectangle playerRectangle = new(colliderPosition, ColliderWidth, ColliderHeight);
 		return Intersection.RectangleOnRectangle(playerRectangle, rectangle);
 	}
+
+	#endregion
 }
