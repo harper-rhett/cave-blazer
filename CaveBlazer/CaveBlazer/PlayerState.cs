@@ -18,18 +18,20 @@ public class PlayerState
 	public bool CanGrabLadder { get; private set; }
 	public bool IsOnLadder { get; private set; }
 	public bool IsClimbingLadder { get; private set; }
-	public bool IsClimbingUpLadder { get; private set; }
-	public bool IsClimbingDownLadder { get; private set; }
+	public bool IsClimbingLadderUp { get; private set; }
+	public bool IsClimbingLadderDown { get; private set; }
 
 	// Climbing
 	public bool CanGrabWall { get; private set; }
+	public bool DidGrabWall { get; private set; }
 	public bool IsGrabbingWall {  get; private set; }
 	public bool IsGrabbingLeftWall { get; private set; }
 	public bool IsGrabbingRightWall { get; private set; }
 	public bool IsClimbingWall { get; private set; }
-	public bool IsClimbingUpWall { get; private set; }
-	public bool IsClimbingDownWall { get; private set; }
+	public bool IsClimbingWallUp { get; private set; }
+	public bool IsClimbingWallDown { get; private set; }
 	public bool DidWallJump { get; private set; }
+	public bool DidVault { get; private set; }
 
 	// Etcetera
 	public bool DidJump { get; private set; }
@@ -45,7 +47,8 @@ public class PlayerState
 	{
 		CheckGrounded();
 		CheckForLadder();
-		CheckClimbing();
+		if (!IsGrabbingWall) CheckGrabbing();
+		if (IsGrabbingWall) CheckClimbing();
 		CheckForJump();
 		CheckBounds();
 	}
@@ -71,23 +74,45 @@ public class PlayerState
 		CanGrabLadder = IsOverLadder && !IsOnLadder;
 
 		// Reset states
-		IsClimbingUpLadder = false;
-		IsClimbingDownLadder = false;
+		IsClimbingLadderUp = false;
+		IsClimbingLadderDown = false;
 		IsClimbingLadder = false;
 
 		// Climb up and down the ladder
 		if (IsOverLadder && IsOnLadder)
 		{
-			if (Keyboard.IsKeyDown(KeyboardKey.Up) && !collider.IsTileTop(TileType.Wall)) IsClimbingUpLadder = true;
-			else if (Keyboard.IsKeyDown(KeyboardKey.Down) && !IsStandingOnWall) IsClimbingDownLadder = true;
-			IsClimbingLadder = IsClimbingUpLadder || IsClimbingDownLadder;
+			if (Keyboard.IsKeyDown(KeyboardKey.Up) && !collider.IsTileTop(TileType.Wall)) IsClimbingLadderUp = true;
+			else if (Keyboard.IsKeyDown(KeyboardKey.Down) && !IsStandingOnWall) IsClimbingLadderDown = true;
+			IsClimbingLadder = IsClimbingLadderUp || IsClimbingLadderDown;
+		}
+	}
+
+	private void CheckGrabbing()
+	{
+		// Reset states
+		DidWallJump = false;
+		DidVault = false;
+
+		// Check for walls to grab
+		bool isWallLeft = collider.LeftCenterTile == TileType.Wall && player.FacingLeft;
+		bool isWallRight = collider.RightCenterTile == TileType.Wall && player.FacingRight;
+		bool isWall = isWallLeft || isWallRight;
+		CanGrabWall = !IsGrounded && isWall && !IsOverLadder;
+
+		// Grab wall
+		DidGrabWall = CanGrabWall && Keyboard.IsKeyPressed(KeyboardKey.Space);
+		IsGrabbingWall = IsGrabbingWall || DidGrabWall;
+		if (DidGrabWall)
+		{
+			IsGrabbingLeftWall = isWallLeft;
+			IsGrabbingRightWall = isWallRight;
 		}
 	}
 
 	private void CheckClimbing()
 	{
 		// Dismount
-		DidWallJump = Keyboard.IsKeyPressed(KeyboardKey.Space) && IsGrabbingWall;
+		DidWallJump = Keyboard.IsKeyPressed(KeyboardKey.Space) && IsGrabbingWall && !DidGrabWall;
 		if (DidWallJump)
 		{
 			IsGrabbingWall = false;
@@ -95,24 +120,24 @@ public class PlayerState
 			return;
 		}
 
-		// Check for walls to grab
-		bool isWallLeft = collider.IsTileLeft(TileType.Wall) && player.FacingLeft;
-		bool isWallRight = collider.IsTileRight(TileType.Wall) && player.FacingRight;
-		CanGrabWall = !IsGrounded && (isWallLeft || isWallRight);
+		// Climb
+		IsClimbingWallUp = IsGrabbingWall && Keyboard.IsKeyDown(KeyboardKey.Up);
+		IsClimbingWallDown = IsGrabbingWall && Keyboard.IsKeyDown(KeyboardKey.Down) && !IsStandingOnWall;
+		IsClimbingWall = IsClimbingWallUp || IsClimbingWallDown;
 
-		// Grab wall
-		bool grabbedWall = CanGrabWall && Keyboard.IsKeyPressed(KeyboardKey.Space);
-		IsGrabbingWall = IsGrabbingWall || grabbedWall;
-		if (grabbedWall)
+		// Vault
+		bool leftVaultTile = IsGrabbingLeftWall && collider.LeftCenterTile == TileType.None;
+		bool rightVaultTile = IsGrabbingRightWall && collider.RightCenterTile == TileType.None;
+		bool vaultTile = leftVaultTile || rightVaultTile;
+		DidVault = IsGrabbingWall && vaultTile;
+		if (DidVault)
 		{
-			IsGrabbingLeftWall = isWallLeft;
-			IsGrabbingRightWall = isWallRight;
+			IsGrabbingWall = false;
+			CanGrabWall = false;
 		}
 
-		// Climb
-		IsClimbingUpWall = IsGrabbingWall && Keyboard.IsKeyDown(KeyboardKey.Up);
-		IsClimbingDownWall = IsGrabbingWall && Keyboard.IsKeyDown(KeyboardKey.Down) && !IsStandingOnWall;
-		IsClimbingWall = IsClimbingUpWall || IsClimbingDownWall;
+		// Reset states
+		DidGrabWall = false;
 	}
 
 	private void CheckForJump()

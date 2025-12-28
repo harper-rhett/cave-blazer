@@ -38,7 +38,7 @@ public class Player : Entity, IIntersectsWithRectangle
 	private const float jumpForce = 75;
 	private const float walkSpeed = 45;
 	private const float midairAcceleration = 10;
-	private const float midairDecceleration = 25f;
+	private const float midairDecceleration = 35f;
 	private const float newAreaBoost = 1.5f;
 	private const float climbSpeed = 25;
 
@@ -61,7 +61,7 @@ public class Player : Entity, IIntersectsWithRectangle
 
 		// Check states
 
-		if (state.DidJump) Jump();
+		if (state.DidJump || state.DidVault) Jump();
 		else if (state.DidWallJump) WallJump();
 		else
 		{
@@ -142,8 +142,8 @@ public class Player : Entity, IIntersectsWithRectangle
 		else animationManager.climbingLadderAnimation.IsPaused = true;
 
 		// Move up or down
-		if (state.IsClimbingUpLadder) position.Y -= climbSpeed * Engine.FrameTime;
-		else if (state.IsClimbingDownLadder) position.Y += climbSpeed * Engine.FrameTime;
+		if (state.IsClimbingLadderUp) position.Y -= climbSpeed * Engine.FrameTime;
+		else if (state.IsClimbingLadderDown) position.Y += climbSpeed * Engine.FrameTime;
 	}
 
 	private void GrabbingWall()
@@ -154,8 +154,8 @@ public class Player : Entity, IIntersectsWithRectangle
 		if (state.IsClimbingWall)
 		{
 			animationManager.climbingWallAnimation.IsPaused = false;
-			if (state.IsClimbingUpWall) position.Y -= climbSpeed * Engine.FrameTime;
-			else if (state.IsClimbingDownWall) position.Y += climbSpeed * Engine.FrameTime;
+			if (state.IsClimbingWallUp) position.Y -= climbSpeed * Engine.FrameTime;
+			else if (state.IsClimbingWallDown) position.Y += climbSpeed * Engine.FrameTime;
 		}
 		else animationManager.climbingWallAnimation.IsPaused = true;
 	}
