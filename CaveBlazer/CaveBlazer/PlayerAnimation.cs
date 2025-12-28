@@ -7,7 +7,8 @@ public enum PlayerAnimationState
 	Walking,
 	Jumping,
 	Falling,
-	ClimbingLadder
+	ClimbingLadder,
+	ClimbingWall
 }
 
 public class PlayerAnimation : TextureAnimationManager<PlayerAnimationState>
@@ -17,6 +18,7 @@ public class PlayerAnimation : TextureAnimationManager<PlayerAnimationState>
 	public readonly TextureAnimation jumpingAnimation;
 	public readonly TextureAnimation fallingAnimation;
 	public readonly TextureAnimation climbingLadderAnimation;
+	public readonly TextureAnimation climbingWallAnimation;
 
 	public PlayerAnimation()
 	{
@@ -41,5 +43,9 @@ public class PlayerAnimation : TextureAnimationManager<PlayerAnimationState>
 		Texture climbingLadderTexture = Texture.Load("sprites/player/climbing-ladder.png");
 		climbingLadderAnimation = new(climbingLadderTexture, 4, 16, 16, 0.2f);
 		RegisterAnimation(climbingLadderAnimation, PlayerAnimationState.ClimbingLadder);
+
+		Texture climbingWallTexture = Texture.Load("sprites/player/climbing-wall.png");
+		climbingWallAnimation = new(climbingWallTexture, 4, 16, 16, 0.2f);
+		RegisterAnimation(climbingWallAnimation, PlayerAnimationState.ClimbingWall);
 	}
 }

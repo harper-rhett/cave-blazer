@@ -79,7 +79,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		animationManager.Draw(position, new(direction, 1), Colors.White);
 
 		// Draw status
-		if (state.CanGrabLadder || state.CanGrabWall)
+		if (state.CanGrabLadder || state.CanGrabWall && !state.IsGrabbingWall)
 		{
 			Vector2 statusPosition = colliderPosition + new Vector2(collider.HalfWidth, -collider.HalfHeight / 2f);
 			Primitives.DrawCircle(statusPosition, 3, Colors.Blue);
@@ -121,7 +121,16 @@ public class Player : Entity, IIntersectsWithRectangle
 
 	private void GrabbingWall()
 	{
+		velocity.Y = 0;
 
+		animationManager.State = PlayerAnimationState.ClimbingWall;
+		if (state.IsClimbingWall)
+		{
+			animationManager.climbingWallAnimation.IsPaused = false;
+			if (state.IsClimbingUpWall) position.Y -= ladderClimbSpeed * Engine.FrameTime;
+			else if (state.IsClimbingDownWall) position.Y += ladderClimbSpeed * Engine.FrameTime;
+		}
+		else animationManager.climbingWallAnimation.IsPaused = true;
 	}
 
 	private void Grounded()
@@ -143,7 +152,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		WalkAnimation();
 
 		// Drop through platforms
-		if (Keyboard.IsKeyPressed(KeyboardKey.Down) && state.IsOnPlatform) position.Y += 1;
+		if (Keyboard.IsKeyPressed(KeyboardKey.Down) && state.IsStandingOnPlatform) position.Y += 1;
 	}
 
 	private void StrafeCheck()
