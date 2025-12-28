@@ -12,16 +12,19 @@ public class Player : Entity, IIntersectsWithRectangle
 	private Vector2 position;
 	public Vector2 Position => position;
 	private Vector2 velocity;
+	public Vector2 Velocity => velocity;
 
 	// General
 	private GameScene gameScene;
-	private PlayerState state = new();
+	private PlayerState state;
 	private PlayerInventory inventory = new();
 	public TiledArea CurrentArea;
 
 	// Animation
 	private PlayerAnimation animationManager = new();
-	private int direction = 1;
+	private int directionFacing = 1;
+	public bool FacingLeft => directionFacing == -1;
+	public bool FacingRight => directionFacing == 1;
 
 	// Collision
 	private TiledCollider<TileType> collider;
@@ -37,7 +40,7 @@ public class Player : Entity, IIntersectsWithRectangle
 	private const float midairAcceleration = 10;
 	private const float midairDecceleration = 25f;
 	private const float newAreaBoost = 1.5f;
-	private const float ladderClimbSpeed = 25;
+	private const float climbSpeed = 25;
 
 	public Player(GameScene gameScene, TiledArea area, Vector2 position)
 	{
@@ -46,6 +49,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		this.gameScene = gameScene;
 
 		collider = new(ColliderWidth, ColliderHeight);
+		state = new(this, collider);
 		inventory.UnlockClimbing();
 	}
 
@@ -53,11 +57,12 @@ public class Player : Entity, IIntersectsWithRectangle
 	{
 		// Update states
 		collider.Update(CurrentArea, colliderPosition);
-		state.Update(collider);
+		state.Update();
 
 		// Check states
 
 		if (state.DidJump) Jump();
+		else if (state.DidWallJump) WallJump();
 		else
 		{
 			if (state.IsOnLadder) OnLadder();
@@ -76,7 +81,7 @@ public class Player : Entity, IIntersectsWithRectangle
 	public override void OnDraw()
 	{
 		// Draw player texture
-		animationManager.Draw(position, new(direction, 1), Colors.White);
+		animationManager.Draw(position, new(directionFacing, 1), Colors.White);
 
 		// Draw status
 		if (state.CanGrabLadder || state.CanGrabWall && !state.IsGrabbingWall)
@@ -103,6 +108,28 @@ public class Player : Entity, IIntersectsWithRectangle
 		animationManager.fallingAnimation.Reset();
 	}
 
+	private void WallJump()
+	{
+		// Jump
+		if (state.IsGrabbingRightWall)
+		{
+			Vector2 direction = Vector2.Normalize(new(-1, -1));
+			velocity = direction * jumpForce;
+			directionFacing = -1;
+		}
+		else if (state.IsGrabbingLeftWall)
+		{
+			Vector2 direction = Vector2.Normalize(new(1, -1));
+			velocity = direction * jumpForce;
+			directionFacing = 1;
+		}
+
+		// Animation
+		animationManager.State = PlayerAnimationState.Jumping;
+		animationManager.jumpingAnimation.Reset();
+		animationManager.fallingAnimation.Reset();
+	}
+
 	private void OnLadder()
 	{
 		// Move left or right
@@ -115,8 +142,8 @@ public class Player : Entity, IIntersectsWithRectangle
 		else animationManager.climbingLadderAnimation.IsPaused = true;
 
 		// Move up or down
-		if (state.IsClimbingUpLadder) position.Y -= ladderClimbSpeed * Engine.FrameTime;
-		else if (state.IsClimbingDownLadder) position.Y += ladderClimbSpeed * Engine.FrameTime;
+		if (state.IsClimbingUpLadder) position.Y -= climbSpeed * Engine.FrameTime;
+		else if (state.IsClimbingDownLadder) position.Y += climbSpeed * Engine.FrameTime;
 	}
 
 	private void GrabbingWall()
@@ -127,8 +154,8 @@ public class Player : Entity, IIntersectsWithRectangle
 		if (state.IsClimbingWall)
 		{
 			animationManager.climbingWallAnimation.IsPaused = false;
-			if (state.IsClimbingUpWall) position.Y -= ladderClimbSpeed * Engine.FrameTime;
-			else if (state.IsClimbingDownWall) position.Y += ladderClimbSpeed * Engine.FrameTime;
+			if (state.IsClimbingUpWall) position.Y -= climbSpeed * Engine.FrameTime;
+			else if (state.IsClimbingDownWall) position.Y += climbSpeed * Engine.FrameTime;
 		}
 		else animationManager.climbingWallAnimation.IsPaused = true;
 	}
@@ -166,14 +193,14 @@ public class Player : Entity, IIntersectsWithRectangle
 	{
 		bool isWallLeft = collider.IsTileLeft(TileType.Wall);
 		velocity.X = isWallLeft ? 0 : -walkSpeed;
-		direction = -1;
+		directionFacing = -1;
 	}
 
 	private void StrafeRight()
 	{
 		bool isWallRight = collider.IsTileRight(TileType.Wall);
 		velocity.X = isWallRight ? 0 : walkSpeed;
-		direction = 1;
+		directionFacing = 1;
 	}
 
 	private void WalkAnimation()
@@ -193,13 +220,13 @@ public class Player : Entity, IIntersectsWithRectangle
 		{
 			float acceleration = velocity.X < 0 ? midairAcceleration : midairDecceleration;
 			velocity.X -= acceleration * Engine.FrameTime;
-			direction = -1;
+			directionFacing = -1;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
 			float acceleration = velocity.X > 0 ? midairAcceleration : midairDecceleration;
 			velocity.X += acceleration * Engine.FrameTime;
-			direction = 1;
+			directionFacing = 1;
 		}
 
 		// Check for wall collision

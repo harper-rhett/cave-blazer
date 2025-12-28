@@ -3,6 +3,10 @@ using HarpEngine.Tiles;
 
 public class PlayerState
 {
+	// General
+	private Player player;
+	private TiledCollider<TileType> collider;
+
 	// Grounded
 	public bool IsGrounded { get; private set; }
 	public bool IsStandingOnPlatform { get; private set; }
@@ -25,22 +29,28 @@ public class PlayerState
 	public bool IsClimbingWall { get; private set; }
 	public bool IsClimbingUpWall { get; private set; }
 	public bool IsClimbingDownWall { get; private set; }
-	public bool DidDismount { get; private set; }
+	public bool DidWallJump { get; private set; }
 
 	// Etcetera
 	public bool DidJump { get; private set; }
 	public bool OutOfBounds { get; private set; }
 
-	public void Update(TiledCollider<TileType> collider)
+	public PlayerState(Player player, TiledCollider<TileType> collider)
 	{
-		CheckGrounded(collider);
-		CheckForLadder(collider);
-		CheckClimbing(collider);
-		CheckForJump(collider);
-		CheckBounds(collider);
+		this.player = player;
+		this.collider = collider;
 	}
 
-	private void CheckGrounded(TiledCollider<TileType> collider)
+	public void Update()
+	{
+		CheckGrounded();
+		CheckForLadder();
+		CheckClimbing();
+		CheckForJump();
+		CheckBounds();
+	}
+
+	private void CheckGrounded()
 	{
 		bool isOverLadder = collider.IsTileBottom(TileType.Ladder) && collider.CenterTile != TileType.Ladder;
 		bool isOverPlatform = collider.IsTileBottom(TileType.Platform);
@@ -50,7 +60,7 @@ public class PlayerState
 		IsGrounded = IsStandingOnWall || IsStandingOnPlatform;
 	}
 
-	private void CheckForLadder(TiledCollider<TileType> collider)
+	private void CheckForLadder()
 	{
 		// Check collision
 		IsOverLadder = collider.CenterTile == TileType.Ladder || (collider.IsTileBottom(TileType.Ladder) && !IsStandingOnTile);
@@ -74,26 +84,30 @@ public class PlayerState
 		}
 	}
 
-	private void CheckClimbing(TiledCollider<TileType> collider)
+	private void CheckClimbing()
 	{
 		// Dismount
-		DidDismount = Keyboard.IsKeyPressed(KeyboardKey.Space) && IsGrabbingWall;
-		if (DidDismount)
+		DidWallJump = Keyboard.IsKeyPressed(KeyboardKey.Space) && IsGrabbingWall;
+		if (DidWallJump)
 		{
 			IsGrabbingWall = false;
+			CanGrabWall = false;
 			return;
 		}
 
 		// Check for walls to grab
-		bool isWallLeft = collider.IsTileLeft(TileType.Wall);
-		bool isWallRight = collider.IsTileRight(TileType.Wall);
+		bool isWallLeft = collider.IsTileLeft(TileType.Wall) && player.FacingLeft;
+		bool isWallRight = collider.IsTileRight(TileType.Wall) && player.FacingRight;
 		CanGrabWall = !IsGrounded && (isWallLeft || isWallRight);
 
 		// Grab wall
 		bool grabbedWall = CanGrabWall && Keyboard.IsKeyPressed(KeyboardKey.Space);
 		IsGrabbingWall = IsGrabbingWall || grabbedWall;
-		IsGrabbingLeftWall = grabbedWall && isWallLeft;
-		IsGrabbingRightWall = grabbedWall && isWallRight;
+		if (grabbedWall)
+		{
+			IsGrabbingLeftWall = isWallLeft;
+			IsGrabbingRightWall = isWallRight;
+		}
 
 		// Climb
 		IsClimbingUpWall = IsGrabbingWall && Keyboard.IsKeyDown(KeyboardKey.Up);
@@ -101,13 +115,13 @@ public class PlayerState
 		IsClimbingWall = IsClimbingUpWall || IsClimbingDownWall;
 	}
 
-	private void CheckForJump(TiledCollider<TileType> collider)
+	private void CheckForJump()
 	{
 		DidJump = IsGrounded && Keyboard.IsKeyPressed(KeyboardKey.Space);
 		if (DidJump) IsGrounded = false;
 	}
 
-	private void CheckBounds(TiledCollider<TileType> collider)
+	private void CheckBounds()
 	{
 		OutOfBounds = !collider.CenterInBounds;
 	}
