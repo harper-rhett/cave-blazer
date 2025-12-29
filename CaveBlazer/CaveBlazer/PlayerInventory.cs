@@ -13,6 +13,7 @@ public class PlayerInventory
 	{
 		CanClimb = true;
 		maxStamina = 16;
+		stamina = maxStamina;
 	}
 
 	public void ResetStamina()
