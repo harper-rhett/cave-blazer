@@ -64,8 +64,31 @@ public class UpgradeEntity : Entity
 		{
 			upgradeAction.Invoke();
 			glowParticles.Remove();
+			Explode();
 			Remove();
 		}
+	}
+
+	private void Explode()
+	{
+		ParticleEngine2D explosion = new();
+		explosion.RemoveOnExhausted = true;
+		explosion.RenderAsPixel();
+		explosion.AddInitializer(ParticleInitializers.RandomizeDirection());
+		explosion.AddInitializer(ParticleInitializers.ScatterByDirection(halfWidth / 2f));
+		explosion.AddInitializer(ParticleInitializers.RandomizeSpeed(15, 25));
+		explosion.AddInitializer(ParticleInitializers.RandomizeLifespan(0.5f, 2.0f));
+		explosion.AddInitializer(ParticleInitializers.AddVelocity(new Vector2(0, -25)));
+		explosion.AddModifier(ParticleModifiers.ApplyMovement());
+		explosion.AddModifier(ParticleModifiers.AddVelocity(new Vector2(0, 45)));
+		gameScene.AddEntity(explosion);
+
+		Particle2D template = new()
+		{
+			Position = position + new Vector2(halfWidth, halfHeight),
+			Gradient = new Gradient(Colors.Orange, Colors.Yellow),
+		};
+		explosion.SpawnBurst(template, 50);
 	}
 
 	public override void OnDraw()
