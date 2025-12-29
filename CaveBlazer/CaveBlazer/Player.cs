@@ -84,21 +84,52 @@ public class Player : Entity, IIntersectsWithRectangle
 		Movement();
 	}
 
+	#endregion
+
+	#region Drawing
+
 	public override void OnDraw()
 	{
 		// Draw player texture
 		animationManager.Draw(position, new(directionFacing, 1), Colors.White);
 
 		// Draw status
-		if (state.CanGrabLadder || state.CanGrabWall && !state.IsGrabbingWall)
-		{
-			Vector2 statusPosition = colliderPosition + new Vector2(collider.HalfWidth, -collider.HalfHeight / 2f);
-			Primitives.DrawCircle(statusPosition, 3, Colors.Blue);
-			Primitives.DrawCircle(statusPosition, 2, Colors.SkyBlue);
-		}
+		if (state.CanGrabLadder) DrawOrb(Colors.Green, Colors.Lime);
+		else if (state.CanGrabWall && !state.IsGrabbingWall) DrawOrb(Colors.SkyBlue, Colors.Blue);
+		else if (inventory.Stamina < inventory.MaxStamina) DrawStamina();
 
 		// Draw collider
 		//collider.Draw(colliderPosition, Colors.Red);
+	}
+
+	private void DrawOrb(Color innerColor, Color outerColor)
+	{
+		const float offset = -5;
+		Vector2 statusPosition = colliderPosition + new Vector2(collider.HalfWidth, offset);
+		Primitives.DrawCircle(statusPosition, 3, outerColor);
+		Primitives.DrawCircle(statusPosition, 2, innerColor);
+	}
+
+	private void DrawStamina()
+	{
+		// Dimensions
+		const int containerWidth = 4;
+		const int halfContainerWidth = containerWidth / 2;
+		const int containerHeight = 8;
+		const int containerOffset = -11;
+		const int staminaWidth = containerWidth - 2;
+		const int staminaHeight = containerHeight - 2;
+
+		// Draw container
+		Vector2 containerPosition = colliderPosition + new Vector2(collider.HalfWidth - halfContainerWidth, containerOffset);
+		Rectangle containerRectangle = new(containerPosition, containerWidth, containerHeight);
+		Primitives.DrawRectangleLines(containerRectangle, 1, Colors.White);
+
+		// Draw stamina
+		float staminaRectangleHeight = staminaHeight - inventory.StaminaRatio * staminaHeight;
+		Vector2 staminaPosition = containerPosition + Vector2.One + new Vector2(0, staminaRectangleHeight);
+		Rectangle staminaRectangle = new(staminaPosition, staminaWidth, staminaHeight - staminaRectangleHeight);
+		Primitives.DrawRectangle(staminaRectangle, Colors.White);
 	}
 
 	public override void OnDrawGUI()

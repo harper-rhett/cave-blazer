@@ -63,7 +63,7 @@ public class PlayerState
 		IsStandingOnPlatform = (isOverLadder || isOverPlatform) && IsStandingOnTile;
 		IsStandingOnWall = collider.IsTileBottom(TileType.Wall);
 		IsGrounded = IsStandingOnWall || IsStandingOnPlatform;
-		if (IsGrounded) inventory.ResetStamina();
+		if (IsGrounded && !IsGrabbingWall) inventory.ResetStamina();
 	}
 
 	private void CheckForLadder()
