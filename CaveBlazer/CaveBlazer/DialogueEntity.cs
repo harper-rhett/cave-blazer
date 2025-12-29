@@ -2,7 +2,7 @@
 using HarpEngine.Graphics;
 using HarpEngine.Tiles;
 using HarpEngine.Utilities;
-using HarpEngineLDTKImporter;
+using HarpEngine.LDTKImporter;
 using System.Numerics;
 
 public class DialogueEntity : Entity
@@ -32,10 +32,12 @@ public class DialogueEntity : Entity
 
 	public DialogueEntity(LDTKEntity ldtkEntity, GameScene gameScene)
 	{
+		// Set dimensions
 		position = ldtkEntity.Position;
 		this.gameScene = gameScene;
 		rectangle = new(position, GameScene.TileSize, GameScene.TileSize);
 
+		// Load texture
 		string type = ldtkEntity.FieldsByID["dialogue_type"].Value;
 		string texturePath = null;
 		if (type == "monk") texturePath = "sprites/entities/monk.png";
@@ -43,6 +45,7 @@ public class DialogueEntity : Entity
 		texture = Texture.Load(texturePath);
 		int halfWidth = texture.Width / 2;
 
+		// Set up text
 		text = ldtkEntity.FieldsByID["text"].Value;
 		textSize = Text.MeasureSize(font, text, fontSize, fontSpacing);
 		int halfTextWidth = (textSize.X / 2f).Floored();
@@ -55,7 +58,8 @@ public class DialogueEntity : Entity
 	{
 		texture.Draw(position, Colors.White);
 
-		if (gameScene.Player.IntersectsWithRectangle(rectangle))
+		bool collidesWithPlayer = gameScene.Player.IntersectsWithRectangle(rectangle);
+		if (collidesWithPlayer)
 		{
 			Primitives.DrawRectangle(boxPosition, boxSize, Colors.Black.SetAlpha(0.15f));
 			Text.Draw(font, text, textPosition, Vector2.Zero, 0, fontSize, fontSpacing, Colors.White);

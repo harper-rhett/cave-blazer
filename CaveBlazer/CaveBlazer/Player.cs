@@ -19,7 +19,7 @@ public class Player : Entity, IIntersectsWithRectangle
 	// General
 	private GameScene gameScene;
 	private PlayerState state;
-	private PlayerInventory inventory = new();
+	public PlayerInventory Inventory = new();
 	public TiledArea CurrentArea;
 
 	// Animation
@@ -55,7 +55,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		this.gameScene = gameScene;
 
 		collider = new(ColliderWidth, ColliderHeight);
-		state = new(this, collider, inventory);
+		state = new(this, collider, Inventory);
 	}
 
 	public override void OnUpdate()
@@ -95,7 +95,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		// Draw status
 		if (state.CanGrabLadder) DrawOrb(Colors.Green, Colors.Lime);
 		else if (state.CanGrabWall && !state.IsGrabbingWall) DrawOrb(Colors.SkyBlue, Colors.Blue);
-		else if (inventory.Stamina < inventory.MaxStamina) DrawStamina();
+		else if (Inventory.Stamina < Inventory.MaxStamina) DrawStamina();
 
 		// Draw collider
 		//collider.Draw(colliderPosition, Colors.Red);
@@ -125,7 +125,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		Primitives.DrawRectangleLines(containerRectangle, 1, Colors.White);
 
 		// Draw stamina
-		int staminaRectangleHeight = (staminaHeight - inventory.StaminaRatio * staminaHeight).Floored();
+		int staminaRectangleHeight = (staminaHeight - Inventory.StaminaRatio * staminaHeight).Floored();
 		Vector2 staminaPosition = containerPosition + Vector2.One + new Vector2(0, staminaRectangleHeight);
 		Rectangle staminaRectangle = new(staminaPosition, staminaWidth, staminaHeight - staminaRectangleHeight);
 		Primitives.DrawRectangle(staminaRectangle, Colors.White);
@@ -197,7 +197,7 @@ public class Player : Entity, IIntersectsWithRectangle
 			float stamina = climbSpeed * Engine.FrameTime;
 			if (state.IsClimbingWallUp) position.Y -= stamina;
 			else if (state.IsClimbingWallDown) position.Y += stamina;
-			inventory.UseStamina(stamina);
+			Inventory.UseStamina(stamina);
 		}
 		else animationManager.climbingWallAnimation.IsPaused = true;
 	}

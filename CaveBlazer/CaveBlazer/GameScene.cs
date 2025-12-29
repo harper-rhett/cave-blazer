@@ -4,7 +4,6 @@ using HarpEngine.Graphics;
 using HarpEngine.Tiles;
 using System.Numerics;
 using HarpEngine.LDTKImporter;
-using HarpEngineLDTKImporter;
 
 public class GameScene : Scene
 {
@@ -48,6 +47,7 @@ public class GameScene : Scene
 			// Get relevant entity
 			Entity entity = null;
 			if (ldtkEntity.ID == "dialogue") entity = new DialogueEntity(ldtkEntity, this);
+			else if (ldtkEntity.ID == "upgrade") entity = new UpgradeEntity(ldtkEntity, this);
 
 			// Register entity
 			if (entity is null) continue;

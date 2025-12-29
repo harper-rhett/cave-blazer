@@ -9,7 +9,7 @@ public class PlayerInventory
 	public float MaxStamina => maxStamina;
 	public float StaminaRatio => stamina / maxStamina;
 
-	public void UnlockClimbing()
+	public void UnlockCrampons()
 	{
 		CanClimb = true;
 		maxStamina = 16;
