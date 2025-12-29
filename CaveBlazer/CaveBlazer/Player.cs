@@ -56,7 +56,6 @@ public class Player : Entity, IIntersectsWithRectangle
 
 		collider = new(ColliderWidth, ColliderHeight);
 		state = new(this, collider, inventory);
-		inventory.UnlockClimbing();
 	}
 
 	public override void OnUpdate()
@@ -126,7 +125,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		Primitives.DrawRectangleLines(containerRectangle, 1, Colors.White);
 
 		// Draw stamina
-		float staminaRectangleHeight = staminaHeight - inventory.StaminaRatio * staminaHeight;
+		int staminaRectangleHeight = (staminaHeight - inventory.StaminaRatio * staminaHeight).Floored();
 		Vector2 staminaPosition = containerPosition + Vector2.One + new Vector2(0, staminaRectangleHeight);
 		Rectangle staminaRectangle = new(staminaPosition, staminaWidth, staminaHeight - staminaRectangleHeight);
 		Primitives.DrawRectangle(staminaRectangle, Colors.White);
