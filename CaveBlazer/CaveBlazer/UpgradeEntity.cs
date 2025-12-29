@@ -1,5 +1,6 @@
 ﻿using HarpEngine;
 using HarpEngine.Graphics;
+using HarpEngine.Input;
 using HarpEngine.LDTKImporter;
 using HarpEngine.Particles;
 using HarpEngine.Utilities;
@@ -60,7 +61,7 @@ public class UpgradeEntity : Entity
 	public override void OnUpdate()
 	{
 		bool collidesWithPlayer = gameScene.Player.IntersectsWithRectangle(rectangle);
-		if (collidesWithPlayer)
+		if (Keyboard.IsKeyPressed(KeyboardKey.E) && collidesWithPlayer)
 		{
 			upgradeAction.Invoke();
 			glowParticles.Remove();
