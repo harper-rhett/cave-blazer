@@ -1,12 +1,13 @@
-﻿using HarpEngine.Input;
+﻿using HarpEngine.Graphics;
+using HarpEngine.Input;
 using HarpEngine.Tiles;
+using HarpEngine.Utilities;
+using System.Numerics;
 
 public class PlayerState
 {
 	// General
 	private Player player;
-	private TiledCollider<TileType> collider;
-	private PlayerInventory inventory;
 
 	// Grounded
 	public bool IsGrounded { get; private set; }
@@ -38,11 +39,9 @@ public class PlayerState
 	public bool DidJump { get; private set; }
 	public bool OutOfBounds { get; private set; }
 
-	public PlayerState(Player player, TiledCollider<TileType> collider, PlayerInventory inventory)
+	public PlayerState(Player player)
 	{
 		this.player = player;
-		this.collider = collider;
-		this.inventory = inventory;
 	}
 
 	public void Update()
@@ -57,19 +56,19 @@ public class PlayerState
 
 	private void CheckGrounded()
 	{
-		bool isOverLadder = collider.IsTileBottom(TileType.Ladder) && collider.CenterTile != TileType.Ladder;
-		bool isOverPlatform = collider.IsTileBottom(TileType.Platform);
-		IsStandingOnTile = collider.BottomY % GameScene.TileSize == 0;
+		bool isOverLadder = player.Collider.IsTileBottom(TileType.Ladder) && player.Collider.CenterTile != TileType.Ladder;
+		bool isOverPlatform = player.Collider.IsTileBottom(TileType.Platform);
+		IsStandingOnTile = player.Collider.BottomY % GameScene.TileSize == 0;
 		IsStandingOnPlatform = (isOverLadder || isOverPlatform) && IsStandingOnTile;
-		IsStandingOnWall = collider.IsTileBottom(TileType.Wall);
+		IsStandingOnWall = player.Collider.IsTileBottom(TileType.Wall);
 		IsGrounded = IsStandingOnWall || IsStandingOnPlatform;
-		if (IsGrounded && !IsGrabbingWall) inventory.ResetStamina();
+		if (IsGrounded && !IsGrabbingWall) player.Inventory.ResetStamina();
 	}
 
 	private void CheckForLadder()
 	{
 		// Check collision
-		IsOverLadder = collider.CenterTile == TileType.Ladder || (collider.IsTileBottom(TileType.Ladder) && !IsStandingOnTile);
+		IsOverLadder = player.Collider.CenterTile == TileType.Ladder || (player.Collider.IsTileBottom(TileType.Ladder) && !IsStandingOnTile);
 
 		// Check interaction
 		IsOnLadder = IsOnLadder && IsOverLadder;
@@ -84,7 +83,7 @@ public class PlayerState
 		// Climb up and down the ladder
 		if (IsOverLadder && IsOnLadder)
 		{
-			if (Keyboard.IsKeyDown(KeyboardKey.Up) && !collider.IsTileTop(TileType.Wall)) IsClimbingLadderUp = true;
+			if (Keyboard.IsKeyDown(KeyboardKey.Up) && !player.Collider.IsTileTop(TileType.Wall)) IsClimbingLadderUp = true;
 			else if (Keyboard.IsKeyDown(KeyboardKey.Down) && !IsStandingOnWall) IsClimbingLadderDown = true;
 			IsClimbingLadder = IsClimbingLadderUp || IsClimbingLadderDown;
 		}
@@ -97,10 +96,10 @@ public class PlayerState
 		DidVault = false;
 
 		// Check for walls to grab
-		bool isWallLeft = collider.LeftCenterTile == TileType.Wall && player.FacingLeft;
-		bool isWallRight = collider.RightCenterTile == TileType.Wall && player.FacingRight;
+		bool isWallLeft = player.Collider.LeftCenterTile == TileType.Wall && player.FacingLeft;
+		bool isWallRight = player.Collider.RightCenterTile == TileType.Wall && player.FacingRight;
 		bool isWall = isWallLeft || isWallRight;
-		CanGrabWall = !IsGrounded && isWall && !IsOverLadder && inventory.Stamina > 0;
+		CanGrabWall = !IsGrounded && isWall && !IsOverLadder && player.Inventory.Stamina > 0;
 
 		// Grab wall
 		DidGrabWall = CanGrabWall && Keyboard.IsKeyPressed(KeyboardKey.Space);
@@ -115,7 +114,7 @@ public class PlayerState
 	private void CheckClimbing()
 	{
 		// Check stamina
-		if (inventory.Stamina <= 0)
+		if (player.Inventory.Stamina <= 0)
 		{
 			Ungrab();
 			return;
@@ -135,8 +134,8 @@ public class PlayerState
 		IsClimbingWall = IsClimbingWallUp || IsClimbingWallDown;
 
 		// Vault
-		bool leftVaultTile = IsGrabbingLeftWall && collider.LeftCenterTile == TileType.None;
-		bool rightVaultTile = IsGrabbingRightWall && collider.RightCenterTile == TileType.None;
+		bool leftVaultTile = IsGrabbingLeftWall && player.Collider.LeftCenterTile == TileType.None;
+		bool rightVaultTile = IsGrabbingRightWall && player.Collider.RightCenterTile == TileType.None;
 		bool vaultTile = leftVaultTile || rightVaultTile;
 		DidVault = IsGrabbingWall && vaultTile;
 		if (DidVault) Ungrab();
@@ -159,6 +158,20 @@ public class PlayerState
 
 	private void CheckBounds()
 	{
-		OutOfBounds = !collider.CenterInBounds;
+		OutOfBounds = !player.Collider.CenterInBounds;
+	}
+
+	public void Draw()
+	{
+		if (CanGrabLadder) DrawStatusOrb(Colors.Green, Colors.Lime);
+		else if (CanGrabWall && !IsGrabbingWall) DrawStatusOrb(Colors.SkyBlue, Colors.Blue);
+	}
+
+	public void DrawStatusOrb(Color innerColor, Color outerColor)
+	{
+		const float offset = -5;
+		Vector2 statusPosition = player.ColliderPosition + new Vector2(player.Collider.HalfWidth, offset);
+		Primitives.DrawCircle(statusPosition.Floored(), 3, outerColor);
+		Primitives.DrawCircle(statusPosition.Floored(), 2, innerColor);
 	}
 }

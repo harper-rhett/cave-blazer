@@ -16,6 +16,7 @@ public class UpgradeEntity : Entity
 	private int halfHeight;
 	private Action upgradeAction;
 	private ParticleEngine2D glowParticles;
+	private bool collidingWithPlayer;
 
 	public UpgradeEntity(LDTKEntity ldtkEntity, GameScene gameScene)
 	{
@@ -60,8 +61,8 @@ public class UpgradeEntity : Entity
 
 	public override void OnUpdate()
 	{
-		bool collidesWithPlayer = gameScene.Player.IntersectsWithRectangle(rectangle);
-		if (Keyboard.IsKeyPressed(KeyboardKey.E) && collidesWithPlayer)
+		collidingWithPlayer = gameScene.Player.IntersectsWithRectangle(rectangle);
+		if (Keyboard.IsKeyPressed(KeyboardKey.E) && collidingWithPlayer)
 		{
 			upgradeAction.Invoke();
 			glowParticles.Remove();
@@ -95,5 +96,6 @@ public class UpgradeEntity : Entity
 	public override void OnDraw()
 	{
 		texture.Draw(position, Colors.White);
+		if (collidingWithPlayer) gameScene.Player.State.DrawStatusOrb(Colors.White, Colors.Black);
 	}
 }
