@@ -1,5 +1,5 @@
-﻿using HarpEngine.Animation;
-using HarpEngine.Graphics;
+﻿using Clockwork.Animation;
+using Clockwork.Graphics;
 
 public enum PlayerAnimationState
 {

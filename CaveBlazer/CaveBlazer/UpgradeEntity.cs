@@ -1,9 +1,9 @@
-﻿using HarpEngine;
-using HarpEngine.Graphics;
-using HarpEngine.Input;
-using HarpEngine.LDTKImporter;
-using HarpEngine.Particles;
-using HarpEngine.Utilities;
+﻿using Clockwork;
+using Clockwork.Graphics;
+using Clockwork.Input;
+using Clockwork.LDTKImporter;
+using Clockwork.Particles;
+using Clockwork.Utilities;
 using System.Numerics;
 
 public class UpgradeEntity : Entity

@@ -1,8 +1,8 @@
-﻿using HarpEngine;
-using HarpEngine.Graphics;
-using HarpEngine.Tiles;
+﻿using Clockwork;
+using Clockwork.Graphics;
+using Clockwork.Tiles;
 using System.Numerics;
-using HarpEngine.Utilities;
+using Clockwork.Utilities;
 
 public class PlayerInventory
 {

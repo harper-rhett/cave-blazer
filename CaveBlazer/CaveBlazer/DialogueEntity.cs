@@ -1,8 +1,8 @@
-﻿using HarpEngine;
-using HarpEngine.Graphics;
-using HarpEngine.Tiles;
-using HarpEngine.Utilities;
-using HarpEngine.LDTKImporter;
+﻿using Clockwork;
+using Clockwork.Graphics;
+using Clockwork.Tiles;
+using Clockwork.Utilities;
+using Clockwork.LDTKImporter;
 using System.Numerics;
 
 public class DialogueEntity : Entity

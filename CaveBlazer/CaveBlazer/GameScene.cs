@@ -1,9 +1,9 @@
-﻿using HarpEngine;
-using HarpEngine.Animation;
-using HarpEngine.Graphics;
-using HarpEngine.Tiles;
+﻿using Clockwork;
+using Clockwork.Animation;
+using Clockwork.Graphics;
+using Clockwork.Tiles;
 using System.Numerics;
-using HarpEngine.LDTKImporter;
+using Clockwork.LDTKImporter;
 
 public class GameScene : Scene
 {
@@ -12,7 +12,7 @@ public class GameScene : Scene
 	private Camera2D camera;
 	public const int TileSize = 16;
 	private Transform2DEaser cameraEaser;
-	private const string spawnAreaID = "area_6_1";
+	private const string spawnAreaID = "origin";
 
 	public GameScene() : base(Colors.SkyBlue)
 	{

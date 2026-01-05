@@ -1,9 +1,9 @@
-﻿using HarpEngine;
-using HarpEngine.Graphics;
-using HarpEngine.Input;
-using HarpEngine.Shapes;
-using HarpEngine.Tiles;
-using HarpEngine.Utilities;
+﻿using Clockwork;
+using Clockwork.Graphics;
+using Clockwork.Input;
+using Clockwork.Shapes;
+using Clockwork.Tiles;
+using Clockwork.Utilities;
 using System.Numerics;
 
 public class Player : Entity, IIntersectsWithRectangle

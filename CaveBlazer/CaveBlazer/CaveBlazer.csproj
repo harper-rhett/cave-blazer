@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\harp-engine-ldtk-importer\HarpEngineLDTKImporter\HarpEngineLDTKImporter\HarpEngineLDTKImporter.csproj" />
-    <ProjectReference Include="..\..\..\harp-engine\HarpEngine\HarpEngine.csproj" />
+    <ProjectReference Include="..\..\..\clockwork-engine\ClockworkEngine\ClockworkEngine.csproj" />
+    <ProjectReference Include="..\..\..\clockwork-ldtk-importer\ClockworkLDTKImporter\ClockworkLDTKImporter\ClockworkLDTKImporter.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -66,6 +66,9 @@
     </None>
 	<None Update="sprites\tile-sets\mountain.png">
 		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+	<None Update="sprites\tile-sets\Tiles-1.png">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	</None>
     <None Update="world.ldtk">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

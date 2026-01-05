@@ -1,6 +1,6 @@
-﻿using HarpEngine;
-using HarpEngine.Graphics;
-using HarpEngine.Windowing;
+﻿using Clockwork;
+using Clockwork.Graphics;
+using Clockwork.Windowing;
 
 internal class CaveBlazer : Game
 {
