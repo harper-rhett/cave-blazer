@@ -52,6 +52,7 @@ public class DialogueEntity : Entity
 		textPosition = position + new Vector2(-halfTextWidth + halfWidth, -textSize.Y);
 		boxSize = textSize + new Vector2(leftBorder + rightBorder, topBorder + bottomBorder);
 		boxPosition = textPosition + new Vector2(-leftBorder, -topBorder);
+		DrawLayer = 1;
 	}
 
 	public override void OnDraw()
@@ -61,7 +62,7 @@ public class DialogueEntity : Entity
 		bool collidesWithPlayer = gameScene.Player.IntersectsWithRectangle(rectangle);
 		if (collidesWithPlayer)
 		{
-			Primitives.DrawRectangle(boxPosition, boxSize, Colors.Black.SetAlpha(0.15f));
+			Primitives.DrawRectangle(boxPosition, boxSize, Colors.Black.SetAlpha(0.25f));
 			Text.Draw(font, text, textPosition, Vector2.Zero, 0, fontSize, fontSpacing, Colors.White);
 		}
 	}
