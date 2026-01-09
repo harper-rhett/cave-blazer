@@ -52,7 +52,6 @@ public class DialogueEntity : Entity
 		textPosition = position + new Vector2(-halfTextWidth + halfWidth, -textSize.Y);
 		boxSize = textSize + new Vector2(leftBorder + rightBorder, topBorder + bottomBorder);
 		boxPosition = textPosition + new Vector2(-leftBorder, -topBorder);
-		DrawLayer = 1;
 	}
 
 	public override void OnDraw()

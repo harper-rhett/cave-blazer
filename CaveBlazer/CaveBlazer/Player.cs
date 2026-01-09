@@ -20,7 +20,7 @@ public class Player : Entity, IIntersectsWithRectangle
 	private GameScene gameScene;
 	public PlayerState State;
 	public PlayerInventory Inventory;
-	public TiledArea CurrentArea;
+	public TiledGameArea CurrentArea;
 
 	// Animation
 	private PlayerAnimation animationManager = new();
@@ -48,7 +48,7 @@ public class Player : Entity, IIntersectsWithRectangle
 
 	#region Base Class
 
-	public Player(GameScene gameScene, TiledArea area, Vector2 position)
+	public Player(GameScene gameScene, TiledGameArea area, Vector2 position)
 	{
 		this.position = position;
 		CurrentArea = area;
@@ -102,7 +102,7 @@ public class Player : Entity, IIntersectsWithRectangle
 	public override void OnDrawGUI()
 	{
 		Engine.DrawDebug(5, 5);
-		Text.Draw($"Grounded: {State.IsGrounded}", 5, 15, 5, Colors.White);
+		//Text.Draw($"Grounded: {State.IsGrounded}", 5, 15, 5, Colors.White);
 	}
 
 	#endregion
