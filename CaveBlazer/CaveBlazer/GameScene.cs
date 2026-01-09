@@ -12,7 +12,7 @@ public class GameScene : Scene
 	private Camera2D camera;
 	public const int TileSize = 16;
 	private Transform2DEaser cameraEaser;
-	private const string spawnAreaID = "origin";
+	private const string spawnAreaID = "area_5_1";
 
 	public GameScene() : base(Colors.SkyBlue)
 	{
