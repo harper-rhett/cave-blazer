@@ -19,14 +19,17 @@ public class GameScene : Scene
 		// Import world
 		LDTKImporter importer = new("world.ldtk", 8);
 		importer.AreaImported += ProcessArea;
-		World = AddEntity(importer.GenerateWorld());
+		LDTKGameArea[] areas = importer.DeserializeAreas("tiles", "entities");
+		World = AddEntity(importer.GenerateWorld(areas));
+		World.DrawLayer = -1;
 
 		// Process player spawn
-		LDTKArea originArea = World.AreasByID["origin"];
-		LDTKArea spawnArea = World.AreasByID[spawnAreaID];
+		LDTKGameArea originArea = World.AreasByID["origin"];
+		LDTKGameArea spawnArea = World.AreasByID[spawnAreaID];
 		World.AddFocus(spawnArea);
 		Vector2 spawnPosition = spawnArea.EntitiesByID["spawn"][0].Position;
 		Player = AddEntity(new Player(this, spawnArea, spawnPosition));
+		Player.Inventory.UnlockCrampons();
 		
 		// Initialize camera
 		camera = AddEntity(new Camera2D());
@@ -37,10 +40,10 @@ public class GameScene : Scene
 		// Initialize parallax
 		MountainParallax parallax = AddEntity(new MountainParallax(camera, originArea.Position, new(0, -256)));
 		parallax.RepeatY = false;
-		parallax.DrawLayer = -1;
+		parallax.DrawLayer = -2;
 	}
 
-	private void ProcessArea(LDTKArea area)
+	private void ProcessArea(LDTKGameArea area)
 	{
 		foreach (LDTKEntity ldtkEntity in area.Entities)
 		{
@@ -59,8 +62,8 @@ public class GameScene : Scene
 	public void SwitchArea(int pixelX, int pixelY)
 	{
 		// Cache areas
-		TiledArea previousArea = Player.CurrentArea;
-		TiledArea nextArea = World.GetArea(pixelX, pixelY);
+		TiledGameArea previousArea = Player.CurrentArea;
+		TiledGameArea nextArea = World.GetArea(pixelX, pixelY);
 
 		// Set new area
 		if (cameraEaser is not null) cameraEaser.Finish();
@@ -76,7 +79,7 @@ public class GameScene : Scene
 		cameraEaser.Finished += () => AreaSwitched(previousArea);
 	}
 
-	private void AreaSwitched(TiledArea previousArea)
+	private void AreaSwitched(TiledGameArea previousArea)
 	{
 		World.RemoveFocus(previousArea);
 	}

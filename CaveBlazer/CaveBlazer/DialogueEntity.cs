@@ -61,7 +61,7 @@ public class DialogueEntity : Entity
 		bool collidesWithPlayer = gameScene.Player.IntersectsWithRectangle(rectangle);
 		if (collidesWithPlayer)
 		{
-			Primitives.DrawRectangle(boxPosition, boxSize, Colors.Black.SetAlpha(0.15f));
+			Primitives.DrawRectangle(boxPosition, boxSize, Colors.Black.SetAlpha(0.25f));
 			Text.Draw(font, text, textPosition, Vector2.Zero, 0, fontSize, fontSpacing, Colors.White);
 		}
 	}

@@ -23,7 +23,7 @@ public class PlayerInventory
 	public void UnlockCrampons()
 	{
 		CanClimb = true;
-		maxStamina = 16;
+		maxStamina = 18;
 		stamina = maxStamina;
 	}
 

@@ -20,7 +20,7 @@ public class Player : Entity, IIntersectsWithRectangle
 	private GameScene gameScene;
 	public PlayerState State;
 	public PlayerInventory Inventory;
-	public TiledArea CurrentArea;
+	public TiledGameArea CurrentArea;
 
 	// Animation
 	private PlayerAnimation animationManager = new();
@@ -48,7 +48,7 @@ public class Player : Entity, IIntersectsWithRectangle
 
 	#region Base Class
 
-	public Player(GameScene gameScene, TiledArea area, Vector2 position)
+	public Player(GameScene gameScene, TiledGameArea area, Vector2 position)
 	{
 		this.position = position;
 		CurrentArea = area;
@@ -62,7 +62,7 @@ public class Player : Entity, IIntersectsWithRectangle
 	public override void OnUpdate()
 	{
 		// Update states
-		Collider.Update(CurrentArea, ColliderPosition);
+		Collider.CaptureState(CurrentArea, ColliderPosition);
 		State.Update();
 
 		// Check states
@@ -81,7 +81,9 @@ public class Player : Entity, IIntersectsWithRectangle
 		}
 
 		if (State.OutOfBounds) OutOfBounds();
-		Movement();
+		ApplyMovement();
+		Collider.CaptureState(CurrentArea, ColliderPosition);
+		CheckCollision();
 	}
 
 	public override void OnDraw()
@@ -100,6 +102,7 @@ public class Player : Entity, IIntersectsWithRectangle
 	public override void OnDrawGUI()
 	{
 		Engine.DrawDebug(5, 5);
+		//Text.Draw($"Grounded: {State.IsGrounded}", 5, 15, 5, Colors.White);
 	}
 
 	#endregion
@@ -245,7 +248,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		if (isWallTop && velocity.Y < 0) velocity.Y = 0;
 	}
 
-	private void Movement()
+	private void ApplyMovement()
 	{
 		position += velocity * Engine.FrameTime;
 	}
@@ -264,6 +267,15 @@ public class Player : Entity, IIntersectsWithRectangle
 			velocity.X = -float.Sign(velocity.X) * jumpForce;
 			velocity.Y = -jumpForce;
 		}
+	}
+
+	private void CheckCollision()
+	{
+		// I need to create a PlatformPlayer.cs for the ClockworkEngine examples
+		// that is surefire to work with basic walking, jumping, and colliding.
+		// Then, I inherit from there.
+
+		// Also, I fear I need to optimize TiledCollider. I would like to update states without cost of performance.
 	}
 
 	#endregion

@@ -64,11 +64,14 @@
     <None Update="sprites\player\walking.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="sprites\tile-sets\cave.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
 	<None Update="sprites\tile-sets\mountain.png">
 		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	</None>
 	<None Update="sprites\tile-sets\Tiles-1.png">
-	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	</None>
     <None Update="world.ldtk">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
