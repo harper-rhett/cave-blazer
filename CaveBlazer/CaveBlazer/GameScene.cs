@@ -19,7 +19,7 @@ public class GameScene : Scene
 		// Import world
 		LDTKImporter importer = new("world.ldtk", 8);
 		importer.AreaImported += ProcessArea;
-		LDTKGameArea[] areas = importer.DeserializeAreas("tiles", "entities");
+		LDTKGameArea[] areas = importer.DeserializeGameAreas("tiles", "entities");
 		World = AddEntity(importer.GenerateWorld(areas));
 		World.DrawLayer = -1;
 
@@ -38,7 +38,7 @@ public class GameScene : Scene
 		camera.Transform.WorldPosition = spawnArea.Position;
 
 		// Initialize parallax
-		MountainParallax parallax = AddEntity(new MountainParallax(camera, originArea.Position, new(0, -256)));
+		MountainParallax parallax = AddEntity(new MountainParallax(camera, originArea.Position));
 		parallax.RepeatY = false;
 		parallax.DrawLayer = -2;
 	}

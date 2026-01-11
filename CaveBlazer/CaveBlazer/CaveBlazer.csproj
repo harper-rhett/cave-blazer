@@ -19,22 +19,25 @@
     <None Update="fonts\Tiny5-Regular_0.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="sprites\backgrounds\clouds.png">
+    <None Update="sprites\backgrounds\mountain\old\background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="sprites\backgrounds\grass.png">
+    <None Update="sprites\backgrounds\mountain\old\clouds.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="sprites\backgrounds\large-mountains.png">
+    <None Update="sprites\backgrounds\mountain\old\grass.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="sprites\backgrounds\plains.png">
+    <None Update="sprites\backgrounds\mountain\old\large-mountains.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="sprites\backgrounds\sky.png">
+    <None Update="sprites\backgrounds\mountain\old\plains.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="sprites\backgrounds\small-mountains.png">
+    <None Update="sprites\backgrounds\mountain\old\sky.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="sprites\backgrounds\mountain\old\small-mountains.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="sprites\entities\crampons.png">
@@ -69,9 +72,6 @@
     </None>
 	<None Update="sprites\tile-sets\mountain.png">
 		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	</None>
-	<None Update="sprites\tile-sets\Tiles-1.png">
-	  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	</None>
     <None Update="world.ldtk">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
