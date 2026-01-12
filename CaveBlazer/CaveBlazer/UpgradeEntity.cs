@@ -26,7 +26,7 @@ public class UpgradeEntity : Entity
 		rectangle = new(position, GameScene.TileSize, GameScene.TileSize);
 
 		// Set independent behavior
-		string type = ldtkEntity.FieldsByID["upgrade_type"].Value;
+		string type = ldtkEntity.FieldsByName["upgrade_type"].Value;
 		string texturePath = null;
 		if (type == "crampons")
 		{

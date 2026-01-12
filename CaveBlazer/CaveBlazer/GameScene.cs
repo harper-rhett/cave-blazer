@@ -18,14 +18,13 @@ public class GameScene : Scene
 	{
 		// Import world
 		LDTKImporter importer = new("world.ldtk", 8);
-		importer.AreaImported += ProcessArea;
-		LDTKGameArea[] areas = importer.DeserializeGameAreas("tiles", "entities");
-		World = AddEntity(importer.GenerateWorld(areas));
+		importer.GameAreaImported += ProcessArea;
+		World = AddEntity(importer.ImportWorld("tiles", "entities"));
 		World.DrawLayer = -1;
 
 		// Process player spawn
-		LDTKGameArea originArea = World.AreasByID["origin"];
-		LDTKGameArea spawnArea = World.AreasByID[spawnAreaID];
+		LDTKGameArea originArea = World.AreasByName["origin"];
+		LDTKGameArea spawnArea = World.AreasByName[spawnAreaID];
 		World.AddFocus(spawnArea);
 		Vector2 spawnPosition = spawnArea.EntitiesByID["spawn"][0].Position;
 		Player = AddEntity(new Player(this, spawnArea, spawnPosition));
@@ -49,8 +48,8 @@ public class GameScene : Scene
 		{
 			// Get relevant entity
 			Entity entity = null;
-			if (ldtkEntity.ID == "dialogue") entity = new DialogueEntity(ldtkEntity, this);
-			else if (ldtkEntity.ID == "upgrade") entity = new UpgradeEntity(ldtkEntity, this);
+			if (ldtkEntity.Name == "dialogue") entity = new DialogueEntity(ldtkEntity, this);
+			else if (ldtkEntity.Name == "upgrade") entity = new UpgradeEntity(ldtkEntity, this);
 
 			// Register entity
 			if (entity is null) continue;

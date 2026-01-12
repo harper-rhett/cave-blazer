@@ -38,7 +38,7 @@ public class DialogueEntity : Entity
 		rectangle = new(position, GameScene.TileSize, GameScene.TileSize);
 
 		// Load texture
-		string type = ldtkEntity.FieldsByID["dialogue_type"].Value;
+		string type = ldtkEntity.FieldsByName["dialogue_type"].Value;
 		string texturePath = null;
 		if (type == "monk") texturePath = "sprites/entities/monk.png";
 		else if (type == "sign") texturePath = "sprites/entities/sign.png";
@@ -46,7 +46,7 @@ public class DialogueEntity : Entity
 		int halfWidth = texture.Width / 2;
 
 		// Set up text
-		text = ldtkEntity.FieldsByID["text"].Value;
+		text = ldtkEntity.FieldsByName["text"].Value;
 		textSize = Text.MeasureSize(font, text, fontSize, fontSpacing);
 		int halfTextWidth = (textSize.X / 2f).Floored();
 		textPosition = position + new Vector2(-halfTextWidth + halfWidth, -textSize.Y);
