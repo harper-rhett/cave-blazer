@@ -28,14 +28,11 @@ public class GameScene : Scene
 	{
 		ImportWorld();
 
-		LDTKGameArea originArea = World.AreasByName["origin"];
+		LDTKGameArea originArea = World.AreasByName[originAreaName];
 		LDTKGameArea spawnArea = World.AreasByName[spawnAreaName];
-		World.AddFocus(spawnArea);
-		Foreground.AddFocus(ForegroundsByName[spawnAreaName]);
-		Background.AddFocus(BackgroundsByName[spawnAreaName]);
+		spawnArea.IsActive = true;
 
 		SpawnPlayer(spawnArea);
-		InitializeCamera(spawnArea);
 		InitializeCamera(spawnArea);
 		InitializeParallax(originArea);
 	}
@@ -43,14 +40,15 @@ public class GameScene : Scene
 	private void ImportWorld()
 	{
 		LDTKImporter importer = new("world.ldtk", 8);
-		importer.GameAreaImported += ProcessArea;
-		World = AddEntity(importer.ImportWorld("tiles", "entities"));
-		World.DrawLayer = -1;
 
 		Foreground = AddEntity(importer.ImportDecorationLayer("foreground", out ForegroundsByName));
 		Foreground.DrawLayer = 1;
 		Background = AddEntity(importer.ImportDecorationLayer("background", out BackgroundsByName));
 		Background.DrawLayer = -1;
+
+		importer.GameAreaImported += ProcessArea;
+		World = AddEntity(importer.ImportWorld("tiles", "entities"));
+		World.DrawLayer = -1;
 	}
 
 	private void SpawnPlayer(LDTKGameArea spawnArea)
@@ -77,6 +75,13 @@ public class GameScene : Scene
 
 	private void ProcessArea(LDTKGameArea area)
 	{
+		// Registered decoration layers
+		TiledArea AreaForeground = ForegroundsByName[area.Name];
+		area.RegisterArea(AreaForeground);
+		TiledArea AreaBackground = BackgroundsByName[area.Name];
+		area.RegisterArea(AreaBackground);
+
+		// Register entities
 		foreach (LDTKEntity ldtkEntity in area.Entities)
 		{
 			// Get relevant entity
@@ -99,7 +104,7 @@ public class GameScene : Scene
 
 		// Set new area
 		if (cameraEaser is not null) cameraEaser.Finish();
-		World.AddFocus(nextArea);
+		nextArea.IsActive = true;
 		Player.CurrentArea = nextArea;
 
 		// Ease camera to next area
@@ -113,6 +118,6 @@ public class GameScene : Scene
 
 	private void AreaSwitched(TiledGameArea previousArea)
 	{
-		World.RemoveFocus(previousArea);
+		previousArea.IsActive = false;
 	}
 }

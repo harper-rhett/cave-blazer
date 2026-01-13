@@ -1,6 +1,7 @@
 ﻿using Clockwork;
 using Clockwork.Graphics;
 using Clockwork.Input;
+using Clockwork.LDTKImporter;
 using Clockwork.Shapes;
 using Clockwork.Tiles;
 using Clockwork.Utilities;
@@ -48,7 +49,7 @@ public class Player : Entity, IIntersectsWithRectangle
 
 	#region Base Class
 
-	public Player(GameScene gameScene, TiledGameArea area, Vector2 position)
+	public Player(GameScene gameScene, LDTKGameArea area, Vector2 position)
 	{
 		this.position = position;
 		CurrentArea = area;
