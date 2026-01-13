@@ -7,36 +7,69 @@ using Clockwork.LDTKImporter;
 
 public class GameScene : Scene
 {
-	public readonly LDTKWorld World;
-	public readonly Player Player;
-	private Camera2D camera;
+	// World
+	public LDTKGameLayer World { get; private set; }
 	public const int TileSize = 16;
+	private const string spawnAreaName = "origin";
+	private const string originAreaName = "origin";
+
+	// Decoration
+	public TiledLayer Foreground { get; private set; }
+	public Dictionary<string, TiledArea> ForegroundsByName;
+	public TiledLayer Background { get; private set; }
+	public Dictionary<string, TiledArea> BackgroundsByName;
+
+	// Player
+	public Player Player { get; private set; }
+	private Camera2D camera;
 	private Transform2DEaser cameraEaser;
-	private const string spawnAreaID = "origin";
 
 	public GameScene() : base(Colors.SkyBlue)
 	{
-		// Import world
+		ImportWorld();
+
+		LDTKGameArea originArea = World.AreasByName["origin"];
+		LDTKGameArea spawnArea = World.AreasByName[spawnAreaName];
+		World.AddFocus(spawnArea);
+		Foreground.AddFocus(ForegroundsByName[spawnAreaName]);
+		Background.AddFocus(BackgroundsByName[spawnAreaName]);
+
+		SpawnPlayer(spawnArea);
+		InitializeCamera(spawnArea);
+		InitializeCamera(spawnArea);
+		InitializeParallax(originArea);
+	}
+
+	private void ImportWorld()
+	{
 		LDTKImporter importer = new("world.ldtk", 8);
 		importer.GameAreaImported += ProcessArea;
 		World = AddEntity(importer.ImportWorld("tiles", "entities"));
 		World.DrawLayer = -1;
 
-		// Process player spawn
-		LDTKGameArea originArea = World.AreasByName["origin"];
-		LDTKGameArea spawnArea = World.AreasByName[spawnAreaID];
-		World.AddFocus(spawnArea);
+		Foreground = AddEntity(importer.ImportDecorationLayer("foreground", out ForegroundsByName));
+		Foreground.DrawLayer = 1;
+		Background = AddEntity(importer.ImportDecorationLayer("background", out BackgroundsByName));
+		Background.DrawLayer = -1;
+	}
+
+	private void SpawnPlayer(LDTKGameArea spawnArea)
+	{
 		Vector2 spawnPosition = spawnArea.EntitiesByID["spawn"][0].Position;
 		Player = AddEntity(new Player(this, spawnArea, spawnPosition));
 		Player.Inventory.UnlockCrampons();
-		
-		// Initialize camera
+	}
+
+	private void InitializeCamera(LDTKGameArea spawnArea)
+	{
 		camera = AddEntity(new Camera2D());
 		Camera = camera;
 		camera.Offset = Vector2.Zero;
 		camera.Transform.WorldPosition = spawnArea.Position;
+	}
 
-		// Initialize parallax
+	private void InitializeParallax(LDTKGameArea originArea)
+	{
 		MountainParallax parallax = AddEntity(new MountainParallax(camera, originArea.Position));
 		parallax.RepeatY = false;
 		parallax.DrawLayer = -2;
