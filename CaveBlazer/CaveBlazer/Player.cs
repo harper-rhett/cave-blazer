@@ -44,6 +44,7 @@ public class Player : Entity, IIntersectsWithRectangle
 	private const float midairDecceleration = 35f;
 	private const float newAreaBoost = 1.5f;
 	private const float climbSpeed = 25;
+	private const float midairStartSpeed = 15;
 
 	#endregion
 
@@ -95,7 +96,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		Inventory.Draw();
 
 		// Draw collider
-		Collider.Draw(ColliderPosition, Colors.Red);
+		//Collider.Draw(ColliderPosition, Colors.Red);
 	}
 
 	public override void OnDrawGUI()
@@ -218,12 +219,14 @@ public class Player : Entity, IIntersectsWithRectangle
 		// Get midair movement
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
 		{
+			if (velocity.X > -0.0001f) velocity.X = -midairStartSpeed;
 			float acceleration = velocity.X < 0 ? midairAcceleration : midairDecceleration;
 			velocity.X -= acceleration * Engine.FrameTime;
 			directionFacing = -1;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
+			if (velocity.X < 0.0001f) velocity.X = midairStartSpeed;
 			float acceleration = velocity.X > 0 ? midairAcceleration : midairDecceleration;
 			velocity.X += acceleration * Engine.FrameTime;
 			directionFacing = 1;

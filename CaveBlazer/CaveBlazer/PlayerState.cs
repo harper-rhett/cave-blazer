@@ -1,6 +1,5 @@
 ﻿using Clockwork.Graphics;
 using Clockwork.Input;
-using Clockwork.Tiles;
 using Clockwork.Utilities;
 using System.Numerics;
 
@@ -56,10 +55,10 @@ public class PlayerState
 
 	private void CheckGrounded()
 	{
-		bool isOverLadder = player.Collider.IsTileBottom(TileType.Ladder) && player.Collider.CenterTile != TileType.Ladder;
-		bool isOverPlatform = player.Collider.IsTileBottom(TileType.Platform);
+		bool isAboveLadder = player.Collider.IsTileBottom(TileType.Ladder) && !player.Collider.IsTileInner(TileType.Ladder);
+		bool isAbovePlatform = player.Collider.IsTileBottom(TileType.Platform);
 		IsStandingOnTile = player.Collider.BottomY % GameScene.TileSize == 0;
-		IsStandingOnPlatform = (isOverLadder || isOverPlatform) && IsStandingOnTile;
+		IsStandingOnPlatform = (isAboveLadder || isAbovePlatform) && IsStandingOnTile;
 		IsStandingOnWall = player.Collider.IsTileBottom(TileType.Wall);
 		IsGrounded = IsStandingOnWall || IsStandingOnPlatform;
 		if (IsGrounded && !IsGrabbingWall) player.Inventory.ResetStamina();
@@ -68,7 +67,7 @@ public class PlayerState
 	private void CheckForLadder()
 	{
 		// Check collision
-		IsOverLadder = player.Collider.CenterTile == TileType.Ladder || (player.Collider.IsTileBottom(TileType.Ladder) && !IsStandingOnTile);
+		IsOverLadder = player.Collider.CenterTile == TileType.Ladder || (player.Collider.BottomCenterTile == TileType.Ladder && !IsStandingOnTile);
 
 		// Check interaction
 		IsOnLadder = IsOnLadder && IsOverLadder;

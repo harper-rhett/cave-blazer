@@ -10,7 +10,7 @@ public class GameScene : Scene
 	// World
 	public LDTKGameLayer World { get; private set; }
 	public const int TileSize = 16;
-	private const string spawnAreaName = "test";
+	private const string spawnAreaName = "area_6_2";
 	private const string originAreaName = "origin";
 
 	// Decoration
