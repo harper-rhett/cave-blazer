@@ -83,8 +83,6 @@ public class Player : Entity, IIntersectsWithRectangle
 
 		if (State.OutOfBounds) OutOfBounds();
 		ApplyMovement();
-		Collider.CaptureState(CurrentArea, ColliderPosition);
-		CheckCollision();
 	}
 
 	public override void OnDraw()
@@ -97,7 +95,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		Inventory.Draw();
 
 		// Draw collider
-		//collider.Draw(colliderPosition, Colors.Red);
+		Collider.Draw(ColliderPosition, Colors.Red);
 	}
 
 	public override void OnDrawGUI()
@@ -178,14 +176,6 @@ public class Player : Entity, IIntersectsWithRectangle
 		if (velocity.Y > 0) velocity.Y = 0;
 		animationManager.fallingAnimation.Reset();
 
-		// Correct tile clipping
-		if (Collider.IsTileInner(TileType.Wall))
-		{
-			int tileY = (position.Y.Floored() / GameScene.TileSize) - 1;
-			position.Y = tileY * GameScene.TileSize;
-		}
-		else position.Y = position.Y.Floored();
-
 		// Walk
 		StrafeCheck();
 		WalkAnimation();
@@ -203,15 +193,13 @@ public class Player : Entity, IIntersectsWithRectangle
 
 	private void StrafeLeft()
 	{
-		bool isWallLeft = Collider.IsTileLeft(TileType.Wall);
-		velocity.X = isWallLeft ? 0 : -walkSpeed;
+		velocity.X = -walkSpeed;
 		directionFacing = -1;
 	}
 
 	private void StrafeRight()
 	{
-		bool isWallRight = Collider.IsTileRight(TileType.Wall);
-		velocity.X = isWallRight ? 0 : walkSpeed;
+		velocity.X = walkSpeed;
 		directionFacing = 1;
 	}
 
@@ -240,18 +228,55 @@ public class Player : Entity, IIntersectsWithRectangle
 			velocity.X += acceleration * Engine.FrameTime;
 			directionFacing = 1;
 		}
-
-		// Check for wall collision
-		bool isWallLeft = Collider.IsTileLeft(TileType.Wall);
-		bool isWallRight = Collider.IsTileRight(TileType.Wall);
-		bool isWallTop = Collider.IsTileTop(TileType.Wall);
-		if (isWallLeft && velocity.X < 0 || isWallRight && velocity.X > 0) velocity.X = 0;
-		if (isWallTop && velocity.Y < 0) velocity.Y = 0;
 	}
 
 	private void ApplyMovement()
 	{
-		position += velocity * Engine.FrameTime;
+		//position += velocity * Engine.FrameTime;
+		float deltaX = velocity.X * Engine.FrameTime;
+		float deltaY = velocity.Y * Engine.FrameTime;
+
+		while (deltaX != 0)
+		{
+			// Check for collision
+			Collider.CaptureState(CurrentArea, ColliderPosition);
+			bool isWallLeft = Collider.IsTileLeft(TileType.Wall);
+			bool isWallRight = Collider.IsTileRight(TileType.Wall);
+
+			// Catch collision
+			if (isWallLeft && deltaX < 0 || isWallRight && deltaX > 0)
+			{
+				velocity.X = 0;
+				deltaX = 0;
+				break;
+			}
+
+			// Apply movement
+			float stepX = float.Clamp(deltaX, -1, 1);
+			position.X += stepX;
+			deltaX -= stepX;
+		}
+
+		while (deltaY != 0)
+		{
+			// Check for collision
+			Collider.CaptureState(CurrentArea, ColliderPosition);
+			bool isWallTop = Collider.IsTileTop(TileType.Wall);
+			bool isWallBottom = Collider.IsTileBottom(TileType.Wall);
+
+			// Catch collision
+			if (isWallTop && deltaY < 0 || isWallBottom && deltaY > 0)
+			{
+				velocity.Y = 0;
+				deltaY = 0;
+				break;
+			}
+
+			// Apply movement
+			float stepY = float.Clamp(deltaY, -1, 1);
+			position.Y += stepY;
+			deltaY -= stepY;
+		}
 	}
 
 	private void OutOfBounds()
@@ -268,15 +293,6 @@ public class Player : Entity, IIntersectsWithRectangle
 			velocity.X = -float.Sign(velocity.X) * jumpForce;
 			velocity.Y = -jumpForce;
 		}
-	}
-
-	private void CheckCollision()
-	{
-		// I need to create a PlatformPlayer.cs for the ClockworkEngine examples
-		// that is surefire to work with basic walking, jumping, and colliding.
-		// Then, I inherit from there.
-
-		// Also, I fear I need to optimize TiledCollider. I would like to update states without cost of performance.
 	}
 
 	#endregion
