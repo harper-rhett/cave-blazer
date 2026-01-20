@@ -3164,9 +3164,9 @@
 									"id": "V_String",
 									"params": ["sign"]
 								}] },
-								{ "__identifier": "text", "__type": "String", "__value": "Welcome to The Enlightened Mountain", "__tile": null, "defUid": 135, "realEditorValues": [{
+								{ "__identifier": "text", "__type": "String", "__value": "Welcome to Enlightenment Mountain", "__tile": null, "defUid": 135, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["Welcome to The Enlightened Mountain"]
+									"params": ["Welcome to Enlightenment Mountain"]
 								}] }
 							],
 							"__worldX": 80,

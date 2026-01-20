@@ -22,7 +22,6 @@ public class Player : Entity, IIntersectsWithRectangle
 	public PlayerState State;
 	public PlayerInventory Inventory;
 	public TiledGameArea CurrentArea;
-	private bool justWallJumped;
 
 	// Animation
 	private PlayerAnimation animationManager = new();
@@ -141,7 +140,6 @@ public class Player : Entity, IIntersectsWithRectangle
 			velocity = direction * wallJumpForce;
 			directionFacing = 1;
 		}
-		justWallJumped = true;
 
 		// Animation
 		animationManager.State = PlayerAnimationState.Jumping;
@@ -168,7 +166,6 @@ public class Player : Entity, IIntersectsWithRectangle
 	private void GrabbingWall()
 	{
 		velocity.Y = 0;
-		justWallJumped = false;
 
 		animationManager.State = PlayerAnimationState.ClimbingWall;
 		if (State.IsClimbingWall)
@@ -187,7 +184,6 @@ public class Player : Entity, IIntersectsWithRectangle
 		// Zero velocity
 		if (velocity.Y > 0) velocity.Y = 0;
 		animationManager.fallingAnimation.Reset();
-		justWallJumped = false;
 
 		// Walk
 		StrafeCheck();
@@ -229,21 +225,16 @@ public class Player : Entity, IIntersectsWithRectangle
 		if (velocity.Y > 0) animationManager.State = PlayerAnimationState.Falling;
 
 		// Get midair movement
-		if (!justWallJumped) MidairMovement();
-	}
-
-	private void MidairMovement()
-	{
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
 		{
-			if (velocity.X > -0.0001f) velocity.X = -midairStartSpeed;
+			if (float.Abs(velocity.X) < 0.0001f) velocity.X = -midairStartSpeed;
 			float acceleration = velocity.X < 0 ? midairAcceleration : midairDecceleration;
 			velocity.X -= acceleration * Engine.FrameTime;
 			directionFacing = -1;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
-			if (velocity.X < 0.0001f) velocity.X = midairStartSpeed;
+			if (float.Abs(velocity.X) < 0.0001f) velocity.X = midairStartSpeed;
 			float acceleration = velocity.X > 0 ? midairAcceleration : midairDecceleration;
 			velocity.X += acceleration * Engine.FrameTime;
 			directionFacing = 1;

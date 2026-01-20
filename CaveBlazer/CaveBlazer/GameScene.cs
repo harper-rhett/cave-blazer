@@ -10,8 +10,11 @@ public class GameScene : Scene
 	// World
 	public LDTKGameLayer World { get; private set; }
 	public const int TileSize = 16;
-	private const string spawnAreaName = "origin";
 	private const string originAreaName = "origin";
+
+	// Start parameters
+	private const string spawnAreaName = "origin";
+	private const bool unlockCrampons = false;
 
 	// Decoration
 	public TiledLayer Foreground { get; private set; }
@@ -55,7 +58,7 @@ public class GameScene : Scene
 	{
 		Vector2 spawnPosition = spawnArea.EntitiesByID["spawn"][0].Position;
 		Player = AddEntity(new Player(this, spawnArea, spawnPosition));
-		Player.Inventory.UnlockCrampons();
+		if (unlockCrampons) Player.Inventory.UnlockCrampons();
 	}
 
 	private void InitializeCamera(LDTKGameArea spawnArea)
