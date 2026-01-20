@@ -37,12 +37,7 @@ public class PlayerInventory
 		stamina -= amount;
 	}
 
-	public void Draw()
-	{
-		if (Stamina < MaxStamina) DrawStamina();
-	}
-
-	private void DrawStamina()
+	public void DrawStamina(Color innerColor, Color outerColor)
 	{
 		// Dimensions
 		const int containerWidth = 4;
@@ -55,12 +50,12 @@ public class PlayerInventory
 		// Draw container
 		Vector2 containerPosition = player.ColliderPosition + new Vector2(player.Collider.HalfWidth - halfContainerWidth, containerOffset);
 		Rectangle containerRectangle = new(containerPosition, containerWidth, containerHeight);
-		Primitives.DrawRectangleLines(containerRectangle, 1, Colors.White);
+		Primitives.DrawRectangleLines(containerRectangle, 1, outerColor);
 
 		// Draw stamina
 		int staminaRectangleHeight = (staminaHeight - StaminaRatio * staminaHeight).Floored();
 		Vector2 staminaPosition = containerPosition + Vector2.One + new Vector2(0, staminaRectangleHeight);
 		Rectangle staminaRectangle = new(staminaPosition, staminaWidth, staminaHeight - staminaRectangleHeight);
-		Primitives.DrawRectangle(staminaRectangle, Colors.White);
+		Primitives.DrawRectangle(staminaRectangle, innerColor);
 	}
 }

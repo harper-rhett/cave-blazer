@@ -105,6 +105,7 @@ public class PlayerState
 		IsGrabbingWall = IsGrabbingWall || DidGrabWall;
 		if (DidGrabWall)
 		{
+			CanGrabWall = false;
 			IsGrabbingLeftWall = isWallLeft;
 			IsGrabbingRightWall = isWallRight;
 		}
@@ -158,12 +159,6 @@ public class PlayerState
 	private void CheckBounds()
 	{
 		OutOfBounds = !player.Collider.CenterInBounds;
-	}
-
-	public void Draw()
-	{
-		if (CanGrabLadder) DrawStatusOrb(Colors.Green, Colors.Lime);
-		else if (CanGrabWall && !IsGrabbingWall) DrawStatusOrb(Colors.SkyBlue, Colors.Blue);
 	}
 
 	public void DrawStatusOrb(Color innerColor, Color outerColor)

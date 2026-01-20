@@ -22,6 +22,7 @@ public class Player : Entity, IIntersectsWithRectangle
 	public PlayerState State;
 	public PlayerInventory Inventory;
 	public TiledGameArea CurrentArea;
+	private bool justWallJumped;
 
 	// Animation
 	private PlayerAnimation animationManager = new();
@@ -39,12 +40,15 @@ public class Player : Entity, IIntersectsWithRectangle
 	// Settings
 	private const float gravity = 135;
 	private const float jumpForce = 75;
+	private const float wallJumpForce = 75;
 	private const float walkSpeed = 45;
 	private const float midairAcceleration = 10;
 	private const float midairDecceleration = 35f;
 	private const float newAreaBoost = 1.5f;
 	private const float climbSpeed = 25;
 	private const float midairStartSpeed = 15;
+
+	// TODO: Move all keypresses to player state or new player input class
 
 	#endregion
 
@@ -92,8 +96,13 @@ public class Player : Entity, IIntersectsWithRectangle
 		animationManager.Draw(position, new(directionFacing, 1), Colors.White);
 
 		// Draw status
-		State.Draw();
-		Inventory.Draw();
+		if (State.CanGrabLadder) State.DrawStatusOrb(Colors.Green, Colors.Lime);
+		else if (Inventory.Stamina < Inventory.MaxStamina)
+		{
+			if (State.IsGrabbingWall) Inventory.DrawStamina(Colors.White, Colors.White);
+			else if (State.CanGrabWall) Inventory.DrawStamina(Colors.Blue, Colors.Blue);
+		}
+		else if (State.CanGrabWall) State.DrawStatusOrb(Colors.SkyBlue, Colors.Blue);
 
 		// Draw collider
 		//Collider.Draw(ColliderPosition, Colors.Red);
@@ -123,15 +132,16 @@ public class Player : Entity, IIntersectsWithRectangle
 		if (State.IsGrabbingRightWall)
 		{
 			Vector2 direction = Vector2.Normalize(new(-1, -1));
-			velocity = direction * jumpForce;
+			velocity = direction * wallJumpForce;
 			directionFacing = -1;
 		}
 		else if (State.IsGrabbingLeftWall)
 		{
 			Vector2 direction = Vector2.Normalize(new(1, -1));
-			velocity = direction * jumpForce;
+			velocity = direction * wallJumpForce;
 			directionFacing = 1;
 		}
+		justWallJumped = true;
 
 		// Animation
 		animationManager.State = PlayerAnimationState.Jumping;
@@ -158,6 +168,7 @@ public class Player : Entity, IIntersectsWithRectangle
 	private void GrabbingWall()
 	{
 		velocity.Y = 0;
+		justWallJumped = false;
 
 		animationManager.State = PlayerAnimationState.ClimbingWall;
 		if (State.IsClimbingWall)
@@ -176,6 +187,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		// Zero velocity
 		if (velocity.Y > 0) velocity.Y = 0;
 		animationManager.fallingAnimation.Reset();
+		justWallJumped = false;
 
 		// Walk
 		StrafeCheck();
@@ -217,6 +229,11 @@ public class Player : Entity, IIntersectsWithRectangle
 		if (velocity.Y > 0) animationManager.State = PlayerAnimationState.Falling;
 
 		// Get midair movement
+		if (!justWallJumped) MidairMovement();
+	}
+
+	private void MidairMovement()
+	{
 		if (Keyboard.IsKeyDown(KeyboardKey.Left))
 		{
 			if (velocity.X > -0.0001f) velocity.X = -midairStartSpeed;
