@@ -23,6 +23,8 @@ public class DialogueEntity : Entity
 	private Vector2 boxSize;
 	private Vector2 boxPosition;
 	private static Font font;
+	private Color textColor = Colors.White;
+	private Color backgroundColor = Colors.Black;
 
 	static DialogueEntity()
 	{
@@ -61,8 +63,8 @@ public class DialogueEntity : Entity
 		bool collidesWithPlayer = gameScene.Player.IntersectsWithRectangle(rectangle);
 		if (collidesWithPlayer)
 		{
-			Primitives.DrawRectangle(boxPosition, boxSize, Colors.Black.SetAlpha(0.75f));
-			Text.Draw(font, text, textPosition, Vector2.Zero, 0, fontSize, fontSpacing, Colors.White);
+			Primitives.DrawRectangle(boxPosition, boxSize, backgroundColor);
+			Text.Draw(font, text, textPosition, Vector2.Zero, 0, fontSize, fontSpacing, textColor);
 		}
 	}
 }
