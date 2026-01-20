@@ -235,7 +235,6 @@ public class Player : Entity, IIntersectsWithRectangle
 
 	private void ApplyMovement()
 	{
-		//position += velocity * Engine.FrameTime;
 		float deltaX = velocity.X * Engine.FrameTime;
 		float deltaY = velocity.Y * Engine.FrameTime;
 
@@ -265,7 +264,7 @@ public class Player : Entity, IIntersectsWithRectangle
 			// Check for collision
 			Collider.CaptureState(CurrentArea, ColliderPosition);
 			bool isWallTop = Collider.IsTileTop(TileType.Wall);
-			bool isWallBottom = Collider.IsTileBottom(TileType.Wall);
+			bool isWallBottom = Collider.IsTileBottom(TileType.Wall) || Collider.IsTileBottom(TileType.Platform) && State.IsStandingOnPlatform;
 
 			// Catch collision
 			if (isWallTop && deltaY < 0 || isWallBottom && deltaY > 0)
