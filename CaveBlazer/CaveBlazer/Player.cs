@@ -271,8 +271,9 @@ public class Player : Entity, IIntersectsWithRectangle
 		{
 			// Check for collision
 			Collider.CaptureState(CurrentArea, ColliderPosition);
+			State.Update();
 			bool isWallTop = Collider.IsTileTop(TileType.Wall);
-			bool isWallBottom = Collider.IsTileBottom(TileType.Wall) || Collider.IsTileBottom(TileType.Platform) && State.IsStandingOnPlatform;
+			bool isWallBottom = Collider.IsTileBottom(TileType.Wall)|| State.IsStandingOnPlatform;
 
 			// Catch collision
 			if (isWallTop && deltaY < 0 || isWallBottom && deltaY > 0)
