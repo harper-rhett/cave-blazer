@@ -68,7 +68,7 @@ public class Player : Entity, IIntersectsWithRectangle
 	{
 		// Update states
 		Collider.CaptureState(CurrentArea, ColliderPosition);
-		State.Update();
+		State.UpdateAll();
 
 		// Check states
 
@@ -250,6 +250,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		{
 			// Check for collision
 			Collider.CaptureState(CurrentArea, ColliderPosition);
+			State.UpdateGrounded();
 			bool isWallLeft = Collider.IsTileLeft(TileType.Wall);
 			bool isWallRight = Collider.IsTileRight(TileType.Wall);
 
@@ -271,7 +272,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		{
 			// Check for collision
 			Collider.CaptureState(CurrentArea, ColliderPosition);
-			State.Update();
+			State.UpdateGrounded();
 			bool isWallTop = Collider.IsTileTop(TileType.Wall);
 			bool isWallBottom = Collider.IsTileBottom(TileType.Wall)|| State.IsStandingOnPlatform;
 

@@ -43,17 +43,17 @@ public class PlayerState
 		this.player = player;
 	}
 
-	public void Update()
+	public void UpdateAll()
 	{
-		CheckGrounded();
-		CheckForLadder();
-		if (!IsGrabbingWall) CheckGrabbing();
-		if (IsGrabbingWall) CheckClimbing();
-		CheckForJump();
-		CheckBounds();
+		UpdateGrounded();
+		UpdateLadder();
+		if (!IsGrabbingWall) UpdateGrabbing();
+		if (IsGrabbingWall) UpdateClimbing();
+		UpdateJump();
+		UpdateBounds();
 	}
 
-	private void CheckGrounded()
+	public void UpdateGrounded()
 	{
 		bool isAboveLadder = player.Collider.IsTileBottom(TileType.Ladder) && !player.Collider.IsTileInner(TileType.Ladder);
 		bool isAbovePlatform = player.Collider.IsTileBottom(TileType.Platform);
@@ -64,7 +64,7 @@ public class PlayerState
 		if (IsGrounded && !IsGrabbingWall) player.Inventory.ResetStamina();
 	}
 
-	private void CheckForLadder()
+	public void UpdateLadder()
 	{
 		// Check collision
 		IsOverLadder = player.Collider.CenterTile == TileType.Ladder || (player.Collider.BottomCenterTile == TileType.Ladder && !IsStandingOnTile);
@@ -88,7 +88,7 @@ public class PlayerState
 		}
 	}
 
-	private void CheckGrabbing()
+	public void UpdateGrabbing()
 	{
 		// Reset states
 		DidWallJump = false;
@@ -111,7 +111,7 @@ public class PlayerState
 		}
 	}
 
-	private void CheckClimbing()
+	public void UpdateClimbing()
 	{
 		// Check stamina
 		if (player.Inventory.Stamina <= 0)
@@ -150,13 +150,13 @@ public class PlayerState
 		CanGrabWall = false;
 	}
 
-	private void CheckForJump()
+	public void UpdateJump()
 	{
 		DidJump = IsGrounded && Keyboard.IsKeyPressed(KeyboardKey.Space);
 		if (DidJump) IsGrounded = false;
 	}
 
-	private void CheckBounds()
+	public void UpdateBounds()
 	{
 		OutOfBounds = !player.Collider.CenterInBounds;
 	}

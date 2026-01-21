@@ -13,8 +13,8 @@ public class GameScene : Scene
 	private const string originAreaName = "origin";
 
 	// Start parameters
-	private const string spawnAreaName = "test";
-	private const bool unlockCrampons = false;
+	private const string spawnAreaName = "area_7_0";
+	private const bool unlockCrampons = true;
 
 	// Decoration
 	public TiledLayer Foreground { get; private set; }
