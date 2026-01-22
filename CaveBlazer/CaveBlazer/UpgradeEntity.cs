@@ -11,7 +11,7 @@ public class UpgradeEntity : Entity
 	private Vector2 position;
 	private GameScene gameScene;
 	private Rectangle rectangle;
-	private Texture texture;
+	private ITexture texture;
 	private int halfWidth;
 	private int halfHeight;
 	private Action upgradeAction;
@@ -54,7 +54,7 @@ public class UpgradeEntity : Entity
 		{
 			Position = position + new Vector2(halfWidth, halfHeight),
 			Velocity = new Vector2(0, -15),
-			Gradient = new Gradient(Colors.Blue, Colors.SkyBlue),
+			Gradient = new Gradient(Colors.Blue, Colors.Cyan),
 		};
 		glowParticles.StreamCooldownTime = Generate.Float(0.25f, 0.35f);
 	}

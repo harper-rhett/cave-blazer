@@ -13,8 +13,8 @@ public class GameScene : Scene
 	private const string originAreaName = "origin";
 
 	// Start parameters
-	private const string spawnAreaName = "area_7_0";
-	private const bool unlockCrampons = true;
+	private const string spawnAreaName = "area_5_2";
+	private const bool unlockCrampons = false;
 
 	// Decoration
 	public TiledLayer Foreground { get; private set; }
@@ -65,7 +65,6 @@ public class GameScene : Scene
 	{
 		camera = AddEntity(new Camera2D());
 		Camera = camera;
-		camera.Offset = Vector2.Zero;
 		camera.Transform.WorldPosition = spawnArea.Position;
 	}
 

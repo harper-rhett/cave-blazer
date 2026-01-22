@@ -4,14 +4,15 @@ using Clockwork.Windowing;
 
 internal class CaveBlazer : Game
 {
-	private GameScene gameScene = new();
+	private GameScene gameScene;
 
-	public CaveBlazer()
+	public CaveBlazer() : base("Cave Blazer", 368, 192)
 	{
+		gameScene = new();
 		Window.SetResizable(true);
-		Window.SetRendererUnclipped(Colors.Black);
+		WindowRenderer.SetUnclipped(Colors.Black);
 		Window.Resize(368 * 5, 192 * 5);
-		Window.SetPosition(32, 32);
+		Window.Position = new(32, 32);
 	}
 
 	public override void OnUpdate()

@@ -7,7 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaveBlazer", "CaveBlazer\Ca
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClockworkLDTKImporter", "..\..\clockwork-ldtk-importer\ClockworkLDTKImporter\ClockworkLDTKImporter\ClockworkLDTKImporter.csproj", "{577251BC-C200-23C4-A72C-50786D7D4275}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClockworkEngine", "..\..\clockwork-engine\ClockworkEngine\ClockworkEngine.csproj", "{C5E5EF12-BDB3-FEE3-7DDF-9BA7E56FA678}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClockworkEngine", "..\..\clockwork-engine\ClockworkEngine\ClockworkEngine\ClockworkEngine.csproj", "{588B2614-ECE8-4EB1-BB56-16366BE52817}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClockworkBackend", "..\..\clockwork-engine\ClockworkEngine\ClockworkBackend\ClockworkBackend.csproj", "{55576AEC-026C-4C18-DB8E-F9704D13FC93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClockworkRaylib", "..\..\clockwork-raylib\ClockworkRaylib\ClockworkRaylib\ClockworkRaylib.csproj", "{9324EE19-AFDD-C6D8-B551-260935BD424A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +27,18 @@ Global
 		{577251BC-C200-23C4-A72C-50786D7D4275}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{577251BC-C200-23C4-A72C-50786D7D4275}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{577251BC-C200-23C4-A72C-50786D7D4275}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C5E5EF12-BDB3-FEE3-7DDF-9BA7E56FA678}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C5E5EF12-BDB3-FEE3-7DDF-9BA7E56FA678}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C5E5EF12-BDB3-FEE3-7DDF-9BA7E56FA678}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C5E5EF12-BDB3-FEE3-7DDF-9BA7E56FA678}.Release|Any CPU.Build.0 = Release|Any CPU
+		{588B2614-ECE8-4EB1-BB56-16366BE52817}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{588B2614-ECE8-4EB1-BB56-16366BE52817}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{588B2614-ECE8-4EB1-BB56-16366BE52817}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{588B2614-ECE8-4EB1-BB56-16366BE52817}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55576AEC-026C-4C18-DB8E-F9704D13FC93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55576AEC-026C-4C18-DB8E-F9704D13FC93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55576AEC-026C-4C18-DB8E-F9704D13FC93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55576AEC-026C-4C18-DB8E-F9704D13FC93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9324EE19-AFDD-C6D8-B551-260935BD424A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9324EE19-AFDD-C6D8-B551-260935BD424A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9324EE19-AFDD-C6D8-B551-260935BD424A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9324EE19-AFDD-C6D8-B551-260935BD424A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

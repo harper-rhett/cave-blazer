@@ -1,4 +1,5 @@
 ﻿using Clockwork.Graphics;
+using Clockwork.Graphics.Draw2D;
 using Clockwork.Input;
 using Clockwork.Utilities;
 using System.Numerics;
@@ -165,7 +166,7 @@ public class PlayerState
 	{
 		const float offset = -5;
 		Vector2 statusPosition = player.ColliderPosition + new Vector2(player.Collider.HalfWidth, offset);
-		Primitives.DrawCircle(statusPosition.Floored(), 3, outerColor);
-		Primitives.DrawCircle(statusPosition.Floored(), 2, innerColor);
+		Primitives2D.DrawCircle(statusPosition.Floored(), 3, outerColor);
+		Primitives2D.DrawCircle(statusPosition.Floored(), 2, innerColor);
 	}
 }

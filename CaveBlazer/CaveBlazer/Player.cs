@@ -95,13 +95,13 @@ public class Player : Entity, IIntersectsWithRectangle
 		animationManager.Draw(position, new(directionFacing, 1), Colors.White);
 
 		// Draw status
-		if (State.CanGrabLadder) State.DrawStatusOrb(Colors.Green, Colors.Lime);
+		if (State.CanGrabLadder) State.DrawStatusOrb(Colors.Lime, Colors.Green);
 		else if (Inventory.Stamina < Inventory.MaxStamina)
 		{
 			if (State.IsGrabbingWall) Inventory.DrawStamina(Colors.White, Colors.White);
 			else if (State.CanGrabWall) Inventory.DrawStamina(Colors.Blue, Colors.Blue);
 		}
-		else if (State.CanGrabWall) State.DrawStatusOrb(Colors.SkyBlue, Colors.Blue);
+		else if (State.CanGrabWall) State.DrawStatusOrb(Colors.Cyan, Colors.Blue);
 
 		// Draw collider
 		//Collider.Draw(ColliderPosition, Colors.Red);

@@ -4,12 +4,16 @@ using Clockwork.Tiles;
 using Clockwork.Utilities;
 using Clockwork.LDTKImporter;
 using System.Numerics;
+using Clockwork.Graphics.Text;
+using Clockwork.Graphics.Draw2D;
+using Clockwork.Raylib.Graphics.Text;
+using Clockwork.Raylib.Graphics;
 
 public class DialogueEntity : Entity
 {
 	private Vector2 position;
 	private Rectangle rectangle;
-	private Texture texture;
+	private ITexture texture;
 	private GameScene gameScene;
 	private string text;
 	private const int fontSize = 14;
@@ -22,14 +26,14 @@ public class DialogueEntity : Entity
 	private const int bottomBorder = -1;
 	private Vector2 boxSize;
 	private Vector2 boxPosition;
-	private static Font font;
+	private static IFont font;
 	private Color textColor = Colors.White;
 	private Color backgroundColor = Colors.Black;
 
 	static DialogueEntity()
 	{
 		font = Font.Load("fonts/Tiny5-Regular.fnt");
-		font.Texture.SetFilter(TextureFilter.Point);
+		((RaylibFont)font).Texture.SetFilter(RaylibTextureFilter.Point);
 	}
 
 	public DialogueEntity(LDTKEntity ldtkEntity, GameScene gameScene)
@@ -63,7 +67,7 @@ public class DialogueEntity : Entity
 		bool collidesWithPlayer = gameScene.Player.IntersectsWithRectangle(rectangle);
 		if (collidesWithPlayer)
 		{
-			Primitives.DrawRectangle(boxPosition, boxSize, backgroundColor);
+			Primitives2D.DrawRectangle(boxPosition, boxSize, backgroundColor);
 			Text.Draw(font, text, textPosition, Vector2.Zero, 0, fontSize, fontSpacing, textColor);
 		}
 	}
