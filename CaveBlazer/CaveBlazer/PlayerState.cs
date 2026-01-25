@@ -165,8 +165,8 @@ public class PlayerState
 	public void DrawStatusOrb(Color innerColor, Color outerColor)
 	{
 		const float offset = -5;
-		Vector2 statusPosition = player.ColliderPosition + new Vector2(player.Collider.HalfWidth, offset);
-		Primitives2D.DrawCircle(statusPosition.Floored(), 3, outerColor);
-		Primitives2D.DrawCircle(statusPosition.Floored(), 2, innerColor);
+		Vector2 statusPosition = player.ColliderPosition.Floored() + new Vector2(player.Collider.HalfWidth, offset);
+		Primitives2D.DrawCircle(statusPosition, 3, outerColor);
+		Primitives2D.DrawCircle(statusPosition, 2, innerColor);
 	}
 }

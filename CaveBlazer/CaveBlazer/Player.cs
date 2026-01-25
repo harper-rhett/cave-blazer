@@ -93,7 +93,7 @@ public class Player : Entity, IIntersectsWithRectangle
 	{
 		// Draw player texture
 		animationManager.Draw(position, new(directionFacing, 1), Colors.White);
-
+		
 		// Draw status
 		if (State.CanGrabLadder) State.DrawStatusOrb(Colors.Lime, Colors.Green);
 		else if (Inventory.Stamina < Inventory.MaxStamina)
