@@ -42,7 +42,7 @@
     <None Update="sprites\backgrounds\mountain\old\small-mountains.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="sprites\entities\crampons.png">
+    <None Update="sprites\entities\lotus-stupa.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="sprites\entities\monk.png">

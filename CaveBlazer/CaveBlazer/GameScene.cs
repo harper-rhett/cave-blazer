@@ -13,7 +13,7 @@ public class GameScene : Scene
 	private const string originAreaName = "origin";
 
 	// Start parameters
-	private const string spawnAreaName = "origin";
+	private const string spawnAreaName = "area_3_4";
 	private const bool unlockCrampons = false;
 
 	// Decoration

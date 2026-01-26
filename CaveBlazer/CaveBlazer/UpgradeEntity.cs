@@ -30,7 +30,7 @@ public class UpgradeEntity : Entity
 		string texturePath = null;
 		if (type == "crampons")
 		{
-			texturePath = "sprites/entities/crampons.png";
+			texturePath = "sprites/entities/lotus-stupa.png";
 			upgradeAction = () => gameScene.Player.Inventory.UnlockCrampons();
 		}
 		texture = Texture.Load(texturePath);
