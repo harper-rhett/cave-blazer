@@ -6,14 +6,12 @@ using Clockwork.LDTKImporter;
 using System.Numerics;
 using Clockwork.Graphics.Text;
 using Clockwork.Graphics.Draw2D;
-using Clockwork.Raylib.Graphics.Text;
-using Clockwork.Raylib.Graphics;
 
 public class DialogueEntity : Entity
 {
 	private Vector2 position;
 	private Rectangle rectangle;
-	private ITexture texture;
+	private Texture texture;
 	private GameScene gameScene;
 	private string text;
 	private const int fontSize = 14;
@@ -26,14 +24,14 @@ public class DialogueEntity : Entity
 	private const int bottomBorder = -1;
 	private Vector2 boxSize;
 	private Vector2 boxPosition;
-	private static IFont font;
+	private static Font font;
 	private Color textColor = Colors.White;
 	private Color backgroundColor = Colors.Black;
 
 	static DialogueEntity()
 	{
 		font = Font.Load("fonts/Tiny5-Regular.fnt");
-		((RaylibFont)font).Texture.SetFilter(RaylibTextureFilter.Point);
+		font.Texture.SetFilter(TextureFilter.Point);
 	}
 
 	public DialogueEntity(LDTKEntity ldtkEntity, GameScene gameScene)

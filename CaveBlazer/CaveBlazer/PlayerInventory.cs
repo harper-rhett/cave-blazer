@@ -3,8 +3,6 @@ using Clockwork.Graphics;
 using Clockwork.Tiles;
 using System.Numerics;
 using Clockwork.Utilities;
-using Clockwork.Raylib.Graphics.Draw2D;
-using Clockwork.Raylib.Graphics;
 
 public class PlayerInventory
 {
@@ -52,7 +50,7 @@ public class PlayerInventory
 		// Draw container
 		Vector2 containerPosition = player.ColliderPosition + new Vector2(player.Collider.HalfWidth - halfContainerWidth, containerOffset);
 		Rectangle containerRectangle = new(containerPosition, containerWidth, containerHeight);
-		RaylibPrimitives2D.DrawRectangleLines((RaylibRectangle)containerRectangle, 1, (RaylibColor)outerColor);
+		Primitives2D.DrawRectangleLines(containerRectangle, 1, outerColor);
 
 		// Draw stamina
 		int staminaRectangleHeight = (staminaHeight - StaminaRatio * staminaHeight).Floored();

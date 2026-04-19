@@ -314,7 +314,7 @@ public class Player : Entity, IIntersectsWithRectangle
 	public bool IntersectsWithRectangle(Rectangle rectangle)
 	{
 		Rectangle playerRectangle = new(ColliderPosition, ColliderWidth, ColliderHeight);
-		return Intersection.RectangleOnRectangle(playerRectangle, rectangle);
+		return Intersection2D.RectangleOnRectangle(playerRectangle, rectangle);
 	}
 
 	#endregion

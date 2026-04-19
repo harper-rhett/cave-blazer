@@ -8,10 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\clockwork-engine\ClockworkEngine\ClockworkBackend\ClockworkBackend.csproj" />
     <ProjectReference Include="..\..\..\clockwork-engine\ClockworkEngine\ClockworkEngine\ClockworkEngine.csproj" />
     <ProjectReference Include="..\..\..\clockwork-ldtk-importer\ClockworkLDTKImporter\ClockworkLDTKImporter\ClockworkLDTKImporter.csproj" />
-    <ProjectReference Include="..\..\..\clockwork-raylib\ClockworkRaylib\ClockworkRaylib\ClockworkRaylib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

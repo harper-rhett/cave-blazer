@@ -11,7 +11,7 @@ public class UpgradeEntity : Entity
 	private Vector2 position;
 	private GameScene gameScene;
 	private Rectangle rectangle;
-	private ITexture texture;
+	private Texture texture;
 	private int halfWidth;
 	private int halfHeight;
 	private Action upgradeAction;
@@ -65,9 +65,9 @@ public class UpgradeEntity : Entity
 		if (Keyboard.IsKeyPressed(KeyboardKey.E) && collidingWithPlayer)
 		{
 			upgradeAction.Invoke();
-			glowParticles.Remove();
+			glowParticles.RemoveFromScene();
 			Explode();
-			Remove();
+			RemoveFromScene();
 		}
 	}
 

@@ -13,7 +13,7 @@ public class GameScene : Scene
 	private const string originAreaName = "origin";
 
 	// Start parameters
-	private const string spawnAreaName = "area_3_4";
+	private const string spawnAreaName = "origin";
 	private const bool unlockCrampons = false;
 
 	// Decoration
@@ -66,6 +66,7 @@ public class GameScene : Scene
 		camera = AddEntity(new Camera2D());
 		Camera = camera;
 		camera.Transform.WorldPosition = spawnArea.Position;
+		camera.Offset = Vector2.Zero;
 	}
 
 	private void InitializeParallax(LDTKGameArea originArea)
