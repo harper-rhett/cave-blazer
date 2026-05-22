@@ -6,7 +6,7 @@ internal class CaveBlazer : Game
 {
 	private GameScene gameScene;
 
-	public CaveBlazer() : base("Cave Blazer", 368, 192)
+	public CaveBlazer()
 	{
 		gameScene = new();
 		Window.SetResizable(true);
