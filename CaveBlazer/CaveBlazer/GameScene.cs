@@ -107,7 +107,6 @@ public class GameScene : Scene
 		TiledGameArea nextArea = World.GetArea(pixelX, pixelY);
 
 		// Set new area
-		if (cameraEaser is not null) cameraEaser.Finish();
 		nextArea.IsActive = true;
 		Player.CurrentArea = nextArea;
 
