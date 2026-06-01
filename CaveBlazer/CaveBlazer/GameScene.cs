@@ -4,6 +4,7 @@ using Clockwork.Graphics;
 using Clockwork.Tiles;
 using System.Numerics;
 using Clockwork.LDTKImporter;
+using Clockwork.Graphics.Cameras;
 
 public class GameScene : Scene
 {

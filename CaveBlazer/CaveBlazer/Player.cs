@@ -109,7 +109,7 @@ public class Player : Entity, IIntersectsWithRectangle
 
 	public override void OnDrawGUI()
 	{
-		Engine.DrawDebug(5, 5);
+		Engine.DrawDebug(5, Colors.White);
 		//Text.Draw($"Grounded: {State.IsGrounded}", 5, 15, 5, Colors.White);
 	}
 
@@ -159,8 +159,8 @@ public class Player : Entity, IIntersectsWithRectangle
 		else animationManager.climbingLadderAnimation.IsPaused = true;
 
 		// Move up or down
-		if (State.IsClimbingLadderUp) position.Y -= climbSpeed * Engine.FrameTime;
-		else if (State.IsClimbingLadderDown) position.Y += climbSpeed * Engine.FrameTime;
+		if (State.IsClimbingLadderUp) position.Y -= climbSpeed * FrameTime;
+		else if (State.IsClimbingLadderDown) position.Y += climbSpeed * FrameTime;
 	}
 
 	private void GrabbingWall()
@@ -171,7 +171,7 @@ public class Player : Entity, IIntersectsWithRectangle
 		if (State.IsClimbingWall)
 		{
 			animationManager.climbingWallAnimation.IsPaused = false;
-			float stamina = climbSpeed * Engine.FrameTime;
+			float stamina = climbSpeed * FrameTime;
 			if (State.IsClimbingWallUp) position.Y -= stamina;
 			else if (State.IsClimbingWallDown) position.Y += stamina;
 			Inventory.UseStamina(stamina);
@@ -221,7 +221,7 @@ public class Player : Entity, IIntersectsWithRectangle
 	private void Midair()
 	{
 		// Apply gravity
-		velocity.Y += gravity * Engine.FrameTime;
+		velocity.Y += gravity * FrameTime;
 		if (velocity.Y > 0) animationManager.State = PlayerAnimationState.Falling;
 
 		// Get midair movement
@@ -229,22 +229,22 @@ public class Player : Entity, IIntersectsWithRectangle
 		{
 			if (float.Abs(velocity.X) < 0.0001f) velocity.X = -midairStartSpeed;
 			float acceleration = velocity.X < 0 ? midairAcceleration : midairDecceleration;
-			velocity.X -= acceleration * Engine.FrameTime;
+			velocity.X -= acceleration * FrameTime;
 			directionFacing = -1;
 		}
 		else if (Keyboard.IsKeyDown(KeyboardKey.Right))
 		{
 			if (float.Abs(velocity.X) < 0.0001f) velocity.X = midairStartSpeed;
 			float acceleration = velocity.X > 0 ? midairAcceleration : midairDecceleration;
-			velocity.X += acceleration * Engine.FrameTime;
+			velocity.X += acceleration * FrameTime;
 			directionFacing = 1;
 		}
 	}
 
 	private void ApplyMovement()
 	{
-		float deltaX = velocity.X * Engine.FrameTime;
-		float deltaY = velocity.Y * Engine.FrameTime;
+		float deltaX = velocity.X * FrameTime;
+		float deltaY = velocity.Y * FrameTime;
 
 		while (deltaX != 0)
 		{
