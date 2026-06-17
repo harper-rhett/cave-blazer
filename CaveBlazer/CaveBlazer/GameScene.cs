@@ -39,6 +39,8 @@ public class GameScene : Scene
 		SpawnPlayer(spawnArea);
 		InitializeCamera(spawnArea);
 		InitializeParallax(originArea);
+
+		Engine.ScreenshotCommands = true;
 	}
 
 	private void ImportWorld()
